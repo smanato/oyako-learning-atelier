@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI教育ラボ Members</title>
+    <meta
+      name="description"
+      content="我が子の可能性を広げるAI教育ラボの会員サイト。AI家庭教師、プロンプト集、ツール設定、Zoomアーカイブ、質問導線をまとめたメンバー専用ポータル。"
+    >
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <svg class="sprite" aria-hidden="true">
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="m3.5 11 8.5-7 8.5 7v8.2a1.3 1.3 0 0 1-1.3 1.3H5a1.3 1.3 0 0 1-1.5-1.3z"/><path d="M9 20.5v-7h6v7"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H20v17H7.5A2.5 2.5 0 0 0 5 21.5z"/><path d="M5 4.5v17"/><path d="M9 7h6"/></symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.4"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v5.5a3 3 0 0 1-3 3H10l-5 4v-4.7A3 3 0 0 1 4 12.5z"/><path d="M8 8.5h8M8 11.5h5"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/></symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></symbol>
+      <symbol id="i-tool" viewBox="0 0 24 24"><path d="m14.5 5 4.5 4.5-9.8 9.8-4.8.9.9-4.8z"/><path d="m13 6.5 4.5 4.5"/></symbol>
+      <symbol id="i-video" viewBox="0 0 24 24"><rect x="4" y="6" width="12" height="12" rx="2"/><path d="m16 10 4-2.5v9L16 14"/></symbol>
+    </svg>
+
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="メンバーサイトナビゲーション">
+        <a class="brand" href="#dashboard" aria-label="AI教育ラボ Members">
+          <span class="brand__mark">AI</span>
+          <span class="brand__text">
+            <strong>AI教育ラボ</strong>
+            <small>Members Portal</small>
+          </span>
+        </a>
+
+        <nav class="side-nav">
+          <a class="is-active" href="#dashboard"><svg><use href="#i-home"></use></svg>ホーム</a>
+          <a href="#menu"><svg><use href="#i-book"></use></svg>メニュー</a>
+          <a href="#library"><svg><use href="#i-camera"></use></svg>今月の教材</a>
+          <a href="#start"><svg><use href="#i-play"></use></svg>はじめてガイド</a>
+          <a href="#rescue"><svg><use href="#i-chat"></use></svg>悩み別レスキュー</a>
+          <a href="#prompts"><svg><use href="#i-copy"></use></svg>プロンプト集</a>
+          <a href="#tools"><svg><use href="#i-tool"></use></svg>ツール設定</a>
+          <a href="#live"><svg><use href="#i-video"></use></svg>Zoom・質問</a>
+          <a href="#rules"><svg><use href="#i-shield"></use></svg>ルール・安心</a>
+        </nav>
+
+        <section class="member-ticket" aria-label="今日の入口">
+          <figure>
+            <img src="./assets/generated/empty-state.png" alt="質問やアーカイブが蓄積していく会員サイトのイメージ">
+          </figure>
+          <p>Member Area</p>
+          <strong>今日の5分</strong>
+          <small>写真/PDFを1つ入れて、ヒントと確認クイズに変換。</small>
+          <button type="button" data-open-prompt="pdfTutor">プロンプトを開く</button>
+        </section>
+      </aside>
+
+      <main class="portal">
+        <header class="topbar">
+          <button class="icon-button menu-button" type="button" aria-label="メニューを開く">
+            <svg><use href="#i-menu"></use></svg>
+          </button>
+          <div class="page-title">
+            <p>我が子の可能性を広げる</p>
+            <h1>AI教育ラボ Members</h1>
+          </div>
+          <label class="search-box">
+            <svg><use href="#i-search"></use></svg>
+            <input type="search" placeholder="悩み・教科・ツールで検索" data-search>
+          </label>
+        </header>
+
+        <section class="hero-system" id="dashboard">
+          <div class="hero-copy">
+            <p class="eyebrow">Member Home</p>
+            <h2>今日の家庭学習を、AIで一段ラクに。</h2>
+            <p>
+              写真を撮る、プロンプトをコピーする、親子で一緒に確かめる。
+              会員サイトの入口を「すぐ使える」形に整えました。
+            </p>
+            <div class="hero-actions">
+              <button class="primary" type="button" data-open-prompt="pdfTutor">
+                <svg><use href="#i-copy"></use></svg>
+                今日のプロンプト
+              </button>
+              <a class="secondary" href="#menu">
+                <svg><use href="#i-book"></use></svg>
+                メニューを見る
+              </a>
+            </div>
+          </div>
+
+          <figure class="hero-photo">
+            <img src="./assets/generated/hero-portal.png" alt="AI教育ラボ会員ポータルで親子が学ぶイメージ">
+          </figure>
+
+          <aside class="today-panel" aria-label="今日やること">
+            <figure class="today-panel__image">
+              <img src="./assets/generated/start-guide.png" alt="スマホで教材を読み込むはじめてガイド">
+            </figure>
+            <p class="eyebrow">Today</p>
+            <h3>最初の5分</h3>
+            <ol>
+              <li><span>1</span>教材を1ページ撮影</li>
+              <li><span>2</span>プロンプトをコピー</li>
+              <li><span>3</span>学年と単元だけ変更</li>
+            </ol>
+            <button class="primary block" type="button" data-open-prompt="firstStep">3分スタートを開く</button>
+          </aside>
+        </section>
+
+        <section class="metric-strip" aria-label="会員コンテンツ概要">
+          <article>
+            <strong>月2回</strong>
+            <span>実践コンテンツ配信</span>
+          </article>
+          <article>
+            <strong>月1回</strong>
+            <span>Zoomライブと永久アーカイブ</span>
+          </article>
+          <article>
+            <strong>質問し放題</strong>
+            <span>質問が教材とプロンプトに育つ</span>
+          </article>
+          <article>
+            <strong>スマホOK</strong>
+            <span>写真、PDF、音声入力で始める</span>
+          </article>
+        </section>
+
+        <section class="menu-showcase section-block" id="menu">
+          <div class="section-head">
+            <p class="eyebrow">Portal Menu</p>
+            <h2>迷わず戻ってこられる、会員サイトの入り口。</h2>
+            <p>各メニューに合わせて作った専用ビジュアルを配置しました。</p>
+          </div>
+          <div class="menu-grid">
+            <a class="menu-card" href="#start" data-tags="はじめて スマホ PDF 写真">
+              <img src="./assets/generated/start-guide.png" alt="はじめてガイド">
+              <span>Start</span>
+              <strong>はじめてガイド</strong>
+            </a>
+            <a class="menu-card" href="#rescue" data-tags="悩み 習慣 スマホ ケアレス テスト">
+              <img src="./assets/generated/problem-rescue.png" alt="悩み別レスキュー">
+              <span>Rescue</span>
+              <strong>悩み別レスキュー</strong>
+            </a>
+            <a class="menu-card" href="#prompts" data-tags="プロンプト コピー 学年 声かけ">
+              <img src="./assets/generated/prompt-library.png" alt="プロンプト集">
+              <span>Prompt</span>
+              <strong>プロンプト集</strong>
+            </a>
+            <a class="menu-card" href="#tools" data-tags="ツール ChatGPT Gemini Claude NotebookLM">
+              <img src="./assets/generated/tool-setup.png" alt="ツール設定">
+              <span>Tools</span>
+              <strong>ツール設定</strong>
+            </a>
+            <a class="menu-card" href="#live" data-tags="Zoom アーカイブ 質問">
+              <img src="./assets/generated/zoom-archive.png" alt="Zoomアーカイブ">
+              <span>Live</span>
+              <strong>Zoom・アーカイブ</strong>
+            </a>
+            <a class="menu-card" href="#rules" data-tags="安心 ルール 解約 支払い コミュニティ">
+              <img src="./assets/generated/safety-guide.png" alt="安心ガイド">
+              <span>Safety</span>
+              <strong>ルール・安心</strong>
+            </a>
+          </div>
+        </section>
+
+        <section class="section-block" id="library">
+          <div class="section-head">
+            <p class="eyebrow">Content Library</p>
+            <h2>今月の教材は、家庭でそのまま試せる形に。</h2>
+            <p>アンケートとLINEで多かった悩みを、教材・プロンプト・実演に分けて並べています。</p>
+          </div>
+
+          <div class="module-grid" data-content-modules>
+            <article class="module-card module-card--wide" data-tags="写真 PDF AI家庭教師 ChatGPT Gemini NotebookLM 教科書">
+              <figure>
+                <img src="./assets/generated/photo-pdf-tutor.png" alt="写真やPDFをAI家庭教師に変える教材">
+              </figure>
+              <div class="module-card__body">
+                <span>今月の必修</span>
+                <h3>スマホで教科書を撮って、AI家庭教師にする</h3>
+                <p>写真でも始められる。複数ページはPDF化すると読み取りが安定します。</p>
+                <button type="button" data-open-prompt="pdfTutor">プロンプトを開く</button>
+              </div>
+            </article>
+
+            <article class="module-card" data-tags="定期テスト 受験 計画 部活">
+              <figure>
+                <img src="./assets/generated/test-planning.png" alt="定期テストの逆算計画">
+              </figure>
+              <div class="module-card__body">
+                <span>計画</span>
+                <h3>定期テスト逆算計画</h3>
+                <p>提出課題で終わらず、暗記・演習・解き直しまで日割りに。</p>
+              </div>
+            </article>
+
+            <article class="module-card" data-tags="ケアレス 計算 漢字 見直し">
+              <figure>
+                <img src="./assets/generated/mistake-review.png" alt="ケアレスミスの見直し">
+              </figure>
+              <div class="module-card__body">
+                <span>見直し</span>
+                <h3>ケアレスミス見直し</h3>
+                <p>責めずに、本人が使えるチェックリストへ変換します。</p>
+              </div>
+            </article>
+
+            <article class="module-card" data-tags="スマホ ゲーム YouTube ルール">
+              <figure>
+                <img src="./assets/generated/screen-rules.png" alt="スマホやゲームのルールづくり">
+              </figure>
+              <div class="module-card__body">
+                <span>脱線対策</span>
+                <h3>スマホ・ゲームルール</h3>
+                <p>禁止より先に、親子で納得しやすい順番を決める。</p>
+              </div>
+            </article>
+
+            <article class="module-card" data-tags="英語 英会話 音声">
+              <figure>
+                <img src="./assets/generated/english-practice.png" alt="親子英会話練習">
+              </figure>
+              <div class="module-card__body">
+                <span>英語</span>
+                <h3>親子英会話ロールプレイ</h3>
+                <p>親が英語に自信がなくても、短い会話から始めます。</p>
+              </div>
+            </article>
+
+            <article class="module-card" data-tags="アプリ 作成 復習 タイピング AI Studio">
+              <figure>
+                <img src="./assets/generated/review-app.png" alt="親子で復習アプリを作る教材">
+              </figure>
+              <div class="module-card__body">
+                <span>作る</span>
+                <h3>親子で復習アプリを作る</h3>
+                <p>間違えた問題だけを残し、次の練習に使える小さなアプリへ。</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="start-guide section-block" id="start">
+          <figure class="guide-visual">
+            <img src="./assets/generated/start-guide.png" alt="AI教育ラボを始めるためのスマホと教材のイメージ">
+          </figure>
+          <div class="guide-copy">
+            <p class="eyebrow">Start Guide</p>
+            <h2>迷ったら、この順番でOK。</h2>
+            <div class="step-list">
+              <article>
+                <span>01</span>
+                <h3>端末を決める</h3>
+                <p>スマホだけでも開始できます。PCやiPadはPDF整理や小さなアプリ作成に向きます。</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>教材を入れる</h3>
+                <p>1ページなら写真でOK。複数ページやテスト範囲はPDF化すると読み取りが安定します。</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>答えではなくヒントにする</h3>
+                <p>AIの役割は答えを出すことではなく、子どもが次の一歩を出せる状態にすること。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="rescue">
+          <div class="section-head section-head--split">
+            <div>
+              <p class="eyebrow">Problem Rescue</p>
+              <h2>アンケートとLINEで多かった悩みから、すぐ使える導線を用意。</h2>
+            </div>
+            <button class="secondary compact" type="button" data-filter="all">
+              <svg><use href="#i-filter"></use></svg>
+              解除
+            </button>
+          </div>
+
+          <div class="rescue-grid" data-content-rescue>
+            <article class="rescue-card" data-tags="習慣 集中 宿題">
+              <img src="./assets/generated/start-guide.png" alt="宿題を始める習慣化">
+              <span>習慣化</span>
+              <h3>宿題を始めるまでが長い</h3>
+              <p>3分だけ着手するミッションに変換。親の声かけもセットで出します。</p>
+              <button type="button" data-open-prompt="habit">開く</button>
+            </article>
+            <article class="rescue-card" data-tags="スマホ ゲーム YouTube 集中">
+              <img src="./assets/generated/screen-rules.png" alt="スマホやゲームの脱線対策">
+              <span>脱線対策</span>
+              <h3>スマホ・ゲームに流れる</h3>
+              <p>禁止ではなく順番を決め、ゲーム要素を学習側へ移します。</p>
+              <button type="button" data-open-prompt="screenRule">開く</button>
+            </article>
+            <article class="rescue-card" data-tags="ケアレス 計算 漢字 見直し">
+              <img src="./assets/generated/mistake-review.png" alt="ケアレスミスの見直し">
+              <span>見直し</span>
+              <h3>ケアレスミスが減らない</h3>
+              <p>間違いを責めず、本人専用の見直しチェックリストを作ります。</p>
+              <button type="button" data-open-prompt="careless">開く</button>
+            </article>
+            <article class="rescue-card" data-tags="苦手 単元 算数 理科 社会 国語 英語">
+              <img src="./assets/generated/photo-pdf-tutor.png" alt="苦手単元のつまずき診断">
+              <span>苦手克服</span>
+              <h3>どこでつまずいたかわからない</h3>
+              <p>理解度を診断して、答えではなく段階ヒントに分解します。</p>
+              <button type="button" data-open-prompt="weakness">開く</button>
+            </article>
+            <article class="rescue-card rescue-card--dark" data-tags="定期テスト 受験 計画 部活">
+              <img src="./assets/generated/test-planning.png" alt="定期テストの逆算計画">
+              <span>計画</span>
+              <h3>テスト前に課題だけで終わる</h3>
+              <p>提出課題、暗記、解き直しを日割りにして現実的な計画へ。</p>
+              <button type="button" data-open-prompt="testPlan">開く</button>
+            </article>
+            <article class="rescue-card" data-tags="英語 英会話 音声">
+              <img src="./assets/generated/english-practice.png" alt="親子英会話">
+              <span>英語</span>
+              <h3>親が英語苦手で始め方が不安</h3>
+              <p>ChatGPTやGeminiで、短い親子英会話ロールプレイを作ります。</p>
+              <button type="button" data-open-prompt="english">開く</button>
+            </article>
+            <article class="rescue-card" data-tags="タイピング 音声入力 紙 写真">
+              <img src="./assets/generated/tool-setup.png" alt="入力方法とツール設定">
+              <span>入力</span>
+              <h3>子どもがタイピングできない</h3>
+              <p>紙に書く、写真で渡す、音声入力する。アナログとAIをつなぎます。</p>
+              <button type="button" data-open-prompt="typing">開く</button>
+            </article>
+            <article class="rescue-card" data-tags="発達特性 不登校 ADHD 個別">
+              <img src="./assets/generated/safety-guide.png" alt="個別対応と安心ガイド">
+              <span>個別対応</span>
+              <h3>発達特性・登校しぶりで進まない</h3>
+              <p>負荷を小さくして、できた感を失わない成功体験へ分解します。</p>
+              <button type="button" data-open-prompt="support">開く</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="prompt-studio section-block" id="prompts">
+          <div class="prompt-panel">
+            <figure class="prompt-visual">
+              <img src="./assets/generated/prompt-library.png" alt="プロンプト集を選ぶイメージ">
+            </figure>
+            <div class="section-head">
+              <p class="eyebrow">Prompt Studio</p>
+              <h2>学年だけ書き換えて、そのまま使える。</h2>
+              <p>教材写真、声かけ、テスト計画、英会話、復習アプリまでここからコピー。</p>
+            </div>
+            <div class="prompt-tabs" role="tablist" aria-label="プロンプトカテゴリ">
+              <button class="is-active" type="button" data-prompt-tab="all">全部</button>
+              <button type="button" data-prompt-tab="study">学習</button>
+              <button type="button" data-prompt-tab="parent">声かけ</button>
+              <button type="button" data-prompt-tab="make">アプリ作成</button>
+            </div>
+            <div class="prompt-cards" data-content-prompt-cards>
+              <button type="button" data-category="study" data-open-prompt="pdfTutor">写真/PDF家庭教師</button>
+              <button type="button" data-category="study" data-open-prompt="quiz">NotebookLMクイズ化</button>
+              <button type="button" data-category="parent" data-open-prompt="praise">褒め方・声かけ変換</button>
+              <button type="button" data-category="make" data-open-prompt="typingApp">推し単語タイピングアプリ</button>
+              <button type="button" data-category="make" data-open-prompt="reviewApp">間違い復習アプリ</button>
+              <button type="button" data-category="study" data-open-prompt="audio">5分音声復習</button>
+            </div>
+          </div>
+
+          <aside class="prompt-preview">
+            <div class="preview-top">
+              <p class="eyebrow">Selected Prompt</p>
+              <h3 data-prompt-title>写真/PDF家庭教師</h3>
+            </div>
+            <pre data-prompt-body></pre>
+            <button class="primary block" type="button" data-copy-prompt>
+              <svg><use href="#i-copy"></use></svg>
+              コピーする
+            </button>
+          </aside>
+        </section>
+
+        <section class="tool-section section-block" id="tools">
+          <figure class="tool-hero">
+            <img src="./assets/generated/tool-setup.png" alt="AIツールの設定ガイド">
+          </figure>
+          <div class="tool-copy">
+            <div class="section-head">
+              <p class="eyebrow">Tool Setup</p>
+              <h2>どのAIを使えばいい？を迷わせない。</h2>
+              <p>無料から始められるものを中心に、家庭学習での役割を分けています。</p>
+            </div>
+            <div class="tool-grid" data-content-tools>
+              <article class="tool-card" data-tags="NotebookLM PDF 教科書 音声復習 クイズ">
+                <b>NotebookLM</b>
+                <span>教科書、プリント、PDFからクイズ、要約、音声復習を作る。</span>
+              </article>
+              <article class="tool-card" data-tags="Gemini スマホ Google NotebookLM 相談">
+                <b>Gemini</b>
+                <span>スマホ中心の相談、教材化、Google連携。最初の1本にしやすい。</span>
+              </article>
+              <article class="tool-card" data-tags="ChatGPT 学習モード 英会話 声かけ">
+                <b>ChatGPT</b>
+                <span>学習モード、英会話、声かけ例、親の相談壁打ちに。</span>
+              </article>
+              <article class="tool-card" data-tags="Claude 図解 文章 復習アプリ">
+                <b>Claude</b>
+                <span>図解、文章の読み解き、復習アプリのたたき台作成に。</span>
+              </article>
+              <article class="tool-card" data-tags="Google AI Studio アプリ 作成 タイピング">
+                <b>Google AI Studio</b>
+                <span>親子用の小さな学習アプリを作る練習に。</span>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="live-community section-block" id="live">
+          <div class="live-card">
+            <figure>
+              <img src="./assets/generated/zoom-archive.png" alt="Zoomライブとアーカイブ">
+            </figure>
+            <p class="eyebrow">Monthly Program</p>
+            <h2>5月カリキュラム</h2>
+            <ul class="timeline" data-content-timeline>
+              <li><time>5/1</time><span>スタートガイド: スマホだけでAI家庭教師</span></li>
+              <li><time>5/8</time><span>Claudeで苦手単元を図解する</span></li>
+              <li><time>5/15</time><span>NotebookLMで音声復習を作る</span></li>
+              <li><time>5/22</time><span>親子で復習アプリを作る入門</span></li>
+            </ul>
+          </div>
+          <div class="question-card">
+            <figure>
+              <img src="./assets/generated/question-box.png" alt="質問箱に投稿するイメージ">
+            </figure>
+            <div>
+              <p class="eyebrow">Question Box</p>
+              <h2>質問は、みんなの資産になります。</h2>
+              <p>「中2理科の電流でつまずいている」など具体的に投げると、回答とプロンプトの考え方をセットで返し、必要に応じてコンテンツ化します。</p>
+              <button class="primary" type="button" data-toast-message="質問フォームを開きます">質問を投稿する</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="rules-section section-block" id="rules">
+          <figure class="rules-visual">
+            <img src="./assets/generated/safety-guide.png" alt="AIを安心して使うためのルールガイド">
+          </figure>
+          <div>
+            <div class="section-head">
+              <p class="eyebrow">Safety Guide</p>
+              <h2>長く使うために、不安になりやすいところを先に見える化。</h2>
+            </div>
+            <div class="rules-grid">
+              <article>
+                <h3>コミュニティ</h3>
+                <p>質問はテーマごとのスレッドへ。管理人の返信と他家庭の事例が埋もれないよう整理します。</p>
+              </article>
+              <article>
+                <h3>無料コミュニティとの違い</h3>
+                <p>有料側はプロンプト、アーカイブ、実演、個別質問の回答蓄積が中心です。</p>
+              </article>
+              <article>
+                <h3>安全な使わせ方</h3>
+                <p>答え丸写しではなく、ヒント、確認、説明、親子対話にAIを使う前提で設計します。</p>
+              </article>
+              <article>
+                <h3>支払い・解約</h3>
+                <p>Squareは課金メールからキャンセル。PayPay/noteはご自身のnoteアカウントから解約できます。</p>
+              </article>
+            </div>
+            <p class="company-note">運営: 株式会社MakeAI / お問い合わせ: work.ai.sns@hap-mana-work.com</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
