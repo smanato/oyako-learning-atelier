@@ -1032,6 +1032,10 @@ svg {
   background: #fff;
 }
 
+.timeline li.no-date {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .timeline time {
   color: var(--coral);
   font-weight: 900;

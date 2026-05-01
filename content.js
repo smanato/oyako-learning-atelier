@@ -355,9 +355,9 @@ AIに質問したいことを、紙・写真・音声入力で進める方法を
     { title: "Google AI Studio", description: "親子用の小さな学習アプリを作る練習に。", tags: "Google AI Studio アプリ 作成 タイピング" }
   ],
   timeline: [
-    { date: "5/1", title: "スタートガイド: スマホだけでAI家庭教師" },
-    { date: "5/8", title: "Claudeで苦手単元を図解する" },
-    { date: "5/15", title: "NotebookLMで音声復習を作る" },
-    { date: "5/22", title: "親子で復習アプリを作る入門" }
+    { title: "スタートガイド: スマホだけでAI家庭教師" },
+    { title: "Claudeで苦手単元を図解する" },
+    { title: "NotebookLMで音声復習を作る" },
+    { title: "親子で復習アプリを作る入門" }
   ]
 };

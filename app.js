@@ -131,11 +131,11 @@ function renderTimeline() {
     return;
   }
   container.innerHTML = content.timeline
-    .map(
-      (item) => `
-        <li><time>${escapeHtml(item.date)}</time><span>${escapeHtml(item.title)}</span></li>
-      `
-    )
+    .map((item) => {
+      const dateHtml = item.date ? `<time>${escapeHtml(item.date)}</time>` : "";
+      const className = item.date ? "" : ' class="no-date"';
+      return `<li${className}>${dateHtml}<span>${escapeHtml(item.title)}</span></li>`;
+    })
     .join("");
 }
 
