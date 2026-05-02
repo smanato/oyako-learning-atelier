@@ -3,7 +3,9 @@ const prompts = content.prompts || {};
 const promptTitle = document.querySelector("[data-prompt-title]");
 const promptBody = document.querySelector("[data-prompt-body]");
 const toast = document.querySelector(".toast[data-toast]");
-let activePrompt = content.defaultPrompt || Object.keys(prompts)[0] || "";
+const requestedPrompt = new URLSearchParams(window.location.search).get("prompt");
+let activePrompt =
+  requestedPrompt && prompts[requestedPrompt] ? requestedPrompt : content.defaultPrompt || Object.keys(prompts)[0] || "";
 let toastTimer;
 
 function escapeHtml(value) {
@@ -28,6 +30,26 @@ function setPrompt(key) {
   if (promptBody) {
     promptBody.textContent = prompt.body;
   }
+  document.querySelectorAll("[data-open-prompt]").forEach((trigger) => {
+    trigger.classList.toggle("is-selected", trigger.dataset.openPrompt === activePrompt);
+  });
+}
+
+function openPrompt(key) {
+  if (promptTitle && promptBody) {
+    setPrompt(key);
+    document.querySelector("#prompts")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (prompts[key]) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("prompt", key);
+      window.history.replaceState(null, "", url);
+    }
+    return;
+  }
+
+  const target = new URL("./prompts.html", window.location.href);
+  target.searchParams.set("prompt", key);
+  window.location.href = target.href;
 }
 
 function showToast(message) {
@@ -125,6 +147,113 @@ function renderTools() {
     .join("");
 }
 
+function renderQuestionSolutions() {
+  const container = document.querySelector("[data-content-question-solutions]");
+  if (!container || !Array.isArray(content.questionSolutions) || !content.questionSolutions.length) {
+    return;
+  }
+  const renderMiniList = (title, items) => {
+    if (!Array.isArray(items) || !items.length) {
+      return "";
+    }
+    return `
+      <section>
+        <b>${escapeHtml(title)}</b>
+        <ul class="solution-list">
+          ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+      </section>
+    `;
+  };
+  const renderPlan = (items) => {
+    if (!Array.isArray(items) || !items.length) {
+      return "";
+    }
+    return `
+      <section class="solution-card__wide solution-card__plan">
+        <b>7日間の実行プラン</b>
+        <ol>
+          ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ol>
+      </section>
+    `;
+  };
+  container.innerHTML = content.questionSolutions
+    .map(
+      (item) => `
+        <article class="solution-card" data-tags="${escapeHtml(item.tags)}">
+          <div class="solution-card__top">
+            <span>${escapeHtml(item.badge)}</span>
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.question)}</p>
+          </div>
+          <div class="solution-card__body">
+            <section>
+              <b>見立て</b>
+              <p>${escapeHtml(item.insight)}</p>
+            </section>
+            ${
+              item.deepRead
+                ? `<section class="solution-card__wide"><b>深掘り</b><p>${escapeHtml(item.deepRead)}</p></section>`
+                : ""
+            }
+            ${
+              item.misread
+                ? `<section><b>親がハマりやすい誤解</b><p>${escapeHtml(item.misread)}</p></section>`
+                : ""
+            }
+            <section>
+              <b>解決策</b>
+              <p>${escapeHtml(item.solution)}</p>
+            </section>
+            <section>
+              <b>今日やること</b>
+              <ol>
+                ${(item.steps || []).map((step) => `<li>${escapeHtml(step)}</li>`).join("")}
+              </ol>
+            </section>
+            ${
+              item.aiWorkflow
+                ? `<section><b>AIでの進め方</b><ol>${item.aiWorkflow.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol></section>`
+                : ""
+            }
+            ${
+              item.parentScript
+                ? `<section><b>親の声かけ例</b><p>${escapeHtml(item.parentScript)}</p></section>`
+                : ""
+            }
+            ${
+              item.ifStuck
+                ? `<section><b>うまくいかない時</b><p>${escapeHtml(item.ifStuck)}</p></section>`
+                : ""
+            }
+            ${renderMiniList("回答から見えたサイン", item.signals)}
+            ${renderMiniList("根本原因候補", item.rootCauses)}
+            ${renderMiniList("見分ける質問", item.diagnosisQuestions)}
+            ${renderPlan(item.sevenDayPlan)}
+            ${renderMiniList("AIに渡す入力欄", item.aiInputs)}
+            ${renderMiniList("作る成果物", item.outputArtifacts)}
+            ${renderMiniList("見る指標", item.measure)}
+            ${
+              item.risk
+                ? `<section class="solution-card__wide solution-card__caution"><b>注意ライン</b><p>${escapeHtml(item.risk)}</p></section>`
+                : ""
+            }
+          </div>
+          <div class="solution-card__footer">
+            <small>${escapeHtml(item.tool)}</small>
+            ${
+              item.promptKey
+                ? `<button type="button" data-open-prompt="${escapeHtml(item.promptKey)}">${escapeHtml(item.buttonLabel || "プロンプトを開く")}</button>`
+                : ""
+            }
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
 function renderTimeline() {
   const container = document.querySelector("[data-content-timeline]");
   if (!container || !Array.isArray(content.timeline) || !content.timeline.length) {
@@ -132,9 +261,10 @@ function renderTimeline() {
   }
   container.innerHTML = content.timeline
     .map((item) => {
-      const dateHtml = item.date ? `<time>${escapeHtml(item.date)}</time>` : "";
-      const className = item.date ? "" : ' class="no-date"';
-      return `<li${className}>${dateHtml}<span>${escapeHtml(item.title)}</span></li>`;
+      const marker = item.date || item.label || "";
+      const markerHtml = marker ? `<time>${escapeHtml(marker)}</time>` : "";
+      const className = marker ? "" : ' class="no-date"';
+      return `<li${className}>${markerHtml}<span>${escapeHtml(item.title)}</span></li>`;
     })
     .join("");
 }
@@ -144,12 +274,13 @@ function renderContent() {
   renderModules();
   renderRescueItems();
   renderTools();
+  renderQuestionSolutions();
   renderTimeline();
 }
 
 function filterCards(value) {
   const query = value.trim().toLowerCase();
-  document.querySelectorAll(".menu-card, .rescue-card, .module-card, .tool-card").forEach((card) => {
+  document.querySelectorAll(".menu-card, .prompt-feature-card, .rescue-card, .module-card, .tool-card, .solution-card, .prompt-cards button").forEach((card) => {
     const text = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
     card.classList.toggle("is-hidden", Boolean(query) && !text.includes(query));
   });
@@ -160,8 +291,7 @@ renderContent();
 document.addEventListener("click", (event) => {
   const promptTrigger = event.target.closest("[data-open-prompt]");
   if (promptTrigger) {
-    setPrompt(promptTrigger.dataset.openPrompt);
-    document.querySelector("#prompts")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    openPrompt(promptTrigger.dataset.openPrompt);
     return;
   }
 
@@ -219,7 +349,6 @@ document.querySelector("[data-filter='all']")?.addEventListener("click", () => {
 
 document.querySelectorAll(".side-nav a").forEach((link) => {
   link.addEventListener("click", () => {
-    document.querySelectorAll(".side-nav a").forEach((item) => item.classList.toggle("is-active", item === link));
     document.querySelector(".sidebar")?.classList.remove("is-open");
   });
 });
@@ -239,27 +368,5 @@ document.addEventListener("click", (event) => {
   }
   sidebar.classList.remove("is-open");
 });
-
-const sections = Array.from(document.querySelectorAll("main [id]"));
-const navLinks = Array.from(document.querySelectorAll(".side-nav a"));
-
-if ("IntersectionObserver" in window) {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) {
-        return;
-      }
-      navLinks.forEach((link) => {
-        link.classList.toggle("is-active", link.getAttribute("href") === `#${visible.target.id}`);
-      });
-    },
-    { rootMargin: "-20% 0px -68% 0px", threshold: [0.08, 0.22, 0.4] }
-  );
-
-  sections.forEach((section) => observer.observe(section));
-}
 
 setPrompt(activePrompt);

@@ -1,6 +1,20 @@
 # AI教育ラボ Members コンテンツ更新ガイド
 
-Claude Code側で更新する主ファイルは `content.js` です。
+Claude Code側で更新する主ファイルは `content.js` です。ページ構成やナビゲーションは `shell.js`、見た目は `styles.css` に分かれています。
+
+## ページ構成
+
+- `index.html`: ホーム
+- `library.html`: 教材
+- `start.html`: はじめてガイド
+- `rescue.html`: 悩み別レスキュー
+- `questions.html`: アンケート質問から作った解決策
+- `prompts.html`: プロンプト集
+- `tools.html`: ツール設定
+- `live.html`: Zoom・質問
+- `rules.html`: ルール・安心
+
+ナビはテキストアンカーではなく、各HTMLページへ移動します。
 
 ## プロンプトを追加する
 
@@ -22,11 +36,20 @@ promptCards: [
 ]
 ```
 
-`category` は `study`、`parent`、`make` のどれかを使うと、既存タブに連動します。
+`category` は以下を使います。
+
+- `study`: 教科学習、教材活用
+- `system`: AIの役割を固定するシステムプロンプト
+- `fewshot`: 例示つきプロンプト
+- `cot`: 内部で段階的に検討させるプロンプト
+- `parent`: 保護者の声かけ、習慣化
+- `make`: アプリや教材を作る
+
+`cot` は詳細な思考過程を出力させず、「内部で検討し、出力は根拠要約と次の一手だけ」と指定してください。
 
 ## 教材カードを追加する
 
-`modules` に1件追加します。`promptKey` を入れると、カードのボタンからプロンプトへ移動します。
+`modules` に1件追加します。`promptKey` を入れると、カードのボタンから `prompts.html?prompt=...` へ移動します。
 
 ```js
 {
@@ -42,7 +65,37 @@ promptCards: [
 
 ## 悩み別カードを追加する
 
-`rescueItems` に1件追加します。`dark: true` を付けると濃い背景のカードになります。
+`rescueItems` に1件追加します。`promptKey` を入れるとプロンプト集に連動します。`dark: true` を付けると濃い背景のカードになります。
+
+## 質問解決策を追加する
+
+`questionSolutions` に1件追加します。アンケートやLINEの具体文は個人が特定されないように匿名化・要約してから載せます。
+
+```js
+{
+  badge: "習慣化",
+  title: "言わないと始めない",
+  question: "代表的な質問を匿名化して1文で要約",
+  insight: "見立て",
+  solution: "解決策",
+  steps: ["今日やること1", "今日やること2"],
+  tool: "ChatGPT / Gemini",
+  promptKey: "habit",
+  tags: "宿題 習慣"
+}
+```
+
+## ライブ予定を追加する
+
+日程は未確定なので、確定するまで `date` は入れません。
+
+```js
+timeline: [
+  { title: "NotebookLMで音声復習を作る" }
+]
+```
+
+確定後だけ、必要に応じて `label` に「次回」などの短い表示を入れます。具体日付は確定してから追加してください。
 
 ## 画像を追加する
 

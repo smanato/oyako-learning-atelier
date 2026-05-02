@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>プロンプト集 | AI教育ラボ Members</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-page="prompts" data-base=".">
+    <div class="app-shell">
+      <aside class="sidebar" data-shell-sidebar aria-label="メンバーサイトナビゲーション"></aside>
+      <main class="portal">
+        <header class="topbar" data-shell-topbar></header>
+        <section class="prompt-studio section-block" id="prompts">
+          <div class="prompt-panel">
+            <figure class="prompt-visual">
+              <img src="./assets/generated/prompt-library.png" alt="プロンプト集を選ぶイメージ">
+            </figure>
+            <div class="section-head">
+              <p class="eyebrow">Prompt Studio</p>
+              <h2>システム、Few-shot、CoTまで使える本格プロンプト集。</h2>
+              <p>学習・声かけ・アプリ作成だけでなく、AIの振る舞いを固定するシステムプロンプト、例示つきFew-shot、内部推論を使うCoT型も用意しました。</p>
+            </div>
+            <div class="prompt-tabs" role="tablist" aria-label="プロンプトカテゴリ">
+              <button class="is-active" type="button" data-prompt-tab="all">全部</button>
+              <button type="button" data-prompt-tab="study">学習</button>
+              <button type="button" data-prompt-tab="system">システム</button>
+              <button type="button" data-prompt-tab="fewshot">Few-shot</button>
+              <button type="button" data-prompt-tab="cot">CoT</button>
+              <button type="button" data-prompt-tab="parent">声かけ</button>
+              <button type="button" data-prompt-tab="make">アプリ作成</button>
+            </div>
+            <div class="prompt-cards" data-content-prompt-cards></div>
+          </div>
+
+          <aside class="prompt-preview">
+            <div class="preview-top">
+              <p class="eyebrow">Selected Prompt</p>
+              <h3 data-prompt-title></h3>
+            </div>
+            <pre data-prompt-body></pre>
+            <button class="primary block" type="button" data-copy-prompt>
+              <svg><use href="#i-copy"></use></svg>
+              コピーする
+            </button>
+          </aside>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js" defer></script>
+    <script src="./shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

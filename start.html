@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>はじめてガイド | AI教育ラボ Members</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-page="start" data-base=".">
+    <div class="app-shell">
+      <aside class="sidebar" data-shell-sidebar aria-label="メンバーサイトナビゲーション"></aside>
+      <main class="portal">
+        <header class="topbar" data-shell-topbar></header>
+        <section class="start-guide section-block">
+          <figure class="guide-visual">
+            <img src="./assets/generated/start-guide.png" alt="AI教育ラボを始めるためのスマホと教材のイメージ">
+          </figure>
+          <div class="guide-copy">
+            <p class="eyebrow">Start Guide</p>
+            <h2>迷ったら、この順番でOK。</h2>
+            <div class="step-list">
+              <article><span>01</span><h3>端末を決める</h3><p>スマホだけでも開始できます。PCやiPadはPDF整理や小さなアプリ作成に向きます。</p></article>
+              <article><span>02</span><h3>教材を入れる</h3><p>1ページなら写真でOK。複数ページやテスト範囲はPDF化すると読み取りが安定します。</p></article>
+              <article><span>03</span><h3>答えではなくヒントにする</h3><p>AIの役割は答えを出すことではなく、子どもが次の一歩を出せる状態にすること。</p></article>
+            </div>
+            <div class="hero-actions">
+              <button class="primary" type="button" data-open-prompt="firstStep">3分スタートを開く</button>
+              <button class="secondary secondary--light" type="button" data-open-prompt="homeTutorSystem">家庭教師システムを見る</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js" defer></script>
+    <script src="./shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

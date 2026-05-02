@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>悩み別レスキュー | AI教育ラボ Members</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-page="rescue" data-base=".">
+    <div class="app-shell">
+      <aside class="sidebar" data-shell-sidebar aria-label="メンバーサイトナビゲーション"></aside>
+      <main class="portal">
+        <header class="topbar" data-shell-topbar></header>
+        <section class="page-hero page-hero--image">
+          <div>
+            <p class="eyebrow">Problem Rescue</p>
+            <h2>よくある悩みから、すぐ使える導線へ。</h2>
+            <p>宿題、スマホ、ケアレスミス、英語、発達特性など、親の困りごとからプロンプトに移動できます。</p>
+          </div>
+          <img src="./assets/generated/problem-rescue.png" alt="悩み別レスキュー">
+        </section>
+        <section class="section-block">
+          <div class="section-head section-head--split">
+            <div><p class="eyebrow">Rescue Cards</p><h2>悩み別プロンプト入口</h2></div>
+            <button class="secondary secondary--light compact" type="button" data-filter="all">解除</button>
+          </div>
+          <div class="rescue-grid" data-content-rescue></div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js" defer></script>
+    <script src="./shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

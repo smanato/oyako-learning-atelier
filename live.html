@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zoom・質問 | AI教育ラボ Members</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-page="live" data-base=".">
+    <div class="app-shell">
+      <aside class="sidebar" data-shell-sidebar aria-label="メンバーサイトナビゲーション"></aside>
+      <main class="portal">
+        <header class="topbar" data-shell-topbar></header>
+        <section class="live-community section-block">
+          <div class="live-card">
+            <figure>
+              <img src="./assets/generated/zoom-archive.png" alt="Zoomライブとアーカイブ">
+            </figure>
+            <p class="eyebrow">Live & Archive</p>
+            <h2>ライブ・アーカイブ予定</h2>
+            <ul class="timeline" data-content-timeline></ul>
+          </div>
+          <div class="question-card">
+            <figure>
+              <img src="./assets/generated/question-box.png" alt="質問箱に投稿するイメージ">
+            </figure>
+            <div>
+              <p class="eyebrow">Question Box</p>
+              <h2>質問は、みんなの資産になります。</h2>
+              <p>具体的に投げると、回答とプロンプトの考え方をセットで返し、必要に応じてコンテンツ化します。</p>
+              <div class="hero-actions">
+                <button class="primary" type="button" data-toast-message="質問フォームを開きます">質問を投稿する</button>
+                <a class="secondary" href="./questions.html">解決策を見る</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js" defer></script>
+    <script src="./shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

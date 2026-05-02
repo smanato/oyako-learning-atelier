@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>質問解決策 | AI教育ラボ Members</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-page="questions" data-base=".">
+    <div class="app-shell">
+      <aside class="sidebar" data-shell-sidebar aria-label="メンバーサイトナビゲーション"></aside>
+      <main class="portal">
+        <header class="topbar" data-shell-topbar></header>
+
+        <section class="page-hero page-hero--image">
+          <div>
+            <p class="eyebrow">Question to Content</p>
+            <h2>アンケートの質問から、実行プレイブックへ。</h2>
+            <p>いただいた回答を匿名化し、原因仮説、見分ける質問、7日間の実行プラン、AIに渡す入力欄まで落とし込みました。読むだけで終わらず、家庭でそのまま試せる教材として使えます。</p>
+          </div>
+          <img src="./assets/generated/question-box.png" alt="質問箱から解決策が生まれるイメージ">
+        </section>
+
+        <section class="question-insights section-block" aria-label="回答から多かったテーマ">
+          <div class="section-head">
+            <p class="eyebrow">Top Themes</p>
+            <h2>回答から多かった悩み</h2>
+            <p>個別の文章は載せず、会員サイトで使いやすいテーマに再編集しています。</p>
+          </div>
+          <div class="insight-strip">
+            <article><strong>習慣化</strong><span>始めない、続かない、親が疲れる</span></article>
+            <article><strong>脱線</strong><span>スマホ、動画、ゲームに流れる</span></article>
+            <article><strong>テスト</strong><span>課題だけで終わり、解き直しまで行けない</span></article>
+            <article><strong>苦手</strong><span>どこでつまずいたか見えない</span></article>
+            <article><strong>教材化</strong><span>PDF、NotebookLM、暗記カードを使いたい</span></article>
+            <article><strong>個別対応</strong><span>発達特性、登校しぶり、読み書きの負荷</span></article>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-head section-head--split">
+            <div>
+              <p class="eyebrow">Solution Cards</p>
+              <h2>質問から作った実行プレイブック</h2>
+              <p>各テーマに、推論、分岐、7日間の実行、成果物、該当プロンプトまで入れています。</p>
+            </div>
+            <button class="secondary secondary--light compact" type="button" data-filter="all">検索解除</button>
+          </div>
+          <div class="solution-grid" data-content-question-solutions></div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js" defer></script>
+    <script src="./shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
