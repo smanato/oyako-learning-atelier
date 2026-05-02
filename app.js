@@ -147,6 +147,57 @@ function renderTools() {
     .join("");
 }
 
+function renderToolSetups() {
+  const container = document.querySelector("[data-content-tool-setups]");
+  if (!container || !Array.isArray(content.toolSetups) || !content.toolSetups.length) {
+    return;
+  }
+  const renderList = (title, items) => {
+    if (!Array.isArray(items) || !items.length) {
+      return "";
+    }
+    return `
+      <section class="tool-setup-card__panel">
+        <b>${escapeHtml(title)}</b>
+        <ol>
+          ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ol>
+      </section>
+    `;
+  };
+  container.innerHTML = content.toolSetups
+    .map(
+      (item) => `
+        <article class="tool-setup-card" data-tags="${escapeHtml(item.tags)}">
+          <div class="tool-setup-card__intro">
+            <span>${escapeHtml(item.badge)}</span>
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.bestFor)}</p>
+            <div class="tool-setup-card__actions">
+              ${
+                item.promptKey
+                  ? `<button type="button" data-open-prompt="${escapeHtml(item.promptKey)}">関連プロンプト</button>`
+                  : ""
+              }
+              ${
+                item.officialUrl
+                  ? `<a href="${escapeHtml(item.officialUrl)}" target="_blank" rel="noreferrer">${escapeHtml(item.officialLabel || "公式ヘルプ")}</a>`
+                  : ""
+              }
+            </div>
+          </div>
+          <div class="tool-setup-card__body">
+            ${renderList("初期設定", item.setupSteps)}
+            ${renderList("最初の使い方", item.firstUse)}
+            ${renderList("安全ルール", item.safety)}
+            ${renderList("親の確認ポイント", item.parentCheck)}
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
 function renderQuestionSolutions() {
   const container = document.querySelector("[data-content-question-solutions]");
   if (!container || !Array.isArray(content.questionSolutions) || !content.questionSolutions.length) {
@@ -254,6 +305,45 @@ function renderQuestionSolutions() {
     .join("");
 }
 
+function renderAgePromptTracks() {
+  const container = document.querySelector("[data-content-age-prompts]");
+  if (!container || !Array.isArray(content.agePromptTracks) || !content.agePromptTracks.length) {
+    return;
+  }
+  container.innerHTML = content.agePromptTracks
+    .map(
+      (track) => `
+        <article class="age-track" data-tags="${escapeHtml(`${track.stage} ${track.range} ${track.theme}`)}">
+          <figure>
+            <img src="${escapeHtml(track.image)}" alt="${escapeHtml(track.stage)}向けプロンプト">
+          </figure>
+          <div class="age-track__body">
+            <div class="age-track__head">
+              <span>${escapeHtml(track.range)}</span>
+              <h3>${escapeHtml(track.stage)}</h3>
+              <p>${escapeHtml(track.theme)}</p>
+            </div>
+            <ul class="age-track__outcomes">
+              ${(track.outcomes || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+            </ul>
+            <div class="age-track__prompts">
+              ${(track.promptKeys || [])
+                .map((key) => {
+                  const prompt = prompts[key];
+                  if (!prompt) {
+                    return "";
+                  }
+                  return `<button type="button" data-open-prompt="${escapeHtml(key)}">${escapeHtml(prompt.title)}</button>`;
+                })
+                .join("")}
+            </div>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
 function renderTimeline() {
   const container = document.querySelector("[data-content-timeline]");
   if (!container || !Array.isArray(content.timeline) || !content.timeline.length) {
@@ -274,13 +364,15 @@ function renderContent() {
   renderModules();
   renderRescueItems();
   renderTools();
+  renderToolSetups();
   renderQuestionSolutions();
+  renderAgePromptTracks();
   renderTimeline();
 }
 
 function filterCards(value) {
   const query = value.trim().toLowerCase();
-  document.querySelectorAll(".menu-card, .prompt-feature-card, .rescue-card, .module-card, .tool-card, .solution-card, .prompt-cards button").forEach((card) => {
+  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .prompt-cards button").forEach((card) => {
     const text = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
     card.classList.toggle("is-hidden", Boolean(query) && !text.includes(query));
   });
