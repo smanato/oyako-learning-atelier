@@ -1394,6 +1394,196 @@ svg {
   white-space: pre-wrap;
 }
 
+.master-docs {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.master-docs__toc {
+  position: sticky;
+  top: 92px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 248, 0.96);
+  box-shadow: var(--soft-shadow);
+}
+
+.master-docs__toc h2 {
+  margin: 4px 0 14px;
+  font-family: var(--serif);
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.master-docs__toc div {
+  display: grid;
+  gap: 8px;
+}
+
+.master-docs__toc a {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+}
+
+.master-docs__toc a:hover {
+  border-color: var(--sage);
+  background: var(--sage-soft);
+}
+
+.master-docs__toc span {
+  color: var(--sage);
+  font-size: 11px;
+  font-weight: 940;
+}
+
+.master-docs__toc b {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.master-doc-list {
+  display: grid;
+  gap: 18px;
+}
+
+.master-doc-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 248, 0.98);
+  box-shadow: var(--soft-shadow);
+  scroll-margin-top: 96px;
+}
+
+.master-doc-card__head {
+  padding: 24px;
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(135deg, rgba(255, 245, 226, 0.96), rgba(231, 244, 239, 0.92)),
+    #fffdf8;
+}
+
+.master-doc-card__head span {
+  display: inline-grid;
+  place-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--coral);
+  font-size: 12px;
+  font-weight: 940;
+}
+
+.master-doc-card__head h3 {
+  margin: 12px 0 8px;
+  font-family: var(--serif);
+  font-size: 34px;
+  line-height: 1.15;
+}
+
+.master-doc-card__head p {
+  max-width: 860px;
+  margin: 0;
+  color: #445149;
+  font-size: 14px;
+  font-weight: 780;
+  line-height: 1.8;
+}
+
+.master-doc-card__meta {
+  display: grid;
+  grid-template-columns: 0.9fr repeat(2, 1fr);
+  gap: 1px;
+  background: var(--line);
+}
+
+.master-doc-card__meta section {
+  padding: 18px;
+  background: #fffdf8;
+}
+
+.master-doc-card__meta b {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--sage);
+  font-size: 12px;
+  font-weight: 940;
+}
+
+.master-doc-card__meta p,
+.master-doc-card__meta ul {
+  margin: 0;
+  color: #3d4942;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.65;
+}
+
+.master-doc-card__meta ul {
+  display: grid;
+  gap: 5px;
+  padding-left: 18px;
+}
+
+.master-doc-card__prompt {
+  padding: 18px;
+}
+
+.master-doc-card__prompt-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.master-doc-card__prompt-head b {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 940;
+}
+
+.master-doc-card__prompt-head button {
+  display: inline-grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 13px;
+  border-radius: var(--radius);
+  background: var(--ink-deep);
+  color: #fff;
+  font-weight: 900;
+}
+
+.master-doc-card__prompt-head svg {
+  width: 17px;
+  height: 17px;
+}
+
+.master-doc-card__prompt pre {
+  max-height: 720px;
+  margin: 0;
+  padding: 18px;
+  overflow: auto;
+  border-radius: var(--radius);
+  background: #17231d;
+  color: #f8fff8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.72;
+  white-space: pre-wrap;
+}
+
 .tool-section {
   display: grid;
   grid-template-columns: minmax(360px, 0.6fr) minmax(0, 1fr);
@@ -1836,6 +2026,7 @@ svg {
   .page-hero,
   .start-guide,
   .prompt-studio,
+  .master-docs,
   .tool-section,
   .live-community,
   .question-card,
@@ -1909,6 +2100,14 @@ svg {
 
   .prompt-preview {
     position: static;
+  }
+
+  .master-docs__toc {
+    position: static;
+  }
+
+  .master-doc-card__meta {
+    grid-template-columns: 1fr;
   }
 
   .question-card figure {
@@ -2029,6 +2228,30 @@ svg {
 
   .tool-setup-card__intro h3 {
     font-size: 29px;
+  }
+
+  .master-doc-card__head,
+  .master-doc-card__prompt,
+  .master-doc-card__meta section {
+    padding: 16px;
+  }
+
+  .master-doc-card__head h3 {
+    font-size: 27px;
+  }
+
+  .master-doc-card__prompt-head {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .master-doc-card__prompt-head button {
+    width: 100%;
+  }
+
+  .master-doc-card__prompt pre {
+    max-height: 620px;
+    padding: 14px;
   }
 
   .question-card figure {

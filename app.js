@@ -62,6 +62,29 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2200);
 }
 
+async function copyTextToClipboard(text, successMessage = "コピーしました") {
+  if (!text) {
+    showToast("コピーする本文がありません");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(successMessage);
+  } catch {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    showToast(copied ? successMessage : "コピーできない場合は本文を選択してください");
+  }
+}
+
 function renderPromptCards() {
   const container = document.querySelector("[data-content-prompt-cards]");
   if (!container || !Array.isArray(content.promptCards) || !content.promptCards.length) {
@@ -344,6 +367,70 @@ function renderAgePromptTracks() {
     .join("");
 }
 
+function renderMasterPromptDocs() {
+  const list = document.querySelector("[data-content-master-prompts]");
+  const toc = document.querySelector("[data-content-master-prompt-toc]");
+  if (!Array.isArray(content.masterPromptDocs) || !content.masterPromptDocs.length) {
+    return;
+  }
+  const docs = content.masterPromptDocs;
+  if (toc) {
+    toc.innerHTML = docs
+      .map(
+        (doc) => `
+          <a href="#${escapeHtml(doc.id)}">
+            <span>${escapeHtml(doc.category)}</span>
+            <b>${escapeHtml(doc.title)}</b>
+          </a>
+        `
+      )
+      .join("");
+  }
+  if (!list) {
+    return;
+  }
+  const renderTags = (items) => (Array.isArray(items) ? items.map((item) => `<li>${escapeHtml(item)}</li>`).join("") : "");
+  list.innerHTML = docs
+    .map(
+      (doc) => `
+        <article class="master-doc-card" id="${escapeHtml(doc.id)}" data-tags="${escapeHtml(
+          `${doc.category} ${doc.title} ${doc.lead} ${doc.tools} ${(doc.useCases || []).join(" ")} ${(doc.outputs || []).join(" ")}`
+        )}">
+          <header class="master-doc-card__head">
+            <span>${escapeHtml(doc.category)}</span>
+            <h3>${escapeHtml(doc.title)}</h3>
+            <p>${escapeHtml(doc.lead)}</p>
+          </header>
+          <div class="master-doc-card__meta">
+            <section>
+              <b>向いているAI</b>
+              <p>${escapeHtml(doc.tools)}</p>
+            </section>
+            <section>
+              <b>使う場面</b>
+              <ul>${renderTags(doc.useCases)}</ul>
+            </section>
+            <section>
+              <b>作れるもの</b>
+              <ul>${renderTags(doc.outputs)}</ul>
+            </section>
+          </div>
+          <div class="master-doc-card__prompt">
+            <div class="master-doc-card__prompt-head">
+              <b>Prompt</b>
+              <button type="button" data-copy-master-prompt="${escapeHtml(doc.id)}">
+                <svg><use href="#i-copy"></use></svg>
+                全文コピー
+              </button>
+            </div>
+            <pre>${escapeHtml(doc.body)}</pre>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
 function renderTimeline() {
   const container = document.querySelector("[data-content-timeline]");
   if (!container || !Array.isArray(content.timeline) || !content.timeline.length) {
@@ -367,12 +454,13 @@ function renderContent() {
   renderToolSetups();
   renderQuestionSolutions();
   renderAgePromptTracks();
+  renderMasterPromptDocs();
   renderTimeline();
 }
 
 function filterCards(value) {
   const query = value.trim().toLowerCase();
-  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .prompt-cards button").forEach((card) => {
+  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .master-doc-card, .prompt-cards button").forEach((card) => {
     const text = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
     card.classList.toggle("is-hidden", Boolean(query) && !text.includes(query));
   });
@@ -381,6 +469,13 @@ function filterCards(value) {
 renderContent();
 
 document.addEventListener("click", (event) => {
+  const masterCopyTrigger = event.target.closest("[data-copy-master-prompt]");
+  if (masterCopyTrigger) {
+    const doc = (content.masterPromptDocs || []).find((item) => item.id === masterCopyTrigger.dataset.copyMasterPrompt);
+    copyTextToClipboard(doc?.body || "", "最強プロンプトをコピーしました");
+    return;
+  }
+
   const promptTrigger = event.target.closest("[data-open-prompt]");
   if (promptTrigger) {
     openPrompt(promptTrigger.dataset.openPrompt);
@@ -395,26 +490,7 @@ document.addEventListener("click", (event) => {
 
 document.querySelector("[data-copy-prompt]")?.addEventListener("click", async () => {
   const text = prompts[activePrompt]?.body || "";
-  if (!text) {
-    showToast("コピーするプロンプトがありません");
-    return;
-  }
-
-  try {
-    await navigator.clipboard.writeText(text);
-    showToast("プロンプトをコピーしました");
-  } catch {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.setAttribute("readonly", "");
-    textarea.style.position = "fixed";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    textarea.select();
-    const copied = document.execCommand("copy");
-    textarea.remove();
-    showToast(copied ? "プロンプトをコピーしました" : "コピーできない場合は本文を選択してください");
-  }
+  copyTextToClipboard(text, "プロンプトをコピーしました");
 });
 
 document.querySelectorAll("[data-prompt-tab]").forEach((button) => {

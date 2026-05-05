@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>最強プロンプトDocs | AI教育ラボ Members</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-page="master-prompts" data-base=".">
+    <div class="app-shell">
+      <aside class="sidebar" data-shell-sidebar aria-label="メンバーサイトナビゲーション"></aside>
+      <main class="portal">
+        <header class="topbar" data-shell-topbar></header>
+
+        <section class="page-hero page-hero--image">
+          <div>
+            <p class="eyebrow">Master Prompt Docs</p>
+            <h2>短文プロンプトではなく、家庭学習を動かす長文の設計書。</h2>
+            <p>役割、入力欄、禁止事項、内部分析、出力形式、品質チェックまで固定した本格プロンプトです。迷ったらこのページからコピーして使ってください。</p>
+          </div>
+          <img src="./assets/generated/prompt-library.png" alt="本格プロンプトドキュメント">
+        </section>
+
+        <section class="master-docs section-block">
+          <aside class="master-docs__toc" aria-label="最強プロンプト目次">
+            <p class="eyebrow">Docs Index</p>
+            <h2>目次</h2>
+            <div data-content-master-prompt-toc></div>
+          </aside>
+
+          <div class="master-docs__main">
+            <div class="section-head">
+              <p class="eyebrow">Copy Ready</p>
+              <h2>そのまま貼れる長文プロンプト</h2>
+              <p>ChatGPT、Gemini、Claude、NotebookLM、Google AI Studioで使う前提で、家庭学習向けに安全・実用寄りへ作り直しています。</p>
+            </div>
+            <div class="master-doc-list" data-content-master-prompts></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js" defer></script>
+    <script src="./master-prompts-content.js" defer></script>
+    <script src="./shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

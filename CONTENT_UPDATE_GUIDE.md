@@ -10,6 +10,7 @@ Claude Code側で更新する主ファイルは `content.js` です。ページ�
 - `rescue.html`: 悩み別レスキュー
 - `questions.html`: アンケート質問から作った解決策
 - `prompts.html`: プロンプト集
+- `master-prompts.html`: 長文の最強プロンプトDocs
 - `age-prompts.html`: 幼稚園生から大学4年までの年齢別プロンプト
 - `tools.html`: ツール設定
 - `live.html`: Zoom・質問
@@ -48,6 +49,23 @@ promptCards: [
 - `make`: アプリや教材を作る
 
 `cot` は詳細な思考過程を出力させず、「内部で検討し、出力は根拠要約と次の一手だけ」と指定してください。
+
+## 長文プロンプトDocsを追加する
+
+`master-prompts.html` に出す長文プロンプトは `master-prompts-content.js` の `masterPromptDocs` に追加します。短いカードではなく、役割、入力欄、禁止事項、出力形式、品質チェックまで入れるドキュメント型です。
+
+```js
+{
+  id: "unique-id",
+  category: "カテゴリ",
+  title: "表示タイトル",
+  lead: "説明文",
+  tools: "ChatGPT / Claude",
+  useCases: ["使う場面"],
+  outputs: ["作れるもの"],
+  body: `そのままコピーできる長文プロンプト`
+}
+```
 
 ## 教材カードを追加する
 
