@@ -7,6 +7,7 @@ const requestedPrompt = new URLSearchParams(window.location.search).get("prompt"
 let activePrompt =
   requestedPrompt && prompts[requestedPrompt] ? requestedPrompt : content.defaultPrompt || Object.keys(prompts)[0] || "";
 let toastTimer;
+let subjectPromptCodeBlocks = [];
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -431,6 +432,205 @@ function renderMasterPromptDocs() {
     .join("");
 }
 
+function parseSubjectMarkdown(markdown) {
+  const fence = "```";
+  const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+  const blocks = [];
+  let paragraph = [];
+  let list = [];
+  let quote = [];
+  let inCode = false;
+  let codeLang = "";
+  let codeLines = [];
+
+  const flushParagraph = () => {
+    if (paragraph.length) {
+      blocks.push({ type: "paragraph", text: paragraph.join(" ") });
+      paragraph = [];
+    }
+  };
+  const flushList = () => {
+    if (list.length) {
+      blocks.push({ type: "list", items: list });
+      list = [];
+    }
+  };
+  const flushQuote = () => {
+    if (quote.length) {
+      blocks.push({ type: "quote", text: quote.join(" ") });
+      quote = [];
+    }
+  };
+  const flushText = () => {
+    flushParagraph();
+    flushList();
+    flushQuote();
+  };
+
+  lines.forEach((line) => {
+    if (line.startsWith(fence)) {
+      if (inCode) {
+        blocks.push({ type: "code", lang: codeLang || "text", text: codeLines.join("\n") });
+        codeLines = [];
+        codeLang = "";
+        inCode = false;
+      } else {
+        flushText();
+        inCode = true;
+        codeLang = line.slice(fence.length).trim();
+      }
+      return;
+    }
+
+    if (inCode) {
+      codeLines.push(line);
+      return;
+    }
+
+    const heading = line.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      flushText();
+      blocks.push({ type: "heading", level: heading[1].length, text: heading[2].trim() });
+      return;
+    }
+
+    if (/^-{3,}\s*$/.test(line.trim())) {
+      flushText();
+      blocks.push({ type: "rule" });
+      return;
+    }
+
+    if (!line.trim()) {
+      flushText();
+      return;
+    }
+
+    const listItem = line.match(/^\s*[-*]\s+(.+)$/);
+    if (listItem) {
+      flushParagraph();
+      flushQuote();
+      list.push(listItem[1].trim());
+      return;
+    }
+
+    const quoteLine = line.match(/^>\s?(.+)$/);
+    if (quoteLine) {
+      flushParagraph();
+      flushList();
+      quote.push(quoteLine[1].trim());
+      return;
+    }
+
+    flushList();
+    flushQuote();
+    paragraph.push(line.trim());
+  });
+
+  if (inCode) {
+    blocks.push({ type: "code", lang: codeLang || "text", text: codeLines.join("\n") });
+  }
+  flushText();
+
+  let headingIndex = 0;
+  return blocks.map((block) => {
+    if (block.type !== "heading") {
+      return block;
+    }
+    headingIndex += 1;
+    return {
+      ...block,
+      id: `subject-heading-${headingIndex}`
+    };
+  });
+}
+
+function renderSubjectPromptDocs() {
+  const markdown = content.subjectPromptMarkdown || "";
+  const container = document.querySelector("[data-content-subject-prompts]");
+  const toc = document.querySelector("[data-content-subject-prompt-toc]");
+  const stats = document.querySelector("[data-subject-prompt-stats]");
+  if (!markdown || !container) {
+    return;
+  }
+
+  const blocks = parseSubjectMarkdown(markdown);
+  const headings = blocks.filter((block) => block.type === "heading");
+  const codeBlocks = blocks.filter((block) => block.type === "code");
+  subjectPromptCodeBlocks = codeBlocks.map((block) => block.text);
+
+  if (stats) {
+    const meta = content.subjectPromptMeta || {};
+    stats.innerHTML = `
+      <article><b>${escapeHtml(meta.codeBlockCount || codeBlocks.length)}</b><span>コピー可能なプロンプト</span></article>
+      <article><b>${escapeHtml(meta.headingCount || headings.length)}</b><span>見出し</span></article>
+      <article><b>${escapeHtml(meta.lineCount || markdown.split("\n").length)}</b><span>Markdown行</span></article>
+      <article><b>全文</b><span>割愛なしで掲載</span></article>
+    `;
+  }
+
+  if (toc) {
+    toc.innerHTML = headings
+      .filter((heading) => heading.level <= 2)
+      .map(
+        (heading) => `
+          <a class="subject-docs__toc-link subject-docs__toc-link--level-${escapeHtml(heading.level)}" href="#${escapeHtml(heading.id)}">
+            <span>${escapeHtml(heading.level === 1 ? "Prompt" : "Guide")}</span>
+            <b>${escapeHtml(heading.text)}</b>
+          </a>
+        `
+      )
+      .join("");
+  }
+
+  let codeIndex = -1;
+  let openSection = false;
+  const html = blocks
+    .map((block) => {
+      if (block.type === "heading") {
+        const tag = `h${Math.min(block.level + 1, 4)}`;
+        const sectionBreak =
+          block.level === 1
+            ? `${openSection ? "</article>" : ""}<article class="subject-section" data-tags="${escapeHtml(block.text)}">`
+            : "";
+        if (block.level === 1) {
+          openSection = true;
+        }
+        return `${sectionBreak}<${tag} id="${escapeHtml(block.id)}">${escapeHtml(block.text)}</${tag}>`;
+      }
+      if (block.type === "paragraph") {
+        return `<p>${escapeHtml(block.text)}</p>`;
+      }
+      if (block.type === "list") {
+        return `<ul>${block.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+      }
+      if (block.type === "quote") {
+        return `<blockquote>${escapeHtml(block.text)}</blockquote>`;
+      }
+      if (block.type === "rule") {
+        return `<hr>`;
+      }
+      if (block.type === "code") {
+        codeIndex += 1;
+        return `
+          <div class="subject-code-block">
+            <div class="subject-code-block__head">
+              <span>${escapeHtml(block.lang || "text")}</span>
+              <button type="button" data-copy-subject-code="${codeIndex}">
+                <svg><use href="#i-copy"></use></svg>
+                このプロンプトをコピー
+              </button>
+            </div>
+            <pre>${escapeHtml(block.text)}</pre>
+          </div>
+        `;
+      }
+      return "";
+    })
+    .join("");
+
+  container.innerHTML = `${html}${openSection ? "</article>" : ""}`;
+}
+
 function renderTimeline() {
   const container = document.querySelector("[data-content-timeline]");
   if (!container || !Array.isArray(content.timeline) || !content.timeline.length) {
@@ -455,12 +655,13 @@ function renderContent() {
   renderQuestionSolutions();
   renderAgePromptTracks();
   renderMasterPromptDocs();
+  renderSubjectPromptDocs();
   renderTimeline();
 }
 
 function filterCards(value) {
   const query = value.trim().toLowerCase();
-  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .master-doc-card, .prompt-cards button").forEach((card) => {
+  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .master-doc-card, .subject-section, .prompt-cards button").forEach((card) => {
     const text = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
     card.classList.toggle("is-hidden", Boolean(query) && !text.includes(query));
   });
@@ -469,6 +670,19 @@ function filterCards(value) {
 renderContent();
 
 document.addEventListener("click", (event) => {
+  const subjectCopyAllTrigger = event.target.closest("[data-copy-subject-all]");
+  if (subjectCopyAllTrigger) {
+    copyTextToClipboard(content.subjectPromptMarkdown || "", "教科別プロンプト全文をコピーしました");
+    return;
+  }
+
+  const subjectCodeCopyTrigger = event.target.closest("[data-copy-subject-code]");
+  if (subjectCodeCopyTrigger) {
+    const index = Number(subjectCodeCopyTrigger.dataset.copySubjectCode);
+    copyTextToClipboard(subjectPromptCodeBlocks[index] || "", "教科別プロンプトをコピーしました");
+    return;
+  }
+
   const masterCopyTrigger = event.target.closest("[data-copy-master-prompt]");
   if (masterCopyTrigger) {
     const doc = (content.masterPromptDocs || []).find((item) => item.id === masterCopyTrigger.dataset.copyMasterPrompt);

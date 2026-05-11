@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>教科別プロンプトDocs | AI教育ラボ Members</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-page="subject-prompts" data-base=".">
+    <div class="app-shell">
+      <aside class="sidebar" data-shell-sidebar aria-label="メンバーサイトナビゲーション"></aside>
+      <main class="portal">
+        <header class="topbar" data-shell-topbar></header>
+
+        <section class="page-hero page-hero--image">
+          <div>
+            <p class="eyebrow">Subject Prompt Docs</p>
+            <h2>小学生・中学生・高校生の5教科プロンプト完全版。</h2>
+            <p>添付Markdownのプロンプトを割愛せず、教科別ドキュメントとして全文掲載しています。1教科ずつコピーして、AIチャットに貼って使えます。</p>
+          </div>
+          <img src="./assets/generated/prompt-library.png" alt="教科別AI学習プロンプト完全版">
+        </section>
+
+        <section class="subject-docs section-block">
+          <aside class="subject-docs__toc" aria-label="教科別プロンプト目次">
+            <p class="eyebrow">Docs Index</p>
+            <h2>目次</h2>
+            <div data-content-subject-prompt-toc></div>
+          </aside>
+
+          <div class="subject-docs__main">
+            <div class="section-head section-head--split">
+              <div>
+                <p class="eyebrow">Complete Markdown</p>
+                <h2>プロンプト紹介ドキュメント</h2>
+                <p>共通スタート、運用ルール、小中高それぞれの国語・算数/数学・理科・社会・英語プロンプト、付録まで全文を保持しています。</p>
+              </div>
+              <button class="secondary secondary--light compact" type="button" data-copy-subject-all>
+                <svg><use href="#i-copy"></use></svg>
+                全文コピー
+              </button>
+            </div>
+            <div class="subject-docs__stats" data-subject-prompt-stats></div>
+            <div class="subject-markdown" data-content-subject-prompts></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js" defer></script>
+    <script src="./subject-prompts-content.js" defer></script>
+    <script src="./shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

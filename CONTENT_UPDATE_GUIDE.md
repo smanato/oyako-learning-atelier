@@ -11,6 +11,7 @@ Claude Code側で更新する主ファイルは `content.js` です。ページ�
 - `questions.html`: アンケート質問から作った解決策
 - `prompts.html`: プロンプト集
 - `master-prompts.html`: 長文の最強プロンプトDocs
+- `subject-prompts.html`: 教科別AI学習プロンプト完全版
 - `age-prompts.html`: 幼稚園生から大学4年までの年齢別プロンプト
 - `tools.html`: ツール設定
 - `live.html`: Zoom・質問
@@ -66,6 +67,10 @@ promptCards: [
   body: `そのままコピーできる長文プロンプト`
 }
 ```
+
+## 教科別プロンプト完全版を更新する
+
+`subject-prompts.html` は `subject-prompts-content.js` の `subjectPromptMarkdown` を読み込んで、Markdown全文をドキュメント表示します。元Markdownを差し替える場合は、割愛せず全文を `subject-prompts-content.js` に再生成してください。
 
 ## 教材カードを追加する
 
