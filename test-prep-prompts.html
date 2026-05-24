@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>テスト対策プロンプトDocs | AI教育ラボ Members</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-page="test-prep-prompts" data-base=".">
+    <div class="app-shell">
+      <aside class="sidebar" data-shell-sidebar aria-label="メンバーサイトナビゲーション"></aside>
+      <main class="portal">
+        <header class="topbar" data-shell-topbar></header>
+
+        <section class="page-hero page-hero--image">
+          <div>
+            <p class="eyebrow">Test Prep Prompt Docs</p>
+            <h2>テスト本番で点を落とす瞬間を、先回りで防ぐプロンプト集。</h2>
+            <p>「問題をたくさん作る」「重要単元ランキング」「プリント化」ではなく、ミス予報型のテスト対策プロンプト。小・中・高 全教科＋テスト前日／答案再現／万能版まで、そのままコピペして使えます。</p>
+          </div>
+          <img src="./assets/generated/test-planning.png" alt="ミス予報型テスト対策プロンプト集">
+        </section>
+
+        <section class="subject-docs section-block">
+          <aside class="subject-docs__toc" aria-label="テスト対策プロンプト目次">
+            <p class="eyebrow">Docs Index</p>
+            <h2>目次</h2>
+            <div data-content-test-prep-prompt-toc></div>
+          </aside>
+
+          <div class="subject-docs__main">
+            <div class="section-head section-head--split">
+              <div>
+                <p class="eyebrow">Mistake Forecast Prompts</p>
+                <h2>ミス予報型プロンプト一覧</h2>
+                <p>共通コンセプト→小学生→中学生→高校生→全教科共通発展プロンプトの順に並んでいます。各プロンプトはコードブロック単位でコピーできます。</p>
+              </div>
+              <button class="secondary secondary--light compact" type="button" data-copy-test-prep-all>
+                <svg><use href="#i-copy"></use></svg>
+                全文コピー
+              </button>
+            </div>
+            <div class="subject-docs__stats" data-test-prep-prompt-stats></div>
+            <div class="subject-markdown" data-content-test-prep-prompts></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script src="./content.js" defer></script>
+    <script src="./test-prep-prompts-content.js" defer></script>
+    <script src="./shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

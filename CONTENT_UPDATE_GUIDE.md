@@ -12,6 +12,7 @@ Claude Code側で更新する主ファイルは `content.js` です。ページ�
 - `prompts.html`: プロンプト集
 - `master-prompts.html`: 長文の最強プロンプトDocs
 - `subject-prompts.html`: 教科別AI学習プロンプト完全版
+- `test-prep-prompts.html`: ミス予報型テスト対策プロンプト集（小・中・高 全教科 + テスト前日/答案再現/万能版）
 - `age-prompts.html`: 幼稚園生から大学4年までの年齢別プロンプト
 - `tools.html`: ツール設定
 - `live.html`: Zoom・質問
@@ -71,6 +72,16 @@ promptCards: [
 ## 教科別プロンプト完全版を更新する
 
 `subject-prompts.html` は `subject-prompts-content.js` の `subjectPromptMarkdown` を読み込んで、Markdown全文をドキュメント表示します。元Markdownを差し替える場合は、割愛せず全文を `subject-prompts-content.js` に再生成してください。
+
+## テスト対策プロンプト集（ミス予報型）を更新する
+
+`test-prep-prompts.html` は `test-prep-prompts-content.js` の `testPrepPromptMarkdown`（`window.AI_EDU_LAB_TEST_PREP_CONTENT` 名前空間）を読み込み、`subject-prompts.html` と同じMarkdown→TOC/コードブロック単位コピーで描画します。差し替え時は割愛せず全文を再生成してください。`testPrepPromptMeta` の `codeBlockCount / headingCount / lineCount` は省略可（未指定時は自動計算）。
+
+Markdown構造のルール:
+
+- `# 見出し`（h1）= セクション区切り（TOCの "Section" バッジ）
+- `## 見出し`（h2）= 個別プロンプトのタイトル（TOCの "Prompt" バッジ）
+- 各プロンプト本文は \`\`\`text フェンスのコードブロックで囲む（コードブロック単位でコピー可能）
 
 ## 教材カードを追加する
 

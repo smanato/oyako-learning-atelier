@@ -8,6 +8,7 @@ let activePrompt =
   requestedPrompt && prompts[requestedPrompt] ? requestedPrompt : content.defaultPrompt || Object.keys(prompts)[0] || "";
 let toastTimer;
 let subjectPromptCodeBlocks = [];
+let testPrepPromptCodeBlocks = [];
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -432,7 +433,7 @@ function renderMasterPromptDocs() {
     .join("");
 }
 
-function parseSubjectMarkdown(markdown) {
+function parseSubjectMarkdown(markdown, idPrefix = "subject-heading") {
   const fence = "```";
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
   const blocks = [];
@@ -539,7 +540,7 @@ function parseSubjectMarkdown(markdown) {
     headingIndex += 1;
     return {
       ...block,
-      id: `subject-heading-${headingIndex}`
+      id: `${idPrefix}-${headingIndex}`
     };
   });
 }
@@ -631,6 +632,94 @@ function renderSubjectPromptDocs() {
   container.innerHTML = `${html}${openSection ? "</article>" : ""}`;
 }
 
+function renderTestPrepPromptDocs() {
+  const testPrepContent = window.AI_EDU_LAB_TEST_PREP_CONTENT || {};
+  const markdown = testPrepContent.testPrepPromptMarkdown || "";
+  const container = document.querySelector("[data-content-test-prep-prompts]");
+  const toc = document.querySelector("[data-content-test-prep-prompt-toc]");
+  const stats = document.querySelector("[data-test-prep-prompt-stats]");
+  if (!markdown || !container) {
+    return;
+  }
+
+  const blocks = parseSubjectMarkdown(markdown, "test-prep-heading");
+  const headings = blocks.filter((block) => block.type === "heading");
+  const codeBlocks = blocks.filter((block) => block.type === "code");
+  testPrepPromptCodeBlocks = codeBlocks.map((block) => block.text);
+
+  if (stats) {
+    const meta = testPrepContent.testPrepPromptMeta || {};
+    stats.innerHTML = `
+      <article><b>${escapeHtml(meta.codeBlockCount || codeBlocks.length)}</b><span>コピー可能なプロンプト</span></article>
+      <article><b>${escapeHtml(meta.headingCount || headings.length)}</b><span>見出し</span></article>
+      <article><b>${escapeHtml(meta.lineCount || markdown.split("\n").length)}</b><span>Markdown行</span></article>
+      <article><b>ミス予報型</b><span>テスト本番で点を落とさない</span></article>
+    `;
+  }
+
+  if (toc) {
+    toc.innerHTML = headings
+      .filter((heading) => heading.level <= 2)
+      .map(
+        (heading) => `
+          <a class="subject-docs__toc-link subject-docs__toc-link--level-${escapeHtml(heading.level)}" href="#${escapeHtml(heading.id)}">
+            <span>${escapeHtml(heading.level === 1 ? "Section" : "Prompt")}</span>
+            <b>${escapeHtml(heading.text)}</b>
+          </a>
+        `
+      )
+      .join("");
+  }
+
+  let codeIndex = -1;
+  let openSection = false;
+  const html = blocks
+    .map((block) => {
+      if (block.type === "heading") {
+        const tag = `h${Math.min(block.level + 1, 4)}`;
+        const sectionBreak =
+          block.level === 1
+            ? `${openSection ? "</article>" : ""}<article class="subject-section" data-tags="${escapeHtml(block.text)}">`
+            : "";
+        if (block.level === 1) {
+          openSection = true;
+        }
+        return `${sectionBreak}<${tag} id="${escapeHtml(block.id)}">${escapeHtml(block.text)}</${tag}>`;
+      }
+      if (block.type === "paragraph") {
+        return `<p>${escapeHtml(block.text)}</p>`;
+      }
+      if (block.type === "list") {
+        return `<ul>${block.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+      }
+      if (block.type === "quote") {
+        return `<blockquote>${escapeHtml(block.text)}</blockquote>`;
+      }
+      if (block.type === "rule") {
+        return `<hr>`;
+      }
+      if (block.type === "code") {
+        codeIndex += 1;
+        return `
+          <div class="subject-code-block">
+            <div class="subject-code-block__head">
+              <span>${escapeHtml(block.lang || "text")}</span>
+              <button type="button" data-copy-test-prep-code="${codeIndex}">
+                <svg><use href="#i-copy"></use></svg>
+                このプロンプトをコピー
+              </button>
+            </div>
+            <pre>${escapeHtml(block.text)}</pre>
+          </div>
+        `;
+      }
+      return "";
+    })
+    .join("");
+
+  container.innerHTML = `${html}${openSection ? "</article>" : ""}`;
+}
+
 function renderTimeline() {
   const container = document.querySelector("[data-content-timeline]");
   if (!container || !Array.isArray(content.timeline) || !content.timeline.length) {
@@ -656,6 +745,7 @@ function renderContent() {
   renderAgePromptTracks();
   renderMasterPromptDocs();
   renderSubjectPromptDocs();
+  renderTestPrepPromptDocs();
   renderTimeline();
 }
 
@@ -680,6 +770,20 @@ document.addEventListener("click", (event) => {
   if (subjectCodeCopyTrigger) {
     const index = Number(subjectCodeCopyTrigger.dataset.copySubjectCode);
     copyTextToClipboard(subjectPromptCodeBlocks[index] || "", "教科別プロンプトをコピーしました");
+    return;
+  }
+
+  const testPrepCopyAllTrigger = event.target.closest("[data-copy-test-prep-all]");
+  if (testPrepCopyAllTrigger) {
+    const md = (window.AI_EDU_LAB_TEST_PREP_CONTENT && window.AI_EDU_LAB_TEST_PREP_CONTENT.testPrepPromptMarkdown) || "";
+    copyTextToClipboard(md, "テスト対策プロンプト全文をコピーしました");
+    return;
+  }
+
+  const testPrepCodeCopyTrigger = event.target.closest("[data-copy-test-prep-code]");
+  if (testPrepCodeCopyTrigger) {
+    const index = Number(testPrepCodeCopyTrigger.dataset.copyTestPrepCode);
+    copyTextToClipboard(testPrepPromptCodeBlocks[index] || "", "テスト対策プロンプトをコピーしました");
     return;
   }
 
