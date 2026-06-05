@@ -141,6 +141,27 @@ Markdown構造のルール:
 }
 ```
 
+## Zoomアーカイブを追加する
+
+`content.js` の `liveArchives` 配列に新着順で1件追加します。`live.html` の上部「Zoomアーカイブ」セクションにYouTube埋め込みカードとして並びます。
+
+\`\`\`js
+liveArchives: [
+  {
+    title: "Zoomアーカイブ #2",
+    date: "2026-06-15",
+    description: "回の内容を1〜2文で説明",
+    youtubeId: "YouTubeの動画ID（例: Kocm4rh4hCo）",
+    tags: "検索に引っかけたい単語"
+  }
+]
+\`\`\`
+
+- `youtubeId` は YouTubeのURL `https://youtu.be/XXXXXXXXXXX` または `https://www.youtube.com/watch?v=XXXXXXXXXXX` の `XXXXXXXXXXX` 部分
+- `date` は任意。入れると `YYYY-MM-DD` 形式が見出し上に表示される
+- `description` も任意。入れない場合は説明文が消えるだけで他に影響なし
+- 動画は YouTube埋め込みプレイヤーで表示され、「YouTubeで開く」ボタンから別タブで本家へ飛べます
+
 ## 質問フォームURLを差し替える
 
 会員からの質問受付フォーム（Googleフォーム）は `live.html` の「質問を投稿する」ボタンに直接書いています。フォームURLが変わったら、`live.html` の `href="https://forms.gle/..."` を新しいURLに差し替えてください。`<a class="primary" ... target="_blank">` の構造は維持します（モバイルで別タブで開き、誤タップで他ページに飛ばないように `<button>` ではなく `<a>` にしてあります）。

@@ -720,6 +720,40 @@ function renderTestPrepPromptDocs() {
   container.innerHTML = `${html}${openSection ? "</article>" : ""}`;
 }
 
+function renderLiveArchives() {
+  const container = document.querySelector("[data-content-live-archives]");
+  if (!container || !Array.isArray(content.liveArchives) || !content.liveArchives.length) {
+    return;
+  }
+  container.innerHTML = content.liveArchives
+    .map(
+      (item) => `
+        <article class="live-archive-card" data-tags="${escapeHtml(item.tags || item.title)}">
+          <div class="live-archive-card__video">
+            <iframe
+              src="https://www.youtube.com/embed/${escapeHtml(item.youtubeId)}"
+              title="${escapeHtml(item.title)}"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <div class="live-archive-card__body">
+            ${item.date ? `<p class="eyebrow">${escapeHtml(item.date)}</p>` : ""}
+            <h3>${escapeHtml(item.title)}</h3>
+            ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ""}
+            <a class="secondary secondary--light compact" href="https://youtu.be/${escapeHtml(item.youtubeId)}" target="_blank" rel="noreferrer">
+              <svg><use href="#i-play"></use></svg>
+              YouTubeで開く
+            </a>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
 function renderTimeline() {
   const container = document.querySelector("[data-content-timeline]");
   if (!container || !Array.isArray(content.timeline) || !content.timeline.length) {
@@ -746,12 +780,13 @@ function renderContent() {
   renderMasterPromptDocs();
   renderSubjectPromptDocs();
   renderTestPrepPromptDocs();
+  renderLiveArchives();
   renderTimeline();
 }
 
 function filterCards(value) {
   const query = value.trim().toLowerCase();
-  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .master-doc-card, .subject-section, .prompt-cards button").forEach((card) => {
+  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .master-doc-card, .subject-section, .live-archive-card, .prompt-cards button").forEach((card) => {
     const text = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
     card.classList.toggle("is-hidden", Boolean(query) && !text.includes(query));
   });

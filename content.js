@@ -1523,6 +1523,15 @@ AIに頼む文面
     { title: "Claudeで苦手単元を図解する" },
     { title: "NotebookLMで音声復習を作る" },
     { title: "親子で復習アプリを作る入門" }
+  ],
+  liveArchives: [
+    {
+      title: "教育×AI 第1回アーカイブ",
+      date: "2026-05-25",
+      description: "「生成AIは1種類ではない」をテーマに、家庭学習でのAI使い分けを整理した初回Zoomライブの録画です。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
+      youtubeId: "Kocm4rh4hCo",
+      tags: "zoom アーカイブ ライブ 録画 教育 AI 第1回 親子学習アトリエ 生成AI"
+    }
   ]
 };
 
