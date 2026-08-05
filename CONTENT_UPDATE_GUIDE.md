@@ -16,6 +16,7 @@ Claude Code側で更新する主ファイルは `content.js` です。ページ�
 - `age-prompts.html`: 幼稚園生から大学4年までの年齢別プロンプト
 - `tools.html`: ツール設定
 - `live.html`: Zoom・質問
+- `materials.html`: 資料ダウンロード（セミナー資料・配布シートの保管庫）
 - `rules.html`: ルール・安心
 
 ナビはテキストアンカーではなく、各HTMLページへ移動します。
@@ -161,6 +162,38 @@ liveArchives: [
 - `date` は任意。入れると `YYYY-MM-DD` 形式が見出し上に表示される
 - `description` も任意。入れない場合は説明文が消えるだけで他に影響なし
 - 動画は YouTube埋め込みプレイヤーで表示され、「YouTubeで開く」ボタンから別タブで本家へ飛べます
+
+## 資料ダウンロードを追加する
+
+オープンチャットに投稿した資料は期限切れでダウンロードできなくなるため、`materials.html`（資料ダウンロード）に保管します。`content.js` の `materials` 配列に1件追加すると、カードが並びます。
+
+```js
+materials: [
+  {
+    category: "セミナー資料",
+    badge: "第2回",
+    title: "教育×AI 第2回 セミナー資料",
+    date: "2026-06-15",
+    description: "カードの説明を1〜2文で",
+    fileType: "PDF",
+    fileSize: "3.2MB",
+    file: "./assets/docs/kyoiku-ai-02.pdf",
+    tags: "検索に引っかけたい単語"
+  }
+]
+```
+
+- `category`: グループ見出し。同じ文字列のものが1つのブロックにまとまり、**最初に出てきた順**でセクションが並ぶ。省略すると「資料」になる
+- `file`: リポジトリ内のファイル。`assets/docs/` に置いて `./assets/docs/ファイル名.pdf` で参照する。`download` 属性が付くのでタップで保存できる
+- `url`: Googleドライブなど外部リンク。`file` がない場合に使われ、別タブで開く（ボタン文言は「資料を開く」）
+- `file` と `url` の両方がある場合は `file` を優先
+- `badge` / `date` / `description` / `fileType` / `fileSize` / `buttonLabel` はすべて任意
+- `file` / `url` が空、または `./` `/` `http://` `https://` 以外で始まる値の場合はボタンを出さない（安全対策）
+- `materials` が空配列のときは「資料は順次追加しています」というプレースホルダーが出る
+
+**ファイル名は英数字にしてください。** 日本語ファイル名でも動きますが、URLエンコードで環境によって崩れることがあります。
+
+**注意: このリポジトリは公開（public）です。** `assets/docs/` に置いたファイルはURLを知っていれば誰でもダウンロードでき、GitHub上でも閲覧できます。会員限定にしたい資料はリポジトリに置かず、Googleドライブ側で共有範囲を設定して `url` で参照してください。
 
 ## 質問フォームURLを差し替える
 

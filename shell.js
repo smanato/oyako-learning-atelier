@@ -8,6 +8,7 @@ const icons = `
     <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.4"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v5.5a3 3 0 0 1-3 3H10l-5 4v-4.7A3 3 0 0 1 4 12.5z"/><path d="M8 8.5h8M8 11.5h5"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 16.5v2.2A1.8 1.8 0 0 0 6.3 20.5h11.4a1.8 1.8 0 0 0 1.8-1.8v-2.2"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></symbol>
@@ -30,6 +31,7 @@ const navItems = [
   { page: "age-prompts", href: "age-prompts.html", icon: "i-play", label: "年齢別プロンプト", description: "幼稚園-大学4年" },
   { page: "tools", href: "tools.html", icon: "i-tool", label: "ツール設定", description: "AIの選び方" },
   { page: "live", href: "live.html", icon: "i-video", label: "Zoom・質問", description: "ライブと相談" },
+  { page: "materials", href: "materials.html", icon: "i-download", label: "資料ダウンロード", description: "配布資料の保管庫" },
   { page: "rules", href: "rules.html", icon: "i-shield", label: "ルール・安心", description: "使い方と解約" }
 ];
 const currentNavItem = navItems.find((item) => item.page === currentPage) || navItems[0];

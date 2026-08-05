@@ -2604,3 +2604,145 @@ svg {
   justify-self: start;
   margin-top: 4px;
 }
+
+/* 資料ダウンロード（materials.html） */
+.materials-intro .materials-note {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--sage-soft);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 760;
+  line-height: 1.75;
+}
+
+.material-groups {
+  display: grid;
+  gap: 30px;
+}
+
+.material-group__title {
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--line);
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: var(--ink-deep);
+}
+
+.material-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+}
+
+.material-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--soft-shadow);
+}
+
+.material-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.material-card__badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--sage-soft);
+  color: var(--sage);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.material-card__date {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.material-card h4 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ink-deep);
+}
+
+.material-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 760;
+  line-height: 1.75;
+}
+
+.material-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.material-card__meta span {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.material-card__action {
+  display: inline-grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: center;
+  justify-self: start;
+  gap: 8px;
+  min-height: 42px;
+  margin-top: 6px;
+  padding: 0 18px;
+  border-radius: var(--radius);
+  background: var(--coral);
+  box-shadow: 0 14px 28px rgba(237, 112, 94, 0.26);
+  color: #fff;
+  font-weight: 900;
+}
+
+.material-card__action:hover {
+  background: #dd5f4d;
+}
+
+.material-card__action svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.materials-empty {
+  margin: 0;
+  padding: 26px 18px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 760;
+  text-align: center;
+}

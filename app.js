@@ -769,6 +769,82 @@ function renderTimeline() {
     .join("");
 }
 
+function safeMaterialHref(value) {
+  const href = String(value ?? "").trim();
+  if (!href) {
+    return "";
+  }
+  return /^(\.{0,2}\/|https?:\/\/)/.test(href) ? href : "";
+}
+
+function renderMaterialCard(item) {
+  const fileHref = safeMaterialHref(item.file);
+  const urlHref = safeMaterialHref(item.url);
+  const href = fileHref || urlHref;
+  const isExternal = !fileHref && Boolean(urlHref);
+  const meta = [item.fileType, item.fileSize]
+    .filter(Boolean)
+    .map((value) => `<span>${escapeHtml(value)}</span>`)
+    .join("");
+  const linkAttrs = isExternal ? 'target="_blank" rel="noreferrer"' : "download";
+  const label = item.buttonLabel || (isExternal ? "資料を開く" : "ダウンロード");
+
+  return `
+    <article class="material-card" data-tags="${escapeHtml(item.tags || item.title)}">
+      <div class="material-card__head">
+        ${item.badge ? `<span class="material-card__badge">${escapeHtml(item.badge)}</span>` : ""}
+        ${item.date ? `<time class="material-card__date">${escapeHtml(item.date)}</time>` : ""}
+      </div>
+      <h4>${escapeHtml(item.title)}</h4>
+      ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ""}
+      ${meta ? `<div class="material-card__meta">${meta}</div>` : ""}
+      ${
+        href
+          ? `<a class="material-card__action" href="${escapeHtml(href)}" ${linkAttrs}>
+              <svg><use href="#i-download"></use></svg>
+              ${escapeHtml(label)}
+            </a>`
+          : ""
+      }
+    </article>
+  `;
+}
+
+function renderMaterials() {
+  const container = document.querySelector("[data-content-materials]");
+  if (!container) {
+    return;
+  }
+  const items = Array.isArray(content.materials) ? content.materials : [];
+  if (!items.length) {
+    return;
+  }
+
+  const groups = [];
+  items.forEach((item) => {
+    const name = item.category || "資料";
+    let group = groups.find((entry) => entry.name === name);
+    if (!group) {
+      group = { name, items: [] };
+      groups.push(group);
+    }
+    group.items.push(item);
+  });
+
+  container.innerHTML = groups
+    .map(
+      (group) => `
+        <section class="material-group">
+          <h3 class="material-group__title">${escapeHtml(group.name)}</h3>
+          <div class="material-grid">
+            ${group.items.map(renderMaterialCard).join("")}
+          </div>
+        </section>
+      `
+    )
+    .join("");
+}
+
 function renderContent() {
   renderPromptCards();
   renderModules();
@@ -782,11 +858,12 @@ function renderContent() {
   renderTestPrepPromptDocs();
   renderLiveArchives();
   renderTimeline();
+  renderMaterials();
 }
 
 function filterCards(value) {
   const query = value.trim().toLowerCase();
-  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .master-doc-card, .subject-section, .live-archive-card, .prompt-cards button").forEach((card) => {
+  document.querySelectorAll(".menu-card, .prompt-feature-card, .age-track, .rescue-card, .module-card, .tool-card, .tool-setup-card, .solution-card, .master-doc-card, .subject-section, .live-archive-card, .material-card, .prompt-cards button").forEach((card) => {
     const text = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
     card.classList.toggle("is-hidden", Boolean(query) && !text.includes(query));
   });

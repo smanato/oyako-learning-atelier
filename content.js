@@ -1539,7 +1539,11 @@ AIに頼む文面
       youtubeId: "Kocm4rh4hCo",
       tags: "zoom アーカイブ ライブ 録画 教育 AI 第1回 親子学習アトリエ 生成AI"
     }
-  ]
+  ],
+  // 資料ダウンロード（materials.html）
+  // file: リポジトリ内のファイル（./assets/docs/xxx.pdf）／ url: Googleドライブ等の外部リンク
+  // どちらか一方を入れる。両方ある場合は file を優先。
+  materials: []
 };
 
 (() => {
