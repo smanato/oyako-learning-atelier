@@ -1524,26 +1524,85 @@ AIに頼む文面
     { title: "NotebookLMで音声復習を作る" },
     { title: "親子で復習アプリを作る入門" }
   ],
+  // Zoomアーカイブ（live.html）新着順。
+  // material を入れると、カードの「YouTubeで開く」の横に資料ボタンが並びます。
+  // material.url は Googleドライブの共有リンク。空のあいだはボタンが出ません。
   liveArchives: [
+    {
+      title: "教育×AI 第3回アーカイブ",
+      description: "「AIで伸びる子、考えなくなる子」をテーマに、AIを使って伸びる子と考えなくなる子の分かれ目を整理した第3回の録画です。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
+      youtubeId: "9wxrK-9DQDI",
+      material: {
+        url: "https://drive.google.com/file/d/1iqOBdc2uAmS2U37qDblx55HaVYM1B_yI/view",
+        label: "第3回の資料を見る",
+        note: "PDF / 32枚"
+      },
+      tags: "zoom アーカイブ ライブ 録画 教育 AI 第3回 親子学習アトリエ 伸びる子 考えなくなる子"
+    },
     {
       title: "教育×AI 第2回アーカイブ",
       date: "2026-06-15",
       description: "親子学習アトリエ第2回のZoomセミナーアーカイブです。家庭学習でのAI活用をさらに深掘りしました。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
       youtubeId: "TN4HRCdnVGg",
-      tags: "zoom アーカイブ ライブ 録画 教育 AI 第2回 親子学習アトリエ セミナー"
+      material: {
+        url: "https://drive.google.com/file/d/1rKtsYG7XNq7LMveTc07D5iFgSNPqaAI5/view",
+        label: "第2回の資料を見る",
+        note: "PDF / 49枚"
+      },
+      tags: "zoom アーカイブ ライブ 録画 教育 AI 第2回 親子学習アトリエ セミナー NotebookLM"
     },
     {
       title: "教育×AI 第1回アーカイブ",
       date: "2026-05-25",
       description: "「生成AIは1種類ではない」をテーマに、家庭学習でのAI使い分けを整理した初回Zoomライブの録画です。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
       youtubeId: "Kocm4rh4hCo",
-      tags: "zoom アーカイブ ライブ 録画 教育 AI 第1回 親子学習アトリエ 生成AI"
+      material: {
+        url: "https://drive.google.com/file/d/168Y0XjpIKzNHwIXWNo6cFOEh3Go_Ui1m/view",
+        label: "第1回の資料を見る",
+        note: "PDF / 12枚"
+      },
+      tags: "zoom アーカイブ ライブ 録画 教育 AI 第1回 親子学習アトリエ 生成AI ツール選び"
     }
   ],
   // 資料ダウンロード（materials.html）
   // file: リポジトリ内のファイル（./assets/docs/xxx.pdf）／ url: Googleドライブ等の外部リンク
   // どちらか一方を入れる。両方ある場合は file を優先。
-  materials: []
+  // 会員限定資料なのでリポジトリには置かず、Googleドライブの共有リンクを url に貼ります。
+  // url が空のあいだはダウンロードボタンが出ません。
+  materials: [
+    {
+      category: "セミナー資料",
+      badge: "第3回",
+      title: "AIで伸びる子、考えなくなる子",
+      description: "AIを使って伸びる子と、考えなくなる子の分かれ目を整理しました。家庭で決めるのは「AIを使うかどうか」ではなく「いつ・何を頼み・最後に何を本人へ戻すか」という話です。",
+      fileType: "PDF",
+      fileSize: "7.3MB",
+      url: "https://drive.google.com/file/d/1iqOBdc2uAmS2U37qDblx55HaVYM1B_yI/view",
+      tags: "セミナー 資料 第3回 AI 教育 スライド 伸びる子 考えなくなる子"
+    },
+    {
+      category: "セミナー資料",
+      badge: "第2回",
+      title: "NotebookLMで子供の学びを変える",
+      date: "2026-06-15",
+      description: "紙のプリントからAI学習ノートを作る実践講座です。NotebookLMのプラン比較つき（全49枚）。小学生から大学生まで対応しています。",
+      fileType: "PDF",
+      fileSize: "9.4MB",
+      url: "https://drive.google.com/file/d/1rKtsYG7XNq7LMveTc07D5iFgSNPqaAI5/view",
+      tags: "セミナー 資料 第2回 NotebookLM 学習ノート プリント 復習 プラン比較"
+    },
+    {
+      category: "セミナー資料",
+      badge: "第1回",
+      title: "生成AIは、どれを使えばいいのか？",
+      date: "2026-05-25",
+      description: "子どもの学びを支えるAIツールの選び方です。ChatGPT / Gemini / Claude / NotebookLM / Google AI Studio / Genspark の得意分野を比較しました。",
+      fileType: "PDF",
+      fileSize: "2.3MB",
+      url: "https://drive.google.com/file/d/168Y0XjpIKzNHwIXWNo6cFOEh3Go_Ui1m/view",
+      tags: "セミナー 資料 第1回 生成AI ツール選び ChatGPT Gemini Claude NotebookLM Genspark"
+    }
+  ]
 };
 
 (() => {

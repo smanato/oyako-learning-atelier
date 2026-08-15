@@ -726,12 +726,14 @@ function renderLiveArchives() {
     return;
   }
   container.innerHTML = content.liveArchives
-    .map(
-      (item) => `
-        <article class="live-archive-card" data-tags="${escapeHtml(item.tags || item.title)}">
+    .map((item) => {
+      // 動画URLがまだ決まっていない回は、埋め込みを出さずに資料だけ先に見せる。
+      const youtubeId = String(item.youtubeId || "").trim();
+      const videoHtml = youtubeId
+        ? `
           <div class="live-archive-card__video">
             <iframe
-              src="https://www.youtube.com/embed/${escapeHtml(item.youtubeId)}"
+              src="https://www.youtube.com/embed/${escapeHtml(youtubeId)}"
               title="${escapeHtml(item.title)}"
               loading="lazy"
               referrerpolicy="strict-origin-when-cross-origin"
@@ -739,19 +741,55 @@ function renderLiveArchives() {
               allowfullscreen
             ></iframe>
           </div>
+        `
+        : "";
+      const youtubeLinkHtml = youtubeId
+        ? `
+          <a class="secondary secondary--light compact" href="https://youtu.be/${escapeHtml(youtubeId)}" target="_blank" rel="noreferrer">
+            <svg><use href="#i-play"></use></svg>
+            YouTubeで開く
+          </a>
+        `
+        : "";
+      return `
+        <article class="live-archive-card" data-tags="${escapeHtml(item.tags || item.title)}">
+          ${videoHtml}
           <div class="live-archive-card__body">
             ${item.date ? `<p class="eyebrow">${escapeHtml(item.date)}</p>` : ""}
             <h3>${escapeHtml(item.title)}</h3>
             ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ""}
-            <a class="secondary secondary--light compact" href="https://youtu.be/${escapeHtml(item.youtubeId)}" target="_blank" rel="noreferrer">
-              <svg><use href="#i-play"></use></svg>
-              YouTubeで開く
-            </a>
+            <div class="live-archive-card__actions">
+              ${youtubeLinkHtml}
+              ${renderArchiveMaterialLink(item)}
+            </div>
           </div>
         </article>
-      `
-    )
+      `;
+    })
     .join("");
+}
+
+// アーカイブカードに出す「資料を見る」ボタン。
+// content.js の liveArchives に material: { url, label, note } を足すと表示されます。
+// url が空、または ./ / http:// https:// 以外で始まる値のときはボタンを出しません（materials と同じ安全対策）。
+function renderArchiveMaterialLink(item) {
+  const material = item.material;
+  if (!material) {
+    return "";
+  }
+  const href = String(material.url || "").trim();
+  if (!href || !/^(\.\/|\/|https?:\/\/)/.test(href)) {
+    return "";
+  }
+  const label = material.label || "資料を見る";
+  const note = material.note ? `<span class="live-archive-card__material-note">${escapeHtml(material.note)}</span>` : "";
+  return `
+    <a class="secondary compact" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">
+      <svg><use href="#i-download"></use></svg>
+      ${escapeHtml(label)}
+    </a>
+    ${note}
+  `;
 }
 
 function renderTimeline() {

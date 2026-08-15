@@ -2605,6 +2605,24 @@ svg {
   margin-top: 4px;
 }
 
+.live-archive-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.live-archive-card__actions a {
+  margin-top: 0;
+}
+
+.live-archive-card__material-note {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
 /* 資料ダウンロード（materials.html） */
 .materials-intro .materials-note {
   margin-top: 10px;
