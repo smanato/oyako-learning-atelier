@@ -783,8 +783,9 @@ function renderArchiveMaterialLink(item) {
   }
   const label = material.label || "資料を見る";
   const note = material.note ? `<span class="live-archive-card__material-note">${escapeHtml(material.note)}</span>` : "";
+  // secondary--light は明るい背景用。付け忘れると白背景に白文字で見えなくなる。
   return `
-    <a class="secondary compact" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">
+    <a class="secondary secondary--light compact" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">
       <svg><use href="#i-download"></use></svg>
       ${escapeHtml(label)}
     </a>
