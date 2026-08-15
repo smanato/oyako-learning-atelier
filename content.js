@@ -1601,6 +1601,16 @@ AIに頼む文面
       fileSize: "2.3MB",
       url: "https://drive.google.com/file/d/168Y0XjpIKzNHwIXWNo6cFOEh3Go_Ui1m/view",
       tags: "セミナー 資料 第1回 生成AI ツール選び ChatGPT Gemini Claude NotebookLM Genspark"
+    },
+    {
+      category: "オープンチャット配布資料",
+      badge: "保護者向け",
+      title: "中学図形の面積問題 × AI活用資料",
+      description: "写真を送って「解いて」と頼む使い方をやめ、条件の読み取り→影部分の分解→計算→検算の順に分ける運用をまとめました。そのまま使えるプロンプト7本つき。親が確認するのは3か所だけで済みます。",
+      fileType: "PDF",
+      fileSize: "0.3MB",
+      url: "https://drive.google.com/file/d/1iClFKk2jYrU-0Ii1U0BoMgu7WmA7vYHe/view",
+      tags: "オプチャ 配布資料 中学 数学 図形 面積 影の部分 プロンプト GeoGebra NotebookLM 検算 保護者"
     }
   ]
 };
