@@ -1571,6 +1571,46 @@ AIに頼む文面
   // url が空のあいだはダウンロードボタンが出ません。
   materials: [
     {
+      category: "使い方動画・アプリ（随時更新）",
+      badge: "はじめての方へ",
+      title: "会員サイトの使い方動画",
+      description: "会員サイトの使い方をまとめた動画です（10分程度）。プロンプトの貼り方から、AIへの実践内容まで含んでいます。まずはこれを見ながら使ってみてください。",
+      fileType: "動画",
+      url: "https://youtu.be/aYVVKddIjSM",
+      buttonLabel: "動画を見る",
+      tags: "使い方 動画 会員サイト はじめて 初心者 プロンプト 貼り方 チュートリアル YouTube"
+    },
+    {
+      category: "使い方動画・アプリ（随時更新）",
+      badge: "ツール解説",
+      title: "NotebookLMの使い方動画",
+      description: "プリントや教材を読み込ませて、専用の学習ノートに変えるNotebookLMの使い方動画です。",
+      fileType: "動画",
+      url: "https://youtu.be/h48gNTTfzFc",
+      buttonLabel: "動画を見る",
+      tags: "使い方 動画 NotebookLM ノートブック 教材 読み込み チュートリアル YouTube"
+    },
+    {
+      category: "使い方動画・アプリ（随時更新）",
+      badge: "ツール解説",
+      title: "Antigravityの使い方動画",
+      description: "AntigravityというAIツールの使い方動画です。",
+      fileType: "動画",
+      url: "https://youtu.be/Za3pmm1cnUY",
+      buttonLabel: "動画を見る",
+      tags: "使い方 動画 Antigravity チュートリアル YouTube"
+    },
+    {
+      category: "使い方動画・アプリ（随時更新）",
+      badge: "オリジナルアプリ",
+      title: "漢字アプリ（Kanji Handwriting Lab）",
+      description: "塾テキストなどの漢字を、手書き学習・テスト・間違い復習に変えるブラウザ完結アプリです。教材管理から自分の練習したい漢字を読み込めます。使い方など分からない場合は、オープンチャットで質問してください。",
+      fileType: "Webアプリ",
+      url: "https://kanji-drill-ten.vercel.app/",
+      buttonLabel: "アプリを開く",
+      tags: "漢字 アプリ 手書き ドリル テスト 復習 小学生 中学生 国語 Kanji"
+    },
+    {
       category: "セミナー資料",
       badge: "第3回",
       title: "AIで伸びる子、考えなくなる子",
