@@ -884,6 +884,233 @@ function renderMaterials() {
     .join("");
 }
 
+const qaState = { subject: "all", grade: "all", month: "all", query: "" };
+
+function qaItemsSorted() {
+  return ((window.AI_EDU_LAB_QA_CONTENT || {}).qaItems || [])
+    .slice()
+    .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+}
+
+function qaFormatDate(iso) {
+  const [year, month, day] = String(iso || "").split("-").map(Number);
+  if (!year || !month || !day) {
+    return iso || "";
+  }
+  return `${year}年${month}月${day}日`;
+}
+
+function qaFormatMonth(key) {
+  const [year, month] = String(key || "").split("-").map(Number);
+  if (!year || !month) {
+    return key || "";
+  }
+  return `${year}年${month}月`;
+}
+
+function qaBodyHtml(body) {
+  if (!body) {
+    return "";
+  }
+  return String(body)
+    .split("\n\n")
+    .map((paragraph) => `<p>${escapeHtml(paragraph).replaceAll("\n", "<br>")}</p>`)
+    .join("");
+}
+
+function renderQaMeta(item) {
+  return `
+    <div class="qa-card__meta">
+      ${item.date ? `<span class="qa-card__date">${escapeHtml(qaFormatDate(item.date))}</span>` : ""}
+      ${item.subject ? `<span class="qa-card__badge">${escapeHtml(item.subject)}</span>` : ""}
+      ${item.grade ? `<span class="qa-card__badge qa-card__badge--grade">${escapeHtml(item.grade)}</span>` : ""}
+      ${item.tools ? `<small>${escapeHtml(item.tools)}</small>` : ""}
+    </div>
+  `;
+}
+
+function renderQaCard(item) {
+  return `
+    <a class="qa-card" href="./qa.html?id=${encodeURIComponent(item.id)}"
+      data-subject="${escapeHtml(item.subject || "")}"
+      data-grade="${escapeHtml(item.grade || "")}"
+      data-month="${escapeHtml(String(item.date || "").slice(0, 7))}"
+      data-tags="${escapeHtml(item.tags || "")}">
+      ${renderQaMeta(item)}
+      <h3>${escapeHtml(item.title)}</h3>
+      <p class="qa-card__question">Q. ${escapeHtml(item.question)}</p>
+      <span class="qa-card__cta">回答ページを読む →</span>
+    </a>
+  `;
+}
+
+function renderQaDetail(item) {
+  const sections = (item.sections || [])
+    .map(
+      (section, index) => `
+        <section class="qa-detail__section">
+          ${section.heading ? `<h3>${escapeHtml(section.heading)}</h3>` : ""}
+          ${qaBodyHtml(section.body)}
+          ${
+            section.prompt
+              ? `
+                <div class="subject-code-block qa-detail__prompt">
+                  <div class="subject-code-block__head">
+                    <span>コピーして使うプロンプト</span>
+                    <button type="button" data-copy-qa-prompt="${escapeHtml(item.id)}::${index}">
+                      <svg><use href="#i-copy"></use></svg>コピー
+                    </button>
+                  </div>
+                  <pre>${escapeHtml(section.prompt)}</pre>
+                </div>
+              `
+              : ""
+          }
+        </section>
+      `
+    )
+    .join("");
+  const safeLinks = (Array.isArray(item.links) ? item.links : []).filter((link) => /^https?:\/\//.test(link.url || ""));
+  const links = safeLinks.length
+    ? `
+      <section class="qa-detail__section qa-detail__links">
+        <h3>関連リンク</h3>
+        <ul>
+          ${safeLinks
+            .map((link) => `<li><a href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">${escapeHtml(link.label || link.url)}</a></li>`)
+            .join("")}
+        </ul>
+      </section>
+    `
+    : "";
+  return `
+    <article class="qa-detail">
+      <header class="qa-detail__head">
+        ${renderQaMeta(item)}
+        <h2>${escapeHtml(item.title)}</h2>
+        <p class="qa-detail__question"><b>Q.</b> ${escapeHtml(item.question)}</p>
+      </header>
+      <div class="qa-detail__body">
+        ${sections}
+        ${links}
+      </div>
+    </article>
+  `;
+}
+
+function applyQaFilters() {
+  const cards = document.querySelectorAll(".qa-card");
+  let visible = 0;
+  cards.forEach((card) => {
+    const text = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
+    const matches =
+      (qaState.subject === "all" || card.dataset.subject === qaState.subject) &&
+      (qaState.grade === "all" || card.dataset.grade === qaState.grade) &&
+      (qaState.month === "all" || card.dataset.month === qaState.month) &&
+      (!qaState.query || text.includes(qaState.query));
+    card.classList.toggle("is-hidden", !matches);
+    if (matches) {
+      visible += 1;
+    }
+  });
+  const count = document.querySelector("[data-qa-count]");
+  if (count) {
+    count.textContent = cards.length ? `${visible}件 / 全${cards.length}件を表示中` : "";
+  }
+}
+
+function renderQaChips(container, values, key, formatLabel) {
+  if (!container) {
+    return;
+  }
+  container.innerHTML = ["all", ...values]
+    .map(
+      (value) => `
+        <button type="button" class="${value === "all" ? "is-active" : ""}" data-qa-chip="${key}" data-value="${escapeHtml(value)}">
+          ${value === "all" ? "すべて" : escapeHtml(formatLabel ? formatLabel(value) : value)}
+        </button>
+      `
+    )
+    .join("");
+}
+
+function renderQaArchive() {
+  const listContainer = document.querySelector("[data-content-qa-list]");
+  const detailContainer = document.querySelector("[data-content-qa-detail]");
+  if (!listContainer && !detailContainer) {
+    return;
+  }
+  const items = qaItemsSorted();
+  const listView = document.querySelector("[data-qa-list-view]");
+  const detailView = document.querySelector("[data-qa-detail-view]");
+  const requestedId = new URLSearchParams(window.location.search).get("id");
+  const detailItem = requestedId ? items.find((item) => item.id === requestedId) : null;
+
+  if (detailItem && detailContainer) {
+    if (listView) listView.hidden = true;
+    if (detailView) detailView.hidden = false;
+    detailContainer.innerHTML = renderQaDetail(detailItem);
+    document.title = `${detailItem.title} | オプチャQ&A | AI教育ラボ Members`;
+    return;
+  }
+
+  if (listView) listView.hidden = false;
+  if (detailView) detailView.hidden = true;
+  if (requestedId && !detailItem) {
+    showToast("そのQ&Aが見つかりませんでした。一覧を表示します");
+  }
+  if (!listContainer) {
+    return;
+  }
+  if (!items.length) {
+    listContainer.innerHTML = `<p class="qa-empty">Q&Aは順次追加しています。オープンチャットで質問があった内容から掲載していきます。</p>`;
+    return;
+  }
+
+  const subjects = [...new Set(items.map((item) => item.subject).filter(Boolean))];
+  const grades = [...new Set(items.map((item) => item.grade).filter(Boolean))];
+  const months = [...new Set(items.map((item) => String(item.date || "").slice(0, 7)).filter(Boolean))];
+  renderQaChips(document.querySelector("[data-qa-filter-subject]"), subjects, "subject");
+  renderQaChips(document.querySelector("[data-qa-filter-grade]"), grades, "grade");
+  renderQaChips(document.querySelector("[data-qa-filter-month]"), months, "month", qaFormatMonth);
+
+  listContainer.innerHTML = items.map(renderQaCard).join("");
+  applyQaFilters();
+
+  document.addEventListener("click", (event) => {
+    const chip = event.target.closest("[data-qa-chip]");
+    if (!chip) {
+      return;
+    }
+    const key = chip.dataset.qaChip;
+    qaState[key] = chip.dataset.value;
+    document.querySelectorAll(`[data-qa-chip='${key}']`).forEach((button) => {
+      button.classList.toggle("is-active", button === chip);
+    });
+    applyQaFilters();
+  });
+
+  document.querySelector("[data-search]")?.addEventListener("input", (event) => {
+    qaState.query = event.target.value.trim().toLowerCase();
+    applyQaFilters();
+  });
+
+  document.querySelector("[data-qa-filter-reset]")?.addEventListener("click", () => {
+    qaState.subject = "all";
+    qaState.grade = "all";
+    qaState.month = "all";
+    qaState.query = "";
+    const search = document.querySelector("[data-search]");
+    if (search) {
+      search.value = "";
+    }
+    document.querySelectorAll("[data-qa-chip]").forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.value === "all");
+    });
+    applyQaFilters();
+  });
+}
+
 function renderContent() {
   renderPromptCards();
   renderModules();
@@ -898,6 +1125,7 @@ function renderContent() {
   renderLiveArchives();
   renderTimeline();
   renderMaterials();
+  renderQaArchive();
 }
 
 function filterCards(value) {
@@ -942,6 +1170,14 @@ document.addEventListener("click", (event) => {
   if (masterCopyTrigger) {
     const doc = (content.masterPromptDocs || []).find((item) => item.id === masterCopyTrigger.dataset.copyMasterPrompt);
     copyTextToClipboard(doc?.body || "", "最強プロンプトをコピーしました");
+    return;
+  }
+
+  const qaCopyTrigger = event.target.closest("[data-copy-qa-prompt]");
+  if (qaCopyTrigger) {
+    const [qaId, sectionIndex] = qaCopyTrigger.dataset.copyQaPrompt.split("::");
+    const qaItem = ((window.AI_EDU_LAB_QA_CONTENT || {}).qaItems || []).find((entry) => entry.id === qaId);
+    copyTextToClipboard(qaItem?.sections?.[Number(sectionIndex)]?.prompt || "", "プロンプトをコピーしました");
     return;
   }
 

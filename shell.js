@@ -24,6 +24,7 @@ const navItems = [
   { page: "start", href: "start.html", icon: "i-play", label: "はじめてガイド", description: "最初の使い方" },
   { page: "rescue", href: "rescue.html", icon: "i-chat", label: "悩み別レスキュー", description: "困りごとから探す" },
   { page: "questions", href: "questions.html", icon: "i-book", label: "質問解決策", description: "回答から作成" },
+  { page: "qa", href: "qa.html", icon: "i-chat", label: "オプチャQ&A", description: "質問と回答の記録" },
   { page: "prompts", href: "prompts.html", icon: "i-copy", label: "プロンプト集", description: "コピーして使う" },
   { page: "master-prompts", href: "master-prompts.html", icon: "i-book", label: "最強プロンプト", description: "長文Docs" },
   { page: "subject-prompts", href: "subject-prompts.html", icon: "i-book", label: "教科別プロンプト", description: "5教科完全版" },
