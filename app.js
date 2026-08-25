@@ -953,7 +953,11 @@ function qaBodyHtml(body) {
   }
   return String(body)
     .split("\n\n")
-    .map((paragraph) => `<p>${escapeHtml(paragraph).replaceAll("\n", "<br>")}</p>`)
+    .map((paragraph) => {
+      // エスケープしてから **強調** だけを太字に戻す。順番を逆にするとタグを書き込まれる。
+      const escaped = escapeHtml(paragraph).replace(/\*\*([^\n]+?)\*\*/g, "<strong>$1</strong>");
+      return `<p>${escaped.replaceAll("\n", "<br>")}</p>`;
+    })
     .join("");
 }
 
