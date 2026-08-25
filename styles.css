@@ -927,6 +927,77 @@ svg {
     #fff;
 }
 
+/* 比較表（questionSolutions の compare） */
+.solution-card__body .solution-card__compare {
+  background:
+    linear-gradient(135deg, rgba(231, 244, 239, 0.85), rgba(255, 253, 248, 0.9)),
+    #fff;
+}
+
+/* グリッドの子は既定で min-width:auto なので、中身の幅までしか縮まない。
+   0 にしないと、表を入れたカードが画面幅を超えて右端が切れる。 */
+.solution-card__body,
+.solution-card__body .solution-card__compare {
+  min-width: 0;
+}
+
+/* 表が画面より広いときは、ページごとではなく表だけを横スクロールさせる */
+.solution-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  -webkit-overflow-scrolling: touch;
+}
+
+.solution-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.solution-table th,
+.solution-table td {
+  padding: 9px 11px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.solution-table thead th {
+  background: var(--sage-soft);
+  color: var(--ink-deep);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.solution-table tbody th {
+  color: var(--ink-deep);
+  font-weight: 800;
+}
+
+.solution-table tbody td {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.solution-table tbody tr:last-child th,
+.solution-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.solution-table__note {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+  line-height: 1.7;
+}
+
 .solution-card__body b {
   display: block;
   margin-bottom: 7px;

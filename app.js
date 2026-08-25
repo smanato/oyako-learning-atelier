@@ -241,6 +241,36 @@ function renderQuestionSolutions() {
       </section>
     `;
   };
+  // 比較表。compare: { title, headers: [...], rows: [[...], ...], note } で出す。
+  // 横に長い表はスマホで潰れるので、表だけを横スクロールさせる。
+  const renderCompare = (compare) => {
+    if (!compare || !Array.isArray(compare.headers) || !Array.isArray(compare.rows) || !compare.rows.length) {
+      return "";
+    }
+    const head = compare.headers.map((h) => `<th scope="col">${escapeHtml(h)}</th>`).join("");
+    const body = compare.rows
+      .map((row) => {
+        const cells = row.map((cell, index) =>
+          index === 0
+            ? `<th scope="row">${escapeHtml(cell)}</th>`
+            : `<td>${escapeHtml(cell)}</td>`
+        );
+        return `<tr>${cells.join("")}</tr>`;
+      })
+      .join("");
+    return `
+      <section class="solution-card__wide solution-card__compare">
+        <b>${escapeHtml(compare.title || "使えるツールの比較")}</b>
+        <div class="solution-table-scroll">
+          <table class="solution-table">
+            <thead><tr>${head}</tr></thead>
+            <tbody>${body}</tbody>
+          </table>
+        </div>
+        ${compare.note ? `<p class="solution-table__note">${escapeHtml(compare.note)}</p>` : ""}
+      </section>
+    `;
+  };
   const renderPlan = (items) => {
     if (!Array.isArray(items) || !items.length) {
       return "";
@@ -282,6 +312,7 @@ function renderQuestionSolutions() {
               <b>解決策</b>
               <p>${escapeHtml(item.solution)}</p>
             </section>
+            ${renderCompare(item.compare)}
             <section>
               <b>今日やること</b>
               <ol>
