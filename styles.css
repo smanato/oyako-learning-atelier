@@ -935,9 +935,11 @@ svg {
 }
 
 /* グリッドの子は既定で min-width:auto なので、中身の幅までしか縮まない。
-   0 にしないと、表を入れたカードが画面幅を超えて右端が切れる。 */
+   0 にしないと、表を入れた親が画面幅を超えて右端が切れる。 */
 .solution-card__body,
-.solution-card__body .solution-card__compare {
+.solution-card__body .solution-card__compare,
+.qa-detail__body,
+.qa-detail__section {
   min-width: 0;
 }
 

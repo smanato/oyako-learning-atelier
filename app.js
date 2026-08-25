@@ -223,6 +223,40 @@ function renderToolSetups() {
     .join("");
 }
 
+// 比較表を描く共通パーツ。compare: { title, headers: [...], rows: [[...], ...], note }
+// questionSolutions と qaItems の sections の両方から使います。
+// 横に長い表はスマホで潰れるので、ページごとではなく表だけを横スクロールさせます。
+function renderCompareTable(compare, options = {}) {
+  if (!compare || !Array.isArray(compare.headers) || !Array.isArray(compare.rows) || !compare.rows.length) {
+    return "";
+  }
+  const head = compare.headers.map((h) => `<th scope="col">${escapeHtml(h)}</th>`).join("");
+  const body = compare.rows
+    .map((row) => {
+      const cells = row.map((cell, index) =>
+        index === 0 ? `<th scope="row">${escapeHtml(cell)}</th>` : `<td>${escapeHtml(cell)}</td>`
+      );
+      return `<tr>${cells.join("")}</tr>`;
+    })
+    .join("");
+  const title = compare.title || options.defaultTitle || "";
+  const titleHtml = title
+    ? options.titleTag === "h3"
+      ? `<h3>${escapeHtml(title)}</h3>`
+      : `<b>${escapeHtml(title)}</b>`
+    : "";
+  return `
+    ${titleHtml}
+    <div class="solution-table-scroll">
+      <table class="solution-table">
+        <thead><tr>${head}</tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>
+    ${compare.note ? `<p class="solution-table__note">${escapeHtml(compare.note)}</p>` : ""}
+  `;
+}
+
 function renderQuestionSolutions() {
   const container = document.querySelector("[data-content-question-solutions]");
   if (!container || !Array.isArray(content.questionSolutions) || !content.questionSolutions.length) {
@@ -238,36 +272,6 @@ function renderQuestionSolutions() {
         <ul class="solution-list">
           ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
         </ul>
-      </section>
-    `;
-  };
-  // 比較表。compare: { title, headers: [...], rows: [[...], ...], note } で出す。
-  // 横に長い表はスマホで潰れるので、表だけを横スクロールさせる。
-  const renderCompare = (compare) => {
-    if (!compare || !Array.isArray(compare.headers) || !Array.isArray(compare.rows) || !compare.rows.length) {
-      return "";
-    }
-    const head = compare.headers.map((h) => `<th scope="col">${escapeHtml(h)}</th>`).join("");
-    const body = compare.rows
-      .map((row) => {
-        const cells = row.map((cell, index) =>
-          index === 0
-            ? `<th scope="row">${escapeHtml(cell)}</th>`
-            : `<td>${escapeHtml(cell)}</td>`
-        );
-        return `<tr>${cells.join("")}</tr>`;
-      })
-      .join("");
-    return `
-      <section class="solution-card__wide solution-card__compare">
-        <b>${escapeHtml(compare.title || "使えるツールの比較")}</b>
-        <div class="solution-table-scroll">
-          <table class="solution-table">
-            <thead><tr>${head}</tr></thead>
-            <tbody>${body}</tbody>
-          </table>
-        </div>
-        ${compare.note ? `<p class="solution-table__note">${escapeHtml(compare.note)}</p>` : ""}
       </section>
     `;
   };
@@ -312,7 +316,11 @@ function renderQuestionSolutions() {
               <b>解決策</b>
               <p>${escapeHtml(item.solution)}</p>
             </section>
-            ${renderCompare(item.compare)}
+            ${
+              item.compare
+                ? `<section class="solution-card__wide solution-card__compare">${renderCompareTable(item.compare, { defaultTitle: "使えるツールの比較" })}</section>`
+                : ""
+            }
             <section>
               <b>今日やること</b>
               <ol>
@@ -982,6 +990,7 @@ function renderQaDetail(item) {
         <section class="qa-detail__section">
           ${section.heading ? `<h3>${escapeHtml(section.heading)}</h3>` : ""}
           ${qaBodyHtml(section.body)}
+          ${section.compare ? renderCompareTable(section.compare) : ""}
           ${
             section.prompt
               ? `
