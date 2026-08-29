@@ -242,7 +242,7 @@ liveArchives: [
 ```js
 {
   title: "教育×AI 第3回アーカイブ",
-  youtubeId: "9wxrK-9DQDI",
+  youtubeId: "XXXXXXXXXXX",
   material: {
     url: "https://drive.google.com/file/d/xxxxx/view",
     label: "第3回の資料を見る",
