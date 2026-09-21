@@ -1585,7 +1585,7 @@ AIに頼む文面
     {
       title: "教育×AI 第4回アーカイブ",
       date: "2026-08-29",
-      description: "「AI教育のためのChatGPT講座」。子どもの学習はChat、親の準備はWork。ChatGPTの使い分け、モデルの選び方、保護者コントロールの設定までを、実際の画面を見ながらお話しした回です。セミナーの最後に少しお話ししたCodexの内容は、あらためて撮り直して別の動画にまとめました。下の「Codex編」からご覧ください。",
+      description: "「AI教育のためのChatGPT講座」。子どもの学習はChat、親の準備はWork。ChatGPTの使い分け、モデルの選び方、保護者コントロールの設定までを、実際の画面を見ながらお話しした回です。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
       youtubeId: "tnMtEM3OOxk",
       material: {
         url: "https://drive.google.com/file/d/1kYFM19iMAHbPoRB2LRtZtFlA4XHUMOVn/view",
@@ -1593,13 +1593,6 @@ AIに頼む文面
         note: "PDF / 33枚"
       },
       tags: "zoom アーカイブ ライブ 録画 教育 AI 第4回 ChatGPT 講座 Study Mode モデル 保護者コントロール 使い分け"
-    },
-    {
-      title: "Codex編（第4回の補足）",
-      description: "第4回セミナーの最後に少しお話しした、ChatGPTのCodexについての回です。時間が足りず駆け足になってしまったので、あらためて撮り直しました。",
-      // Codexの動画をアップしたら、その動画IDをここに入れてください。
-      youtubeId: "",
-      tags: "zoom アーカイブ 録画 Codex ChatGPT 補足 第4回 教育 AI"
     },
     {
       title: "教育×AI 第3回アーカイブ",
