@@ -1583,6 +1583,13 @@ AIに頼む文面
   // material.url は Googleドライブの共有リンク。空のあいだはボタンが出ません。
   liveArchives: [
     {
+      title: "Codexの基本操作セミナー",
+      date: "2026-10-07",
+      description: "OpenAIのDevDayで発表された新しい機能にふれながら、Codexの基本操作を実際の画面で一緒に確認した夜のセミナーです。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
+      youtubeId: "IYGSklAyu3Y",
+      tags: "zoom アーカイブ ライブ 録画 Codex コーデックス 基本操作 使い方 DevDay dots ChatGPT アプリ開発 夜セミナー"
+    },
+    {
       title: "ランチグルコン～ハッカソンWebアプリのつくりかた～",
       date: "2026-10-07",
       description: "ハッカソンで最優秀賞をとったWebアプリ「ごはん執事」を例に、ChatGPTとClaude Codeで作って、使いながら改善していく流れを実際の画面で紹介したランチグルコンです。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
