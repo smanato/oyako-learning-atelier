@@ -1583,6 +1583,18 @@ AIに頼む文面
   // material.url は Googleドライブの共有リンク。空のあいだはボタンが出ません。
   liveArchives: [
     {
+      title: "無料でここまで？最新AI、Museの使い方",
+      date: "2026-10-28",
+      description: "Metaの新しいAI「Muse」の始め方と使い方を、実際の画面で紹介したセミナーです。登録から最初のお願いの仕方、Museで作ったフラッシュカード（画像・印刷用PDF・スマホアプリ）まで、ぜんぶ無料でできることをお見せしました。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
+      youtubeId: "-WmC34y7SdU",
+      material: {
+        url: "https://drive.google.com/file/d/1TAC5TQKzTOFN1jmnu1V9nKBnR_O9-8Vr/view",
+        label: "Museセミナーの資料を見る",
+        note: "PDF / 23枚"
+      },
+      tags: "zoom アーカイブ ライブ 録画 Muse ミュー Meta 無料 AI 使い方 始め方 紹介コード フラッシュカード 画像 印刷 アプリ"
+    },
+    {
       title: "Codexの基本操作セミナー",
       date: "2026-10-07",
       description: "OpenAIのDevDayで発表された新しい機能にふれながら、Codexの基本操作を実際の画面で一緒に確認した夜のセミナーです。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
@@ -1689,6 +1701,17 @@ AIに頼む文面
       url: "https://kanji-drill-ten.vercel.app/",
       buttonLabel: "アプリを開く",
       tags: "漢字 アプリ 手書き ドリル テスト 復習 小学生 中学生 国語 Kanji"
+    },
+    {
+      category: "セミナー資料",
+      badge: "10/28セミナー",
+      title: "無料でここまで？最新AI、Museの使い方",
+      date: "2026-10-28",
+      description: "Museのすごいところ、始め方の3ステップ、最初のひとことの例、Museで作ったフラッシュカードの実例、使うときの注意まで、全23枚にまとめました。",
+      fileType: "PDF",
+      fileSize: "2.8MB",
+      url: "https://drive.google.com/file/d/1TAC5TQKzTOFN1jmnu1V9nKBnR_O9-8Vr/view",
+      tags: "セミナー 資料 Muse ミュー Meta 無料 AI 使い方 始め方 紹介コード フラッシュカード"
     },
     {
       category: "セミナー資料",
