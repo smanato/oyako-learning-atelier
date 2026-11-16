@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>まなび直しノート｜中学数学</title>
+<meta name="description" content="模試で間違えた問題を記録して、くり返し解き直すためのノートです。">
+<style>
+  :root{
+    --bg:#faf7f0; --panel:#ffffff; --ink:#2f2c28; --muted:#75706a; --line:#e7dfd0;
+    --accent:#2f6b4f; --accent-soft:#e8f1ea; --accent-ink:#1f4a37;
+    --warn:#b4722a; --warn-bg:#fdf1e0; --ng:#c0392b; --ng-bg:#fdecea; --ok:#2f6b4f; --ok-bg:#e8f1ea;
+    --shadow:0 2px 10px rgba(80,66,40,.08);
+    color-scheme:light dark;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#1c1b19; --panel:#262522; --ink:#f2efe8; --muted:#aaa49a; --line:#3b3934;
+      --accent:#7fc3a1; --accent-soft:#223229; --accent-ink:#cdeadb;
+      --warn:#e0a861; --warn-bg:#3a2e1d; --ng:#ef8c80; --ng-bg:#3a2321; --ok:#7fc3a1; --ok-bg:#223229;
+      --shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.7; -webkit-text-size-adjust:100%;
+  }
+  main{max-width:720px; margin:0 auto; padding:14px 16px 64px;}
+  h1{font-size:1.35rem; margin:10px 0 2px; letter-spacing:.02em;}
+  h1 small{display:block; font-size:.8rem; color:var(--muted); font-weight:600; letter-spacing:0;}
+  h2{font-size:1.08rem; margin:0 0 10px;}
+  h3{font-size:.95rem; margin:0 0 6px; color:var(--muted);}
+  p{margin:0 0 8px;}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:14px; margin-bottom:12px;}
+  .row{display:flex; gap:8px; flex-wrap:wrap;}
+  .row>*{flex:1 1 0; min-width:0;}
+  button{font-family:inherit; font-size:1rem; cursor:pointer;}
+  .btn{
+    display:inline-block; width:100%; border:2px solid var(--accent); background:var(--accent); color:#fff;
+    border-radius:12px; padding:12px 14px; font-weight:800; text-align:center; text-decoration:none;
+  }
+  .btn:active{transform:scale(.99);}
+  .btn.ghost{background:var(--panel); color:var(--accent); }
+  .btn.quiet{background:var(--panel); color:var(--muted); border-color:var(--line);}
+  .btn.small{padding:8px 10px; font-size:.9rem; border-width:2px; width:auto;}
+  .btn[disabled]{opacity:.45; cursor:default;}
+  label{display:block; font-weight:700; font-size:.92rem; margin:12px 0 4px;}
+  input[type="text"],input[type="date"],input[type="number"],textarea,select{
+    width:100%; font-family:inherit; font-size:1rem; color:var(--ink); background:var(--panel);
+    border:2px solid var(--line); border-radius:10px; padding:10px; line-height:1.6;
+  }
+  textarea{min-height:92px; resize:vertical;}
+  input:focus,textarea:focus,select:focus{outline:none; border-color:var(--accent);}
+  .hint{font-size:.82rem; color:var(--muted); margin:4px 0 0;}
+  .notice{border-radius:12px; padding:10px 12px; font-size:.88rem; margin:0 0 12px; border:1px solid var(--line); background:var(--warn-bg); border-color:var(--warn);}
+  .notice.info{background:var(--accent-soft); border-color:var(--accent);}
+  .hidden{display:none !important;}
+  .stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .stat{background:var(--accent-soft); border-radius:12px; padding:10px 6px; text-align:center;}
+  .stat b{display:block; font-size:1.6rem; line-height:1.2; color:var(--accent-ink);}
+  .stat span{font-size:.78rem; color:var(--muted); font-weight:700;}
+  .item{border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:8px; background:var(--panel); cursor:pointer;}
+  .item .t{font-weight:800; font-size:.98rem;}
+  .item .m{font-size:.8rem; color:var(--muted);}
+  .tag{display:inline-block; font-size:.74rem; font-weight:800; padding:1px 8px; border-radius:999px; background:var(--accent-soft); color:var(--accent-ink); margin-right:4px;}
+  .tag.due{background:var(--warn-bg); color:var(--warn);}
+  .tag.ng{background:var(--ng-bg); color:var(--ng);}
+  .tag.ok{background:var(--ok-bg); color:var(--ok);}
+  .shots{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+  .shot{position:relative; width:calc(33.333% - 6px);}
+  .shot img{width:100%; border-radius:10px; border:1px solid var(--line); display:block;}
+  .shot button{position:absolute; top:4px; right:4px; border:none; background:rgba(0,0,0,.6); color:#fff; border-radius:999px; width:26px; height:26px; font-size:.9rem;}
+  .big-shot img{width:100%; border-radius:12px; border:1px solid var(--line); margin-bottom:8px;}
+  .qa{background:var(--accent-soft); border-radius:12px; padding:10px 12px; margin:8px 0; white-space:pre-wrap; word-break:break-word;}
+  .steps{display:flex; gap:6px; margin:10px 0 2px; font-size:.78rem; color:var(--muted); font-weight:700;}
+  .steps span{flex:1; text-align:center; padding:4px 2px; border-radius:999px; background:var(--panel); border:1px solid var(--line);}
+  .steps span.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .nav{display:flex; gap:6px; margin:14px 0 10px;}
+  .nav button{flex:1; border:2px solid var(--line); background:var(--panel); color:var(--muted); border-radius:12px; padding:9px 2px; font-weight:800; font-size:.88rem;}
+  .nav button.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .hist{font-size:.84rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:6px; margin-top:6px;}
+  .foot{font-size:.78rem; color:var(--muted); text-align:center; margin-top:18px;}
+  .copybox{width:100%; min-height:150px; font-size:.86rem; font-family:ui-monospace,Menlo,Consolas,monospace;}
+  .empty{color:var(--muted); font-size:.92rem; padding:10px 0;}
+</style>
+</head>
+<body>
+<main>
+  <h1>まなび直しノート<small>中学数学／模試の間違いを、次の練習に変える</small></h1>
+
+  <div class="nav">
+    <button type="button" data-go="home" class="on">ホーム</button>
+    <button type="button" data-go="add">問題を登録</button>
+    <button type="button" data-go="list">ノート</button>
+    <button type="button" data-go="settings">設定</button>
+  </div>
+
+  <!-- ホーム -->
+  <section id="s-home">
+    <div class="panel">
+      <div class="stat-grid">
+        <div class="stat"><b id="n-today">0</b><span>今日 解き直す</span></div>
+        <div class="stat"><b id="n-new">0</b><span>まだ復習なし</span></div>
+        <div class="stat"><b id="n-all">0</b><span>登録した問題</span></div>
+      </div>
+      <div class="row" style="margin-top:12px;">
+        <button type="button" class="btn" id="go-review">今日の復習をする</button>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <button type="button" class="btn ghost" data-go="add">問題を登録する</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>分野ごとの登録数</h2>
+      <div id="field-counts"><p class="empty">まだ登録がありません。</p></div>
+    </div>
+    <div class="panel">
+      <h2>最近 登録した問題</h2>
+      <div id="recent"><p class="empty">まだ登録がありません。</p></div>
+    </div>
+  </section>
+
+  <!-- 登録・編集 -->
+  <section id="s-add" class="hidden">
+    <div class="notice">
+      <b>写真を入れる前に。</b> 氏名・学校名・受験番号は隠してください。模試の原本は人に渡さないでください。
+      このノートの中身は、この端末のブラウザの中だけに保存されます（外には送られません）。
+    </div>
+
+    <div class="panel">
+      <h2 id="add-title">問題を登録する</h2>
+
+      <label>問題の写真（何枚でも）</label>
+      <input type="file" id="f-photo" accept="image/*" multiple>
+      <p class="hint">解答用紙や採点結果の写真も、いっしょに入れておけます。</p>
+      <div class="shots" id="shots"></div>
+
+      <div class="row">
+        <div><label>模試名</label><input type="text" id="f-moshi" placeholder="例：第4回 全県模試"></div>
+        <div><label>実施日</label><input type="date" id="f-date"></div>
+      </div>
+      <div class="row">
+        <div><label>大問</label><input type="text" id="f-dai" placeholder="例：3"></div>
+        <div><label>小問</label><input type="text" id="f-sho" placeholder="例：(2)"></div>
+      </div>
+
+      <label>分野</label>
+      <input type="text" id="f-field" list="field-list" placeholder="例：一次関数">
+      <datalist id="field-list">
+        <option value="計算・数と式"></option><option value="方程式"></option><option value="一次関数"></option>
+        <option value="二次関数"></option><option value="図形（平面）"></option><option value="図形（空間）"></option>
+        <option value="合同・相似"></option><option value="三平方の定理"></option><option value="円"></option>
+        <option value="確率"></option><option value="データの活用"></option><option value="文章題"></option>
+      </datalist>
+
+      <label>間違いの理由</label>
+      <select id="f-reason">
+        <option value="">選んでください</option>
+        <option>概念が分からない</option><option>解法が浮かばない</option><option>計算ミス</option>
+        <option>条件の読み違い</option><option>時間不足</option><option>その他</option>
+      </select>
+
+      <label>問題文</label>
+      <textarea id="f-question" placeholder="手で入力するか、下の「ChatGPTで読み取る」を使ってください"></textarea>
+
+      <div class="panel" style="background:var(--accent-soft); border-color:var(--accent); margin:10px 0;">
+        <h3 style="color:var(--accent-ink);">ChatGPTで読み取る（おうちのAIを使います）</h3>
+        <p class="hint" style="color:var(--accent-ink);">
+          ①「頼み文をコピー」を押す → ②ChatGPTを開いて、<b>問題の写真といっしょに</b>貼って送る →
+          ③返ってきた文をまるごとコピーして、下の欄に貼る。
+        </p>
+        <div class="row" style="margin-top:8px;">
+          <button type="button" class="btn ghost small" id="btn-copy-read">頼み文をコピー</button>
+          <button type="button" class="btn quiet small" id="btn-show-read">頼み文を見る</button>
+        </div>
+        <textarea class="copybox hidden" id="read-prompt" readonly></textarea>
+        <label>ChatGPTの答えを貼る</label>
+        <textarea id="f-paste" placeholder="ChatGPTが返した文を、そのまま貼ってください"></textarea>
+        <button type="button" class="btn ghost small" id="btn-apply-paste" style="margin-top:6px;">貼った内容を取り込む</button>
+        <p class="hint" id="paste-msg"></p>
+        <p class="hint"><b>AIの読み取りは間違えることがあります。</b>取り込んだあと、かならず自分の目で直してください。</p>
+      </div>
+
+      <label>正答</label>
+      <textarea id="f-answer" style="min-height:60px;"></textarea>
+      <label>自分の答え</label>
+      <textarea id="f-mine" style="min-height:60px;" placeholder="間違えた答えを残しておくと、あとで見返せます"></textarea>
+      <label>解説（途中式）</label>
+      <textarea id="f-kaisetsu"></textarea>
+
+      <div class="row" style="margin-top:14px;">
+        <button type="button" class="btn" id="btn-save">保存する</button>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <button type="button" class="btn quiet" id="btn-cancel">やめる</button>
+      </div>
+      <p class="hint" id="save-msg"></p>
+    </div>
+  </section>
+
+  <!-- 一覧 -->
+  <section id="s-list" class="hidden">
+    <div class="panel">
+      <div class="row">
+        <div><label>分野でしぼる</label><select id="fl-field"><option value="">すべて</option></select></div>
+        <div><label>模試でしぼる</label><select id="fl-moshi"><option value="">すべて</option></select></div>
+      </div>
+      <label>状態</label>
+      <select id="fl-state">
+        <option value="">すべて</option>
+        <option value="due">今日 解き直す</option>
+        <option value="new">まだ復習していない</option>
+        <option value="ng">まだ間違えたまま</option>
+        <option value="ok">自力で正解できた</option>
+      </select>
+    </div>
+    <div id="list-body"></div>
+  </section>
+
+  <!-- 詳細 -->
+  <section id="s-detail" class="hidden">
+    <div class="panel">
+      <button type="button" class="btn quiet small" data-go="list">← ノートにもどる</button>
+      <h2 id="d-title" style="margin-top:10px;"></h2>
+      <p class="m" id="d-meta"></p>
+      <div id="d-shots"></div>
+      <h3>問題文</h3><div class="qa" id="d-question"></div>
+      <h3>自分の答え</h3><div class="qa" id="d-mine"></div>
+      <h3>正答</h3><div class="qa" id="d-answer"></div>
+      <h3>解説</h3><div class="qa" id="d-kaisetsu"></div>
+      <div class="hist" id="d-hist"></div>
+      <div class="row" style="margin-top:12px;">
+        <button type="button" class="btn ghost small" id="d-edit">直す</button>
+        <button type="button" class="btn ghost small" id="d-again">もう一度 復習する日にする</button>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <button type="button" class="btn quiet small" id="d-delete">この問題を消す</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>類題に挑戦する</h2>
+      <p class="hint">同じ考え方で、数字を変えた問題をChatGPTに作ってもらいます。①コピー → ②ChatGPTに貼る → ③返事を貼る。</p>
+      <div class="row" style="margin-top:8px;">
+        <button type="button" class="btn ghost small" id="btn-copy-similar">頼み文をコピー</button>
+        <button type="button" class="btn quiet small" id="btn-show-similar">頼み文を見る</button>
+      </div>
+      <textarea class="copybox hidden" id="similar-prompt" readonly></textarea>
+      <label>ChatGPTの答えを貼る</label>
+      <textarea id="sim-paste" placeholder="ChatGPTが返した文を、そのまま貼ってください"></textarea>
+      <button type="button" class="btn ghost small" id="btn-apply-similar" style="margin-top:6px;">類題として取り込む</button>
+      <p class="hint" id="sim-msg"></p>
+      <div id="sim-area" class="hidden">
+        <h3>類題</h3><div class="qa" id="sim-q"></div>
+        <button type="button" class="btn ghost small" id="sim-show">答えを見る</button>
+        <div id="sim-ans" class="hidden">
+          <h3>正答</h3><div class="qa" id="sim-a"></div>
+          <h3>途中式・解説</h3><div class="qa" id="sim-k"></div>
+          <p class="hint"><b>AIが作った問題と解説は、まちがっていることがあります。</b>正答と途中式が合っているか確かめてください。</p>
+          <div class="row">
+            <button type="button" class="btn ghost small" data-sim-result="solo">自力で正解</button>
+            <button type="button" class="btn ghost small" data-sim-result="hint">ヒントありで正解</button>
+            <button type="button" class="btn ghost small" data-sim-result="again">まだ間違えた</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 今日の復習 -->
+  <section id="s-review" class="hidden">
+    <div class="panel">
+      <div class="steps" id="r-steps"></div>
+      <h2 id="r-title"></h2>
+      <p class="m" id="r-meta"></p>
+      <div id="r-shots"></div>
+      <h3>問題文</h3><div class="qa" id="r-question"></div>
+      <div id="r-before">
+        <p class="hint">まずは自分で解いてみてね。できたら「答えを見る」。</p>
+        <button type="button" class="btn" id="r-show">答えを見る</button>
+      </div>
+      <div id="r-after" class="hidden">
+        <h3>正答</h3><div class="qa" id="r-answer"></div>
+        <h3>前の自分の答え</h3><div class="qa" id="r-mine"></div>
+        <h3>解説</h3><div class="qa" id="r-kaisetsu"></div>
+        <p class="hint">どうだった？</p>
+        <div class="row">
+          <button type="button" class="btn ghost small" data-result="solo">自力で正解</button>
+          <button type="button" class="btn ghost small" data-result="hint">ヒントありで正解</button>
+          <button type="button" class="btn ghost small" data-result="again">まだ間違えた</button>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px;">
+        <button type="button" class="btn quiet small" id="r-quit">やめる</button>
+      </div>
+    </div>
+    <div class="panel hidden" id="r-done">
+      <h2>今日の復習は おわりです</h2>
+      <p id="r-done-msg"></p>
+      <button type="button" class="btn" data-go="home">ホームにもどる</button>
+    </div>
+  </section>
+
+  <!-- 設定 -->
+  <section id="s-settings" class="hidden">
+    <div class="panel">
+      <h2>次に復習する日</h2>
+      <p class="hint">結果によって、次に出てくる日が決まります。</p>
+      <div class="row">
+        <div><label>まだ間違えた</label><input type="number" id="st-again" min="0" max="60"></div>
+        <div><label>ヒントありで正解</label><input type="number" id="st-hint" min="0" max="60"></div>
+        <div><label>自力で正解</label><input type="number" id="st-solo" min="0" max="60"></div>
+      </div>
+      <p class="hint">単位は「日後」です。</p>
+      <button type="button" class="btn ghost small" id="st-save" style="margin-top:10px;">この設定を保存</button>
+      <p class="hint" id="st-msg"></p>
+    </div>
+    <div class="panel">
+      <h2>バックアップ</h2>
+      <p class="hint">中身はこの端末のブラウザの中だけにあります。機種変更や、履歴を消す前には書き出してください（写真も一緒に入ります）。</p>
+      <button type="button" class="btn ghost small" id="st-export">ファイルに書き出す</button>
+      <label style="margin-top:12px;">読み込む</label>
+      <input type="file" id="st-import" accept="application/json,.json">
+      <p class="hint" id="io-msg"></p>
+    </div>
+    <div class="panel">
+      <h2>使うときの約束</h2>
+      <p class="hint">
+        ・写真に氏名・学校名・受験番号を入れない<br>
+        ・AIが読み取った問題文や、作った類題は、かならず人が確かめる<br>
+        ・小学生・中学生がChatGPTを使うときは、保護者がいっしょに使う
+      </p>
+    </div>
+  </section>
+
+  <p class="foot">まなび直しノート｜中学数学　AI教育ラボ</p>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var DB_NAME = "manabinaoshi", DB_VER = 1, db = null;
+  var items = [];                 // 問題の一覧（新しい順）
+  var settings = { again:1, hint:3, solo:7 };
+  var editingId = null;           // 編集中の問題id（新規はnull）
+  var photos = [];                // 登録画面で持っている写真
+  var detailId = null;            // 詳細で見ている問題
+  var reviewQueue = [], reviewPos = 0, reviewDone = 0;
+  var pendingSimilar = null;      // 取り込んだ類題（まだ結果なし）
+
+  /* ---------- 保存まわり（IndexedDB） ---------- */
+  function openDB(){
+    return new Promise(function(resolve, reject){
+      var req = indexedDB.open(DB_NAME, DB_VER);
+      req.onupgradeneeded = function(e){
+        var d = e.target.result;
+        if (!d.objectStoreNames.contains("items")) d.createObjectStore("items", { keyPath:"id" });
+        if (!d.objectStoreNames.contains("meta")) d.createObjectStore("meta", { keyPath:"key" });
+      };
+      req.onsuccess = function(){ resolve(req.result); };
+      req.onerror = function(){ reject(req.error); };
+    });
+  }
+  function tx(store, mode){ return db.transaction(store, mode).objectStore(store); }
+  function putItem(item){
+    return new Promise(function(res, rej){
+      var r = tx("items","readwrite").put(item);
+      r.onsuccess = function(){ res(); }; r.onerror = function(){ rej(r.error); };
+    });
+  }
+  function delItem(id){
+    return new Promise(function(res, rej){
+      var r = tx("items","readwrite").delete(id);
+      r.onsuccess = function(){ res(); }; r.onerror = function(){ rej(r.error); };
+    });
+  }
+  function loadItems(){
+    return new Promise(function(res, rej){
+      var r = tx("items","readonly").getAll();
+      r.onsuccess = function(){
+        items = (r.result || []).sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
+        res();
+      };
+      r.onerror = function(){ rej(r.error); };
+    });
+  }
+  function putMeta(key, value){
+    return new Promise(function(res, rej){
+      var r = tx("meta","readwrite").put({ key:key, value:value });
+      r.onsuccess = function(){ res(); }; r.onerror = function(){ rej(r.error); };
+    });
+  }
+  function getMeta(key){
+    return new Promise(function(res){
+      var r = tx("meta","readonly").get(key);
+      r.onsuccess = function(){ res(r.result ? r.result.value : null); };
+      r.onerror = function(){ res(null); };
+    });
+  }
+
+  /* ---------- 小さな道具 ---------- */
+  function todayStr(){
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function addDays(days){
+    var d = new Date();
+    d.setDate(d.getDate() + Number(days || 0));
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+  function uid(){ return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function label(it){
+    var p = [];
+    if (it.moshi) p.push(it.moshi);
+    if (it.dai) p.push("大問" + it.dai);
+    if (it.sho) p.push(it.sho);
+    return p.length ? p.join(" ") : "（模試名なし）";
+  }
+  function isDue(it){ return it.nextReview && it.nextReview <= todayStr(); }
+  function lastResult(it){
+    var h = it.history || [];
+    return h.length ? h[h.length-1].result : null;
+  }
+  function resultWord(r){
+    return r === "solo" ? "自力で正解" : r === "hint" ? "ヒントありで正解" : r === "again" ? "まだ間違えた" : "―";
+  }
+
+  /* ---------- 画面の出し分け ---------- */
+  var screens = ["home","add","list","detail","review","settings"];
+  function show(name){
+    screens.forEach(function(s){ $("s-"+s).classList.toggle("hidden", s !== name); });
+    document.querySelectorAll(".nav button").forEach(function(b){
+      b.classList.toggle("on", b.getAttribute("data-go") === name);
+    });
+    window.scrollTo(0,0);
+    if (name === "home") renderHome();
+    if (name === "list") renderList();
+  }
+  document.addEventListener("click", function(e){
+    var b = e.target.closest("[data-go]");
+    if (!b) return;
+    var to = b.getAttribute("data-go");
+    if (to === "add" && !b.closest("#s-add")) startAdd(null);
+    show(to);
+  });
+
+  /* ---------- ホーム ---------- */
+  function renderHome(){
+    var due = items.filter(isDue).length;
+    var fresh = items.filter(function(it){ return !(it.history || []).length; }).length;
+    $("n-today").textContent = due;
+    $("n-new").textContent = fresh;
+    $("n-all").textContent = items.length;
+    $("go-review").disabled = due === 0;
+    $("go-review").textContent = due ? ("今日の復習をする（" + due + "問）") : "今日 解き直す問題はありません";
+
+    var counts = {};
+    items.forEach(function(it){
+      var f = it.field || "分野なし";
+      counts[f] = (counts[f] || 0) + 1;
+    });
+    var keys = Object.keys(counts).sort(function(a,b){ return counts[b] - counts[a]; });
+    $("field-counts").innerHTML = keys.length
+      ? keys.map(function(k){ return '<span class="tag">' + esc(k) + " " + counts[k] + "</span>"; }).join(" ")
+      : '<p class="empty">まだ登録がありません。</p>';
+
+    var recent = items.slice(0,5);
+    $("recent").innerHTML = recent.length ? recent.map(itemRow).join("") : '<p class="empty">まだ登録がありません。</p>';
+  }
+  function itemRow(it){
+    var tags = "";
+    if (isDue(it)) tags += '<span class="tag due">今日</span>';
+    if (it.field) tags += '<span class="tag">' + esc(it.field) + "</span>";
+    var lr = lastResult(it);
+    if (lr === "again") tags += '<span class="tag ng">まだ間違える</span>';
+    if (lr === "solo") tags += '<span class="tag ok">自力で正解</span>';
+    var q = (it.question || "").replace(/\s+/g," ").slice(0,42);
+    return '<div class="item" data-open="' + it.id + '">' +
+      '<div class="t">' + esc(label(it)) + "</div>" +
+      '<div class="m">' + tags + "</div>" +
+      (q ? '<div class="m">' + esc(q) + (it.question.length > 42 ? "…" : "") + "</div>" : "") +
+      '<div class="m">次の復習：' + esc(it.nextReview || "―") + "</div>" +
+      "</div>";
+  }
+  document.addEventListener("click", function(e){
+    var row = e.target.closest("[data-open]");
+    if (!row) return;
+    openDetail(row.getAttribute("data-open"));
+  });
+
+  /* ---------- 登録・編集 ---------- */
+  function startAdd(id){
+    editingId = id;
+    var it = id ? items.filter(function(x){ return x.id === id; })[0] : null;
+    photos = it ? (it.photos || []).slice() : [];
+    $("add-title").textContent = it ? "問題を直す" : "問題を登録する";
+    $("f-moshi").value = it ? (it.moshi || "") : "";
+    $("f-date").value = it ? (it.date || "") : "";
+    $("f-dai").value = it ? (it.dai || "") : "";
+    $("f-sho").value = it ? (it.sho || "") : "";
+    $("f-field").value = it ? (it.field || "") : "";
+    $("f-reason").value = it ? (it.reason || "") : "";
+    $("f-question").value = it ? (it.question || "") : "";
+    $("f-answer").value = it ? (it.answer || "") : "";
+    $("f-mine").value = it ? (it.mine || "") : "";
+    $("f-kaisetsu").value = it ? (it.kaisetsu || "") : "";
+    $("f-paste").value = "";
+    $("paste-msg").textContent = "";
+    $("save-msg").textContent = "";
+    $("read-prompt").value = readPrompt();
+    $("read-prompt").classList.add("hidden");
+    renderShots();
+  }
+  function renderShots(){
+    $("shots").innerHTML = photos.map(function(src, i){
+      return '<div class="shot"><img src="' + src + '" alt="問題の写真 ' + (i+1) + '"><button type="button" data-del-photo="' + i + '" aria-label="この写真を消す">×</button></div>';
+    }).join("");
+  }
+  $("shots").addEventListener("click", function(e){
+    var b = e.target.closest("[data-del-photo]");
+    if (!b) return;
+    photos.splice(Number(b.getAttribute("data-del-photo")), 1);
+    renderShots();
+  });
+  function readImage(file){
+    return new Promise(function(resolve, reject){
+      var fr = new FileReader();
+      fr.onload = function(){
+        var img = new Image();
+        img.onload = function(){
+          var max = 1400, w = img.width, h = img.height;
+          var sc = Math.min(1, max / Math.max(w, h));
+          var c = document.createElement("canvas");
+          c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          resolve(c.toDataURL("image/jpeg", 0.82));
+        };
+        img.onerror = function(){ reject(new Error("画像を読めませんでした")); };
+        img.src = fr.result;
+      };
+      fr.onerror = function(){ reject(new Error("ファイルを読めませんでした")); };
+      fr.readAsDataURL(file);
+    });
+  }
+  $("f-photo").addEventListener("change", function(e){
+    var files = Array.prototype.slice.call(e.target.files || []);
+    if (!files.length) return;
+    Promise.all(files.map(readImage)).then(function(list){
+      photos = photos.concat(list);
+      renderShots();
+      $("f-photo").value = "";
+    }).catch(function(err){
+      $("save-msg").textContent = "写真を読めませんでした：" + err.message;
+    });
+  });
+
+  function readPrompt(){
+    return [
+      "これは中学数学の模試の問題の写真です。写真から読み取って、次の形のJSONだけを返してください。説明や前置きは書かないでください。",
+      "",
+      '{"question":"問題文","answer":"正答","kaisetsu":"短い解説（途中式つき）","field":"分野"}',
+      "",
+      "・分野は「一次関数」「図形（平面）」「確率」「方程式」のように短く書いてください。",
+      "・読み取れない部分は、推測で埋めずに「読み取れない箇所」と書いてください。",
+      "・図やグラフは、文章だけで無理に説明せず、読み取れた範囲で書いてください。"
+    ].join("\n");
+  }
+  function similarPrompt(it){
+    return [
+      "次の中学数学の問題と、同じ分野・同じ考え方で、数値と設定を変えた問題を1問作ってください。",
+      "",
+      "【元の問題】" + (it.question || "（問題文なし）"),
+      "【元の正答】" + (it.answer || "（正答なし）"),
+      "【分野】" + (it.field || "（分野なし）"),
+      "",
+      "次の形のJSONだけを返してください。説明や前置きは書かないでください。",
+      '{"question":"問題文","answer":"正答","steps":"途中式","kaisetsu":"短い解説"}',
+      "",
+      "・元の問題の文章や数値をそのまま使い回さず、新しい問題として作ってください。",
+      "・正答と途中式が合っているか確かめ、合わない場合は作り直してください。",
+      "・高校数学の知識を前提にした解き方は使わないでください。"
+    ].join("\n");
+  }
+  function copyText(text, msgEl, okText){
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+      document.body.removeChild(ta);
+      msgEl.textContent = ok ? okText : "コピーできませんでした。「頼み文を見る」から選んでコピーしてください。";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function(){ msgEl.textContent = okText; }, fallback);
+    } else fallback();
+  }
+  $("btn-copy-read").addEventListener("click", function(){
+    copyText(readPrompt(), $("paste-msg"), "コピーしました。ChatGPTに、問題の写真といっしょに貼ってください。");
+  });
+  $("btn-show-read").addEventListener("click", function(){
+    $("read-prompt").value = readPrompt();
+    $("read-prompt").classList.toggle("hidden");
+  });
+
+  // ChatGPTの返事からJSONを取り出す（```json で囲まれていても拾う）
+  function pickJson(text){
+    if (!text) return null;
+    var s = String(text).trim();
+    s = s.replace(/```json/gi, "```");
+    var fence = s.indexOf("```");
+    if (fence >= 0) {
+      var end = s.indexOf("```", fence + 3);
+      if (end > fence) s = s.slice(fence + 3, end).trim();
+    }
+    var a = s.indexOf("{"), b = s.lastIndexOf("}");
+    if (a < 0 || b <= a) return null;
+    var body = s.slice(a, b + 1);
+    try { return JSON.parse(body); } catch (_) {}
+    try { return JSON.parse(body.replace(/,\s*([}\]])/g, "$1")); } catch (_) {}
+    return null;
+  }
+  $("btn-apply-paste").addEventListener("click", function(){
+    var obj = pickJson($("f-paste").value);
+    if (!obj) {
+      $("paste-msg").textContent = "読み取れませんでした。ChatGPTの返事を、消さずにそのまま貼ってみてください。";
+      return;
+    }
+    var filled = [];
+    if (obj.question) { $("f-question").value = String(obj.question); filled.push("問題文"); }
+    if (obj.answer) { $("f-answer").value = String(obj.answer); filled.push("正答"); }
+    if (obj.kaisetsu) { $("f-kaisetsu").value = String(obj.kaisetsu); filled.push("解説"); }
+    if (obj.field && !$("f-field").value) { $("f-field").value = String(obj.field); filled.push("分野"); }
+    $("paste-msg").textContent = filled.length
+      ? ("取り込みました（" + filled.join("・") + "）。内容が合っているか、目で確かめてください。")
+      : "JSONは読めましたが、中身が空でした。";
+  });
+
+  $("btn-save").addEventListener("click", function(){
+    var question = $("f-question").value.trim();
+    var answer = $("f-answer").value.trim();
+    if (!question && !answer && !photos.length) {
+      $("save-msg").textContent = "写真か、問題文か、正答のどれかは入れてください。";
+      return;
+    }
+    var base = editingId ? items.filter(function(x){ return x.id === editingId; })[0] : null;
+    var it = {
+      id: base ? base.id : uid(),
+      createdAt: base ? base.createdAt : Date.now(),
+      moshi: $("f-moshi").value.trim(),
+      date: $("f-date").value,
+      dai: $("f-dai").value.trim(),
+      sho: $("f-sho").value.trim(),
+      field: $("f-field").value.trim(),
+      reason: $("f-reason").value,
+      question: question,
+      answer: answer,
+      mine: $("f-mine").value.trim(),
+      kaisetsu: $("f-kaisetsu").value.trim(),
+      photos: photos.slice(),
+      history: base ? (base.history || []) : [],
+      similars: base ? (base.similars || []) : [],
+      nextReview: base ? base.nextReview : todayStr()
+    };
+    putItem(it).then(loadItems).then(function(){
+      $("save-msg").textContent = "";
+      editingId = null;
+      show("home");
+    }).catch(function(err){
+      $("save-msg").textContent = "保存できませんでした：" + err.message;
+    });
+  });
+  $("btn-cancel").addEventListener("click", function(){ editingId = null; show("home"); });
+
+  /* ---------- 一覧 ---------- */
+  function fillFilters(){
+    var fields = [], moshis = [];
+    items.forEach(function(it){
+      if (it.field && fields.indexOf(it.field) < 0) fields.push(it.field);
+      if (it.moshi && moshis.indexOf(it.moshi) < 0) moshis.push(it.moshi);
+    });
+    function fill(sel, list){
+      var keep = sel.value;
+      sel.innerHTML = '<option value="">すべて</option>' + list.map(function(v){
+        return '<option value="' + esc(v) + '">' + esc(v) + "</option>";
+      }).join("");
+      sel.value = list.indexOf(keep) >= 0 ? keep : "";
+    }
+    fill($("fl-field"), fields);
+    fill($("fl-moshi"), moshis);
+  }
+  function renderList(){
+    fillFilters();
+    var f = $("fl-field").value, m = $("fl-moshi").value, st = $("fl-state").value;
+    var rows = items.filter(function(it){
+      if (f && it.field !== f) return false;
+      if (m && it.moshi !== m) return false;
+      if (st === "due" && !isDue(it)) return false;
+      if (st === "new" && (it.history || []).length) return false;
+      if (st === "ng" && lastResult(it) !== "again") return false;
+      if (st === "ok" && lastResult(it) !== "solo") return false;
+      return true;
+    });
+    $("list-body").innerHTML = rows.length
+      ? rows.map(itemRow).join("")
+      : '<div class="panel"><p class="empty">あてはまる問題がありません。</p></div>';
+  }
+  ["fl-field","fl-moshi","fl-state"].forEach(function(id){
+    $(id).addEventListener("change", renderList);
+  });
+
+  /* ---------- 詳細 ---------- */
+  function openDetail(id){
+    var it = items.filter(function(x){ return x.id === id; })[0];
+    if (!it) return;
+    detailId = id;
+    pendingSimilar = null;
+    $("d-title").textContent = label(it);
+    var meta = [];
+    if (it.date) meta.push(it.date);
+    if (it.field) meta.push(it.field);
+    if (it.reason) meta.push("理由：" + it.reason);
+    meta.push("次の復習：" + (it.nextReview || "―"));
+    $("d-meta").textContent = meta.join("　");
+    $("d-shots").innerHTML = (it.photos || []).map(function(src){
+      return '<div class="big-shot"><img src="' + src + '" alt="問題の写真"></div>';
+    }).join("");
+    $("d-question").textContent = it.question || "（なし）";
+    $("d-mine").textContent = it.mine || "（なし）";
+    $("d-answer").textContent = it.answer || "（なし）";
+    $("d-kaisetsu").textContent = it.kaisetsu || "（なし）";
+    var h = (it.history || []).slice().reverse();
+    $("d-hist").innerHTML = h.length
+      ? "<b>これまで</b><br>" + h.map(function(x){
+          return esc(x.at) + "　" + esc(resultWord(x.result)) + (x.kind === "similar" ? "（類題）" : "");
+        }).join("<br>")
+      : "<b>これまで</b><br>まだ解き直していません。";
+    $("sim-paste").value = "";
+    $("sim-msg").textContent = "";
+    $("sim-area").classList.add("hidden");
+    $("sim-ans").classList.add("hidden");
+    $("similar-prompt").classList.add("hidden");
+    show("detail");
+  }
+  $("d-edit").addEventListener("click", function(){ startAdd(detailId); show("add"); });
+  $("d-again").addEventListener("click", function(){
+    var it = items.filter(function(x){ return x.id === detailId; })[0];
+    if (!it) return;
+    it.nextReview = todayStr();
+    putItem(it).then(loadItems).then(function(){ openDetail(detailId); });
+  });
+  $("d-delete").addEventListener("click", function(){
+    if (!window.confirm("この問題を消します。もとに戻せません。いいですか？")) return;
+    delItem(detailId).then(loadItems).then(function(){ show("list"); });
+  });
+  $("btn-copy-similar").addEventListener("click", function(){
+    var it = items.filter(function(x){ return x.id === detailId; })[0];
+    if (!it) return;
+    copyText(similarPrompt(it), $("sim-msg"), "コピーしました。ChatGPTに貼って送ってください。");
+  });
+  $("btn-show-similar").addEventListener("click", function(){
+    var it = items.filter(function(x){ return x.id === detailId; })[0];
+    if (!it) return;
+    $("similar-prompt").value = similarPrompt(it);
+    $("similar-prompt").classList.toggle("hidden");
+  });
+  $("btn-apply-similar").addEventListener("click", function(){
+    var obj = pickJson($("sim-paste").value);
+    if (!obj || !obj.question) {
+      $("sim-msg").textContent = "読み取れませんでした。ChatGPTの返事を、そのまま貼ってみてください。";
+      return;
+    }
+    pendingSimilar = {
+      question: String(obj.question || ""),
+      answer: String(obj.answer || ""),
+      steps: String(obj.steps || ""),
+      kaisetsu: String(obj.kaisetsu || ""),
+      at: todayStr()
+    };
+    $("sim-q").textContent = pendingSimilar.question;
+    $("sim-a").textContent = pendingSimilar.answer || "（なし）";
+    $("sim-k").textContent = [pendingSimilar.steps, pendingSimilar.kaisetsu].filter(Boolean).join("\n\n") || "（なし）";
+    $("sim-area").classList.remove("hidden");
+    $("sim-ans").classList.add("hidden");
+    $("sim-msg").textContent = "取り込みました。まず自分で解いてから「答えを見る」を押してください。";
+  });
+  $("sim-show").addEventListener("click", function(){ $("sim-ans").classList.remove("hidden"); });
+  document.querySelectorAll("[data-sim-result]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var it = items.filter(function(x){ return x.id === detailId; })[0];
+      if (!it || !pendingSimilar) return;
+      var r = b.getAttribute("data-sim-result");
+      pendingSimilar.result = r;
+      it.similars = (it.similars || []).concat([pendingSimilar]);
+      it.history = (it.history || []).concat([{ at: todayStr(), result: r, kind: "similar" }]);
+      it.nextReview = addDays(settings[r]);
+      pendingSimilar = null;
+      putItem(it).then(loadItems).then(function(){
+        openDetail(detailId);
+        $("sim-msg").textContent = "記録しました。次に出てくるのは " + it.nextReview + " です。";
+      });
+    });
+  });
+
+  /* ---------- 今日の復習 ---------- */
+  $("go-review").addEventListener("click", function(){
+    reviewQueue = items.filter(isDue);
+    if (!reviewQueue.length) return;
+    reviewPos = 0; reviewDone = 0;
+    $("r-done").classList.add("hidden");
+    show("review");
+    renderReview();
+  });
+  function renderReview(){
+    if (reviewPos >= reviewQueue.length) {
+      document.querySelector("#s-review .panel").classList.add("hidden");
+      $("r-done").classList.remove("hidden");
+      $("r-done-msg").textContent = reviewDone + " 問 解き直しました。おつかれさま！";
+      return;
+    }
+    var it = reviewQueue[reviewPos];
+    document.querySelector("#s-review .panel").classList.remove("hidden");
+    $("r-steps").innerHTML = reviewQueue.map(function(_, i){
+      return '<span class="' + (i < reviewPos ? "on" : (i === reviewPos ? "on" : "")) + '">' + (i+1) + "</span>";
+    }).join("");
+    $("r-title").textContent = label(it);
+    $("r-meta").textContent = [it.field, it.date].filter(Boolean).join("　");
+    $("r-shots").innerHTML = (it.photos || []).map(function(src){
+      return '<div class="big-shot"><img src="' + src + '" alt="問題の写真"></div>';
+    }).join("");
+    $("r-question").textContent = it.question || "（問題文なし。写真を見てね）";
+    $("r-answer").textContent = it.answer || "（なし）";
+    $("r-mine").textContent = it.mine || "（なし）";
+    $("r-kaisetsu").textContent = it.kaisetsu || "（なし）";
+    $("r-before").classList.remove("hidden");
+    $("r-after").classList.add("hidden");
+    window.scrollTo(0,0);
+  }
+  $("r-show").addEventListener("click", function(){
+    $("r-before").classList.add("hidden");
+    $("r-after").classList.remove("hidden");
+  });
+  document.querySelectorAll("[data-result]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var it = reviewQueue[reviewPos];
+      if (!it) return;
+      var r = b.getAttribute("data-result");
+      it.history = (it.history || []).concat([{ at: todayStr(), result: r, kind: "review" }]);
+      it.nextReview = addDays(settings[r]);
+      putItem(it).then(loadItems).then(function(){
+        reviewDone++;
+        reviewPos++;
+        renderReview();
+      });
+    });
+  });
+  $("r-quit").addEventListener("click", function(){ show("home"); });
+
+  /* ---------- 設定・バックアップ ---------- */
+  function fillSettings(){
+    $("st-again").value = settings.again;
+    $("st-hint").value = settings.hint;
+    $("st-solo").value = settings.solo;
+  }
+  $("st-save").addEventListener("click", function(){
+    function num(v, d){ var n = parseInt(v, 10); return (isNaN(n) || n < 0 || n > 60) ? d : n; }
+    settings = {
+      again: num($("st-again").value, 1),
+      hint: num($("st-hint").value, 3),
+      solo: num($("st-solo").value, 7)
+    };
+    fillSettings();
+    putMeta("settings", settings).then(function(){
+      $("st-msg").textContent = "保存しました。";
+    });
+  });
+  $("st-export").addEventListener("click", function(){
+    var data = JSON.stringify({ app:"manabinaoshi", version:1, exportedAt:new Date().toISOString(), settings:settings, items:items });
+    var blob = new Blob([data], { type:"application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "manabinaoshi-" + todayStr() + ".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+    $("io-msg").textContent = "書き出しました。";
+  });
+  $("st-import").addEventListener("change", function(e){
+    var file = (e.target.files || [])[0];
+    if (!file) return;
+    var fr = new FileReader();
+    fr.onload = function(){
+      var obj = null;
+      try { obj = JSON.parse(fr.result); } catch (_) {}
+      if (!obj || !Array.isArray(obj.items)) {
+        $("io-msg").textContent = "読み込めませんでした。このアプリで書き出したファイルを選んでください。";
+        return;
+      }
+      if (!window.confirm("今あるノートに、ファイルの中身を足します（同じ問題は上書きされます）。いいですか？")) return;
+      Promise.all(obj.items.map(function(it){ return it && it.id ? putItem(it) : null; }))
+        .then(function(){ return obj.settings ? putMeta("settings", obj.settings) : null; })
+        .then(function(){
+          if (obj.settings) settings = Object.assign({ again:1, hint:3, solo:7 }, obj.settings);
+          fillSettings();
+          return loadItems();
+        })
+        .then(function(){
+          $("io-msg").textContent = obj.items.length + " 問 読み込みました。";
+          $("st-import").value = "";
+        })
+        .catch(function(err){ $("io-msg").textContent = "読み込めませんでした：" + err.message; });
+    };
+    fr.readAsText(file);
+  });
+
+  /* ---------- 起動 ---------- */
+  function fail(msg){
+    document.querySelector("main").insertAdjacentHTML("afterbegin",
+      '<div class="notice"><b>保存できる場所が使えません。</b>' + esc(msg) +
+      "　プライベートモードを使っていると、この画面が出ることがあります。ふつうのタブで開いてみてください。</div>");
+  }
+  if (!window.indexedDB) {
+    fail("このブラウザでは、ノートを保存できません。");
+  } else {
+    openDB().then(function(d){
+      db = d;
+      return getMeta("settings");
+    }).then(function(s){
+      if (s) settings = Object.assign({ again:1, hint:3, solo:7 }, s);
+      fillSettings();
+      return loadItems();
+    }).then(function(){
+      $("f-date").value = todayStr();
+      $("read-prompt").value = readPrompt();
+      renderHome();
+    }).catch(function(err){
+      fail(err && err.message ? err.message : "");
+    });
+  }
+})();
+</script>
+</body>
+</html>
