@@ -1,0 +1,1193 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=1185849d-db8f-4d6f-a57b-6548763eca98
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="data:," />
+    <title>九九練習 カラフル 1問ずつ版</title>
+    <style>
+      :root{
+        --bg:#FFF6E0;
+        --card:#FFFFFF;
+        --ink:#33302A;
+        --ink-soft:#5A5348;
+        --blue:#1D6FB8;
+        --blue-dark:#155A94;
+        --green:#1E8449;
+        --pink:#D6336C;
+        --yellow:#FFC93C;
+        --line:#F0DFC0;
+        --ok-bg:#E3F6E8;
+        --ok-ink:#14632F;
+        --ng-bg:#FDECEF;
+        --ng-ink:#A61C44;
+        --radius:20px;
+      }
+      *{ box-sizing:border-box; }
+      html{ -webkit-text-size-adjust:100%; }
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Hiragino Sans","Yu Gothic UI","Yu Gothic","Noto Sans JP",sans-serif;
+        font-weight:500;
+        line-height:1.5;
+      }
+      .wrap{ max-width:560px; margin:0 auto; padding:16px 14px 40px; }
+      .hidden{ display:none !important; }
+
+      /* ---------- hero ---------- */
+      .hero{ text-align:center; padding:10px 0 4px; }
+      .hero .mascot{ width:86px; height:86px; }
+      .hero h1{ margin:2px 0 2px; font-size:34px; font-weight:800; letter-spacing:.04em; }
+      .hero .lead{ margin:0; color:var(--ink-soft); font-size:16px; font-weight:700; }
+
+      /* ---------- cards & sections ---------- */
+      .card{
+        background:var(--card);
+        border:3px solid var(--line);
+        border-radius:var(--radius);
+        padding:18px 16px 20px;
+        margin-top:14px;
+      }
+      .card h2{
+        margin:16px 0 8px; font-size:17px; font-weight:800;
+        display:flex; align-items:center; gap:8px;
+      }
+      .card h2:first-child{ margin-top:0; }
+      .card h2::before{
+        content:""; width:12px; height:12px; border-radius:50%;
+        background:var(--yellow); border:2px solid var(--ink); flex:none;
+      }
+      .card h2.h-blue::before{ background:#4DABF7; }
+      .card h2.h-green::before{ background:#69DB7C; }
+      .card h2.h-pink::before{ background:#F783AC; }
+
+      /* ---------- segmented choices ---------- */
+      .seg{ display:flex; gap:8px; }
+      .seg button{
+        flex:1; appearance:none; cursor:pointer;
+        font:inherit; font-weight:800; font-size:17px; color:var(--ink);
+        background:#FFFDF6; border:3px solid var(--line); border-radius:16px;
+        padding:12px 6px; line-height:1.25;
+      }
+      .seg button small{ display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-top:2px; }
+      .seg button[aria-pressed="true"]{ border-color:var(--ink); background:#FFF3BF; box-shadow:0 3px 0 rgba(51,48,42,.25); }
+      .seg button:focus-visible, .dan-grid button:focus-visible, button:focus-visible{
+        outline:4px solid var(--blue); outline-offset:2px;
+      }
+
+      /* ---------- dan grid ---------- */
+      .dan-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+      .dan-grid button{
+        appearance:none; cursor:pointer; font:inherit;
+        font-size:26px; font-weight:800; color:#33302A;
+        border:3px solid rgba(51,48,42,.18); border-radius:16px;
+        padding:10px 0 12px; line-height:1.1;
+      }
+      .dan-grid button small{ display:block; font-size:12px; font-weight:700; }
+      .dan-grid button[aria-pressed="true"]{
+        border-color:var(--ink); box-shadow:0 0 0 2px #fff, 0 0 0 5px var(--ink);
+      }
+      .dan-2{ background:#FFA8C5; } .dan-3{ background:#FFD43B; }
+      .dan-4{ background:#69DB7C; } .dan-5{ background:#4DABF7; color:#fff; }
+      .dan-6{ background:#FF922B; } .dan-7{ background:#63E6BE; }
+      .dan-8{ background:#F783AC; } .dan-9{ background:#A9E34B; }
+
+      .start-btn{
+        display:block; width:100%; margin-top:20px;
+        appearance:none; cursor:pointer; font:inherit;
+        font-size:24px; font-weight:800; color:#fff; letter-spacing:.06em;
+        background:var(--blue); border:none; border-radius:999px;
+        padding:16px 10px; box-shadow:0 5px 0 var(--blue-dark);
+      }
+      .start-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 var(--blue-dark); }
+      .note{ margin:12px 2px 0; font-size:13.5px; color:var(--ink-soft); font-weight:700; }
+
+      /* ---------- guardian ---------- */
+      details.guardian{
+        margin-top:14px; background:#FFFDF6; border:3px solid var(--line);
+        border-radius:var(--radius); padding:6px 16px 12px;
+      }
+      details.guardian summary{
+        cursor:pointer; font-weight:800; font-size:16px; padding:10px 0 4px;
+      }
+      details.guardian p, details.guardian li{ font-size:14px; color:var(--ink-soft); font-weight:500; }
+      details.guardian ul{ margin:6px 0; padding-left:20px; }
+      details.guardian p{ margin:8px 0; }
+
+      /* ---------- generic buttons ---------- */
+      .btn{
+        appearance:none; cursor:pointer; font:inherit; font-weight:800;
+        border-radius:999px; border:3px solid var(--ink);
+        background:#fff; color:var(--ink); padding:12px 18px; font-size:17px;
+      }
+      .btn.primary{ background:var(--blue); border-color:var(--blue-dark); color:#fff; box-shadow:0 4px 0 var(--blue-dark); }
+      .btn.primary:disabled{ background:#B9CBD8; border-color:#B9CBD8; box-shadow:none; color:#F4F8FB; cursor:not-allowed; }
+      button.btn:disabled{ background:#D8D2C2; border-color:#C4BBA6; box-shadow:none; color:#8A8271; cursor:not-allowed; }
+      .btn.green{ background:var(--green); border-color:#145C33; color:#fff; box-shadow:0 4px 0 #145C33; }
+      .btn:active{ transform:translateY(2px); }
+      .btn-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+      .btn-row .btn{ flex:1; min-width:150px; }
+
+      /* ---------- voice prep ---------- */
+      .explain{
+        background:#EBF5FF; border:3px solid #B7DCFF; border-radius:var(--radius);
+        padding:14px 16px; font-size:14.5px;
+      }
+      .explain p{ margin:6px 0; }
+      .explain strong{ font-weight:800; }
+      .sample-box{
+        text-align:center; margin-top:16px; padding:16px 10px;
+        background:#FFFDF6; border:3px dashed var(--pink); border-radius:var(--radius);
+      }
+      .sample-box .say{ font-size:15px; font-weight:700; color:var(--ink-soft); margin:0; }
+      .sample-box .word{ font-size:40px; font-weight:800; margin:4px 0 0; letter-spacing:.05em; }
+      .status{
+        margin-top:14px; min-height:30px; font-size:17px; font-weight:800; text-align:center;
+      }
+      .status .heard-num{ font-size:26px; }
+      .center-col{ display:flex; flex-direction:column; gap:12px; margin-top:14px; }
+      .center-col .btn{ width:100%; }
+
+      /* ---------- countdown ---------- */
+      .count-wrap{ text-align:center; padding:56px 0 30px; }
+      .count-num{
+        font-size:120px; font-weight:800; line-height:1; color:var(--blue);
+      }
+      .count-num.pop{ animation:pop .45s ease-out; }
+      @keyframes pop{ 0%{ transform:scale(1.45); opacity:.2; } 100%{ transform:scale(1); opacity:1; } }
+      .count-wrap p{ font-size:19px; font-weight:800; }
+
+      /* ---------- quiz ---------- */
+      .quiz-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+      .progress-text{ font-size:19px; font-weight:800; }
+      .dots{ display:flex; gap:5px; }
+      .dots span{ width:15px; height:15px; border-radius:50%; background:#fff; border:2.5px solid var(--ink); }
+      .dots span.done{ background:var(--yellow); }
+      .dots span.now{ background:var(--pink); }
+      .timer-row{ margin-top:10px; }
+      .timer-label{ font-size:16px; font-weight:800; margin-bottom:4px; }
+      .timer-bar{ height:16px; background:#fff; border:2.5px solid var(--ink); border-radius:999px; overflow:hidden; }
+      .timer-fill{ height:100%; width:100%; background:repeating-linear-gradient(45deg,#4DABF7 0 14px,#74C0FC 14px 28px); transition:width .12s linear; }
+      .question-card{
+        margin-top:14px; background:var(--card); border:3px solid var(--line);
+        border-radius:24px; padding:22px 12px 18px; text-align:center;
+      }
+      .question{ font-size:68px; font-weight:800; letter-spacing:.03em; line-height:1.1; }
+      .question .eq{ color:var(--pink); }
+      .q-msg{ min-height:30px; margin-top:8px; font-size:17px; font-weight:800; }
+      .feedback{
+        margin-top:10px; border-radius:16px; padding:12px; font-size:20px; font-weight:800;
+      }
+      .feedback.ok{ background:var(--ok-bg); color:var(--ok-ink); border:3px solid var(--ok-ink); }
+      .feedback.ng{ background:#FFF4D6; color:#7A5200; border:3px solid #B8860B; }
+
+      .voice-panel{ margin-top:14px; text-align:center; }
+      .mic-state{
+        display:inline-flex; align-items:center; gap:8px;
+        font-size:16px; font-weight:800; background:#fff;
+        border:3px solid var(--line); border-radius:999px; padding:8px 16px;
+      }
+      .mic-dot{ width:14px; height:14px; border-radius:50%; background:#C9C2B4; flex:none; }
+      .mic-dot.on{ background:#E03131; animation:pulse 1.2s ease-in-out infinite; }
+      @keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.25);} }
+      .heard{ margin-top:10px; font-size:19px; font-weight:800; min-height:30px; }
+      .heard .num{ font-size:30px; color:var(--blue); }
+      .voice-err{
+        margin-top:12px; background:var(--ng-bg); color:var(--ng-ink);
+        border:3px solid var(--ng-ink); border-radius:16px; padding:12px; font-weight:700; font-size:15px;
+      }
+
+      .entry-display{
+        margin:14px auto 0; max-width:300px; min-height:74px;
+        background:#FFFDF6; border:3.5px solid var(--ink); border-radius:18px;
+        font-size:46px; font-weight:800; display:flex; align-items:center; justify-content:center;
+        letter-spacing:.15em;
+      }
+      .entry-display .placeholder{ font-size:19px; color:var(--ink-soft); letter-spacing:0; }
+      .keypad{
+        margin:14px auto 0; max-width:340px;
+        display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+      }
+      .keypad button{
+        appearance:none; cursor:pointer; font:inherit; font-weight:800;
+        font-size:30px; padding:14px 0; border-radius:18px;
+        background:#fff; border:3px solid var(--ink); color:var(--ink);
+        box-shadow:0 3px 0 rgba(51,48,42,.35);
+      }
+      .keypad button:active{ transform:translateY(2px); box-shadow:none; }
+      .keypad button.k-del{ font-size:19px; background:#FFE3EC; }
+      .keypad button.k-ok{ font-size:21px; background:var(--green); border-color:#145C33; color:#fff; }
+      .keypad button:disabled{ opacity:.45; cursor:not-allowed; }
+      .quit-row{ text-align:center; margin-top:18px; }
+      .quit-btn{
+        appearance:none; cursor:pointer; font:inherit; font-weight:700; font-size:15px;
+        background:transparent; border:none; color:var(--ink-soft); text-decoration:underline; padding:10px;
+      }
+
+      /* ---------- result ---------- */
+      .result-hero{ text-align:center; padding-top:6px; }
+      .stars{ font-size:46px; letter-spacing:.12em; line-height:1.2; }
+      .stars .on{ color:#F5A300; text-shadow:0 2px 0 rgba(51,48,42,.25); }
+      .stars .off{ color:#D8CFBB; }
+      .result-title{ font-size:29px; font-weight:800; margin:6px 0 2px; }
+      .result-sub{ color:var(--ink-soft); font-weight:700; margin:0; }
+      .stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px; }
+      .stat{
+        background:var(--card); border:3px solid var(--line); border-radius:16px;
+        padding:10px 4px; text-align:center;
+      }
+      .stat .v{ font-size:27px; font-weight:800; }
+      .stat .k{ font-size:12.5px; font-weight:700; color:var(--ink-soft); }
+      .review{ list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:8px; }
+      .review li{
+        display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+        background:var(--card); border:3px solid var(--line); border-radius:14px; padding:9px 12px;
+      }
+      .review .mark{
+        flex:none; width:34px; height:34px; border-radius:50%;
+        display:flex; align-items:center; justify-content:center;
+        font-size:19px; font-weight:800; border:2.5px solid var(--ink);
+      }
+      .review li.ok .mark{ background:var(--ok-bg); color:var(--ok-ink); border-color:var(--ok-ink); }
+      .review li.ng .mark{ background:var(--ng-bg); color:var(--ng-ink); border-color:var(--ng-ink); }
+      .review li.none .mark{ background:#F1EAD8; color:var(--ink-soft); }
+      .review .rq{ font-size:21px; font-weight:800; }
+      .review .ra{ font-size:14.5px; font-weight:700; color:var(--ink-soft); }
+      .review .tag{ font-size:13px; font-weight:800; }
+      .review li.ok .tag{ color:var(--ok-ink); }
+      .review li.ng .tag{ color:var(--ng-ink); }
+      .review li.none .tag{ color:var(--ink-soft); }
+      .star-burst{ position:relative; height:0; }
+      .star-burst span{
+        position:absolute; left:50%; top:-8px; font-size:22px; color:#F5A300;
+        animation:burst 1s ease-out forwards;
+      }
+      @keyframes burst{
+        0%{ transform:translate(0,0) scale(.4); opacity:1; }
+        100%{ transform:translate(var(--dx),var(--dy)) scale(1.1); opacity:0; }
+      }
+
+      @media (max-width:380px){
+        .question{ font-size:56px; }
+        .hero h1{ font-size:29px; }
+      }
+      @media (prefers-reduced-motion: reduce){
+        *, *::before, *::after{
+          animation-duration:.01ms !important; animation-iteration-count:1 !important;
+          transition-duration:.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+
+      <!-- ================= SETUP ================= -->
+      <section id="screen-setup">
+        <div class="hero">
+          <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M50 6 L61 36 L93 37 L68 57 L76 89 L50 71 L24 89 L32 57 L7 37 L39 36 Z" fill="#FFC93C" stroke="#33302A" stroke-width="3.5" stroke-linejoin="round"/>
+            <circle cx="41" cy="50" r="4" fill="#33302A"/>
+            <circle cx="59" cy="50" r="4" fill="#33302A"/>
+            <path d="M41 63 Q50 70 59 63" fill="none" stroke="#33302A" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="33" cy="58" r="4.5" fill="#F783AC" opacity=".8"/>
+            <circle cx="67" cy="58" r="4.5" fill="#F783AC" opacity=".8"/>
+          </svg>
+          <h1>九九れんしゅう</h1>
+          <p class="lead">1もんずつ こたえて、9もんで 1セット！</p>
+        </div>
+
+        <div class="card">
+          <h2 class="h-blue">モードを えらんでね</h2>
+          <div class="seg" id="modeSeg" role="group" aria-label="モード">
+            <button type="button" data-mode="practice" aria-pressed="true">れんしゅう<small>じかん なし・こたえを すぐ かくにん</small></button>
+            <button type="button" data-mode="test" aria-pressed="false">テスト<small>9もんを 15びょうで チャレンジ</small></button>
+          </div>
+
+          <h2 class="h-green">だんを えらんでね</h2>
+          <div class="dan-grid" id="danGrid" role="group" aria-label="段"></div>
+
+          <h2 class="h-pink">ならびじゅん</h2>
+          <div class="seg" id="orderSeg" role="group" aria-label="並び順">
+            <button type="button" data-order="up" aria-pressed="true">上り<small>×1 から ×9</small></button>
+            <button type="button" data-order="down" aria-pressed="false">下り<small>×9 から ×1</small></button>
+            <button type="button" data-order="random" aria-pressed="false">ランダム<small>バラバラ</small></button>
+          </div>
+
+          <h2 class="h-blue">こたえかた</h2>
+          <div class="seg" id="inputSeg" role="group" aria-label="答え方">
+            <button type="button" data-input="number" aria-pressed="true">数字で入力<small>大きな ボタンを タップ</small></button>
+            <button type="button" data-input="voice" aria-pressed="false">声で答える<small>マイクで こたえる</small></button>
+          </div>
+
+          <button type="button" class="start-btn" id="startBtn">▶ スタート</button>
+          <p class="note">※ このアプリは「れんしゅう用」です。学校の口頭テストの正式な判定ではありません。声で答える場合は、聞き取りの待ち時間も結果に影響します。</p>
+        </div>
+
+        <details class="guardian">
+          <summary>保護者の方へ（使い方とご注意）</summary>
+          <p><strong>使い方：</strong>モード・段・並び順・答え方を選んで「スタート」を押してください。テストは9問全体で15秒、開始前の3秒カウントダウンは制限時間に含みません。練習モードは時間制限なしで、1問ごとに答えを確認できます。</p>
+          <p><strong>声で答える場合：</strong></p>
+          <ul>
+            <li>ブラウザ標準の音声認識（SpeechRecognition）を使います。使うときだけ、お子さまが「マイクを使う」を押して許可を求めます。</li>
+            <li>ブラウザの音声認識では、音声がブラウザ提供元のサーバーで処理される場合があります。このアプリ自体は録音・音声の保存をしません。お子さまの名前などを入力する欄もありません。</li>
+            <li>音声認識には通信が必要な場合があるため、完全オフラインでは使えません。HTTPSの公開URLで開いてください。端末やブラウザによっては使えないことがあります。</li>
+            <li>答えは数字だけ（例：「ごじゅうろく」）を言ってください。はっきりした1つの数字として聞き取れた場合だけ採点します。</li>
+            <li>※ 実際の端末での音声認識の動作は、このページの作成時点では未確認です。うまく聞き取れない場合は「数字で入力」に切り替えてください。</li>
+          </ul>
+          <p><strong>判定について：</strong>音声認識の待ち時間や入力の速さも結果に影響するため、本アプリは学校の口頭テストの正式な判定ではなく、家庭での練習用です。</p>
+        </details>
+      </section>
+
+      <!-- ================= VOICE PREP ================= -->
+      <section id="screen-voice" class="hidden">
+        <div class="card">
+          <h2 class="h-blue">声で答える じゅんび</h2>
+          <div class="explain">
+            <p><strong>保護者の方へ：</strong>ブラウザの音声認識では、音声がブラウザ提供元のサーバーで処理される場合があります。このアプリは録音や音声の保存をしません。</p>
+            <p>マイクの許可は、下の「マイクを使う」を押したときだけ求めます。端末やブラウザによっては声で答える機能が使えないことがあります（HTTPSの公開URLで開いてください）。</p>
+          </div>
+
+          <div id="voiceUnsupported" class="voice-err hidden">
+            このブラウザでは、声で答える機能が使えませんでした。数字で入力する方法に切り替えてください。
+          </div>
+
+          <div class="sample-box">
+            <p class="say">れんしゅう：マイクを つかったら、こう 言ってみてね</p>
+            <p class="word">「さんじゅうに」</p>
+          </div>
+
+          <p class="status" id="prepStatus" aria-live="polite">ボタンを おすと マイクの じゅんびを するよ</p>
+
+          <div class="center-col">
+            <button type="button" class="btn primary" id="micBtn">🎤 マイクを使う</button>
+            <button type="button" class="btn green" id="prepStartBtn" disabled>カウントダウンへ すすむ ▶</button>
+            <button type="button" class="btn" id="prepSwitchBtn">数字で入力に 切り替える</button>
+            <button type="button" class="btn" id="prepBackBtn">もどる</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= COUNTDOWN ================= -->
+      <section id="screen-count" class="hidden">
+        <div class="count-wrap">
+          <div class="count-num" id="countNum">3</div>
+          <p>じゅんびは いいかな？</p>
+          <button type="button" class="btn" id="countAbortBtn">やめる</button>
+        </div>
+      </section>
+
+      <!-- ================= QUIZ ================= -->
+      <section id="screen-quiz" class="hidden">
+        <div class="quiz-top">
+          <div class="progress-text" id="progressText">1 / 9 もんめ</div>
+          <div class="dots" id="dots" aria-hidden="true"></div>
+        </div>
+        <div class="timer-row" id="timerRow">
+          <div class="timer-label" id="timerLabel">あと 15 びょう</div>
+          <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+        </div>
+
+        <div class="question-card">
+          <div class="question" id="questionText">2 × 1 <span class="eq">＝ ？</span></div>
+          <div class="q-msg" id="qMsg" aria-live="polite">こたえを いれてね</div>
+          <div class="feedback hidden" id="feedback"></div>
+
+          <!-- voice panel -->
+          <div class="voice-panel hidden" id="voicePanel">
+            <div class="mic-state"><span class="mic-dot" id="micDot"></span><span id="micStateText">マイク じゅんび中…</span></div>
+            <div class="heard" id="heardBox" aria-live="polite"></div>
+            <div class="voice-err hidden" id="voiceErr"></div>
+            <div class="btn-row">
+              <button type="button" class="btn" id="voiceSwitchBtn">数字で入力に 切り替える</button>
+            </div>
+          </div>
+
+          <!-- number panel -->
+          <div id="numberPanel">
+            <div class="entry-display" id="entryDisplay"><span class="placeholder">ここに すうじが でるよ</span></div>
+            <div class="keypad" id="keypad">
+              <button type="button" data-key="1">1</button>
+              <button type="button" data-key="2">2</button>
+              <button type="button" data-key="3">3</button>
+              <button type="button" data-key="4">4</button>
+              <button type="button" data-key="5">5</button>
+              <button type="button" data-key="6">6</button>
+              <button type="button" data-key="7">7</button>
+              <button type="button" data-key="8">8</button>
+              <button type="button" data-key="9">9</button>
+              <button type="button" class="k-del" data-key="del">けす</button>
+              <button type="button" data-key="0">0</button>
+              <button type="button" class="k-ok" data-key="ok">けってい</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="quit-row">
+          <button type="button" class="quit-btn" id="quitBtn">やめる（さいしょに もどる）</button>
+        </div>
+      </section>
+
+      <!-- ================= RESULT ================= -->
+      <section id="screen-result" class="hidden">
+        <div class="result-hero">
+          <div class="star-burst" id="starBurst"></div>
+          <div class="stars" id="resultStars" aria-hidden="true"></div>
+          <h2 class="result-title" id="resultTitle">がんばったね！</h2>
+          <p class="result-sub" id="resultSub"></p>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat"><div class="v" id="statCorrect">0</div><div class="k">せいかい（もん）</div></div>
+          <div class="stat"><div class="v" id="statAnswered">0</div><div class="k">こたえた（もん）</div></div>
+          <div class="stat"><div class="v" id="statTime">0.0</div><div class="k">かかった じかん（びょう）</div></div>
+        </div>
+
+        <ul class="review" id="reviewList"></ul>
+
+        <div class="btn-row">
+          <button type="button" class="btn primary" id="retryBtn">もう一度</button>
+          <button type="button" class="btn" id="changeBtn">段・並び順を変更</button>
+        </div>
+        <p class="note">※ このアプリは練習用です。学校の口頭テストの正式な判定ではありません。</p>
+      </section>
+
+    </main>
+
+    <script>
+    (function(){
+      "use strict";
+      var $ = function(id){ return document.getElementById(id); };
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+      var TEST_SECONDS = 15;
+
+      var state = {
+        screen: "setup",
+        mode: "practice",      // "practice" | "test"
+        dan: 2,
+        order: "up",           // "up" | "down" | "random"
+        input: "number",       // "number" | "voice"
+        questions: [],         // [{dan, m, ans}]
+        answers: [],           // (number|null)[]
+        idx: 0,
+        entered: "",
+        accepting: false,
+        finished: true,
+        startedAt: 0,
+        elapsedSec: 0,
+        timerId: null,
+        countTimers: [],
+        questionShownAt: 0,
+        // voice
+        micReady: false,
+        rec: null,
+        recGen: 0,
+        recShouldRun: false,
+        consumed: null,        // 採点ずみの result index（二重採点ふせぎ）
+        pendingVal: null,      // 途中できこえている数字
+        pendingSince: 0,
+        holdTimer: null,
+        missCount: 0,
+        netErrCount: 0,
+        prepRec: null,
+        prepGen: 0
+      };
+
+      /* ---------------- setup UI ---------------- */
+      var danGrid = $("danGrid");
+      for (var d = 2; d <= 9; d++) {
+        (function(dan){
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "dan-" + dan;
+          b.innerHTML = dan + "<small>" + dan + "の段</small>";
+          b.setAttribute("aria-pressed", dan === state.dan ? "true" : "false");
+          b.addEventListener("click", function(){
+            state.dan = dan;
+            var btns = danGrid.querySelectorAll("button");
+            for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", "false");
+            b.setAttribute("aria-pressed", "true");
+          });
+          danGrid.appendChild(b);
+        })(d);
+      }
+      function segWire(id, attr, key){
+        var seg = $(id);
+        seg.addEventListener("click", function(e){
+          var b = e.target.closest("button");
+          if (!b) return;
+          state[key] = b.getAttribute(attr);
+          var btns = seg.querySelectorAll("button");
+          for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", "false");
+          b.setAttribute("aria-pressed", "true");
+        });
+      }
+      segWire("modeSeg", "data-mode", "mode");
+      segWire("orderSeg", "data-order", "order");
+      segWire("inputSeg", "data-input", "input");
+
+      function showScreen(name){
+        state.screen = name;
+        var names = ["setup", "voice", "count", "quiz", "result"];
+        for (var i = 0; i < names.length; i++) {
+          $("screen-" + names[i]).classList.toggle("hidden", names[i] !== name);
+        }
+        window.scrollTo(0, 0);
+      }
+
+      /* ---------------- questions ---------------- */
+      function buildQuestions(){
+        var ms = [1,2,3,4,5,6,7,8,9];
+        if (state.order === "down") ms = ms.slice().reverse();
+        if (state.order === "random") {
+          for (var i = ms.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = ms[i]; ms[i] = ms[j]; ms[j] = t;
+          }
+        }
+        state.questions = ms.map(function(m){ return { dan: state.dan, m: m, ans: state.dan * m }; });
+        state.answers = state.questions.map(function(){ return null; });
+      }
+
+      /* ---------------- flow: start ---------------- */
+      $("startBtn").addEventListener("click", function(){
+        buildQuestions();
+        if (state.input === "voice" && !state.micReady) {
+          openVoicePrep();
+        } else {
+          runCountdown();
+        }
+      });
+
+      /* ---------------- voice prep ---------------- */
+      function openVoicePrep(){
+        showScreen("voice");
+        $("prepStatus").textContent = SR
+          ? "ボタンを おすと マイクの じゅんびを するよ"
+          : "";
+        $("voiceUnsupported").classList.toggle("hidden", !!SR);
+        $("micBtn").classList.toggle("hidden", !SR);
+        $("prepStartBtn").disabled = true;
+        if (!SR) $("prepStatus").textContent = "数字で入力に 切り替えてね";
+      }
+
+      $("micBtn").addEventListener("click", function(){
+        if (!SR) return;
+        stopPrepRec();
+        var gen = ++state.prepGen;
+        var rec = new SR();
+        state.prepRec = rec;
+        rec.lang = "ja-JP";
+        rec.continuous = false;
+        rec.interimResults = false;
+        rec.maxAlternatives = 5;
+        $("prepStatus").textContent = "マイクの じゅんび中…「さんじゅうに」と 言ってみてね";
+        rec.onresult = function(e){
+          if (gen !== state.prepGen) return;
+          for (var i = e.resultIndex; i < e.results.length; i++) {
+            var r = e.results[i];
+            if (!r || !r.isFinal) continue;
+            var text = (r[0] && r[0].transcript) || "";
+            var val = null;
+            for (var ai = 0; ai < r.length; ai++) {
+              var cand = (r[ai] && r[ai].transcript) || "";
+              var cv = parseSpokenNumber(cand);
+              if (cv !== null) { val = cv; text = cand; break; }
+            }
+            if (val === null) {
+              $("prepStatus").textContent = "うまく ききとれなかったよ。はっきり もう一度 言ってみてね";
+            } else {
+              state.micReady = true;
+              $("prepStartBtn").disabled = false;
+              $("prepStatus").innerHTML = "きこえた すうじ：<span class='heard-num'>" + val + "</span><br>マイクは つかえるよ！「カウントダウンへ すすむ」を おしてね";
+            }
+            return;
+          }
+        };
+        rec.onerror = function(e){
+          if (gen !== state.prepGen) return;
+          if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+            $("prepStatus").textContent = "マイクの許可が えられませんでした。ブラウザの設定で マイクを許可するか、数字で入力に切り替えてください。";
+          } else if (e.error === "network") {
+            $("prepStatus").textContent = "つうしんエラーで 聞き取りが できませんでした。もう一度ためすか、数字で入力に切り替えてください。";
+          } else if (e.error === "audio-capture") {
+            $("prepStatus").textContent = "マイクが みつかりませんでした。数字で入力に切り替えてください。";
+          } else if (e.error === "no-speech") {
+            $("prepStatus").textContent = "声が 聞こえなかったよ。もう一度「マイクを使う」を おして 言ってみてね";
+          } else {
+            $("prepStatus").textContent = "聞き取りで エラーが おきました。もう一度ためすか、数字で入力に切り替えてください。";
+          }
+        };
+        rec.onend = function(){ if (gen === state.prepGen) state.prepRec = null; };
+        try { rec.start(); } catch (_) {
+          $("prepStatus").textContent = "マイクを はじめられませんでした。数字で入力に切り替えてください。";
+        }
+      });
+
+      function stopPrepRec(){
+        state.prepGen++;
+        if (state.prepRec) { try { state.prepRec.abort(); } catch (_) {} state.prepRec = null; }
+      }
+
+      $("prepStartBtn").addEventListener("click", function(){
+        if (!state.micReady) return;
+        stopPrepRec();
+        state.input = "voice";
+        syncInputSeg();
+        startQuizRecognition();   // ボタンを押したこの流れで始める（iPhoneはこれでないと許可されない）
+        runCountdown();
+      });
+      $("prepSwitchBtn").addEventListener("click", function(){
+        stopPrepRec();
+        state.input = "number";
+        syncInputSeg();
+        runCountdown();
+      });
+      $("prepBackBtn").addEventListener("click", function(){
+        stopPrepRec();
+        showScreen("setup");
+      });
+      function syncInputSeg(){
+        var btns = $("inputSeg").querySelectorAll("button");
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].setAttribute("aria-pressed", btns[i].getAttribute("data-input") === state.input ? "true" : "false");
+        }
+      }
+
+      /* ---------------- countdown ---------------- */
+      function clearCountTimers(){
+        state.countTimers.forEach(function(t){ clearTimeout(t); });
+        state.countTimers = [];
+      }
+      function runCountdown(){
+        showScreen("count");
+        clearCountTimers();
+        var n = 3;
+        var el = $("countNum");
+        function showNum(){
+          el.textContent = n;
+          el.classList.remove("pop");
+          void el.offsetWidth;
+          el.classList.add("pop");
+        }
+        showNum();
+        state.countTimers.push(setTimeout(function(){ n = 2; showNum(); }, 1000));
+        state.countTimers.push(setTimeout(function(){ n = 1; showNum(); }, 2000));
+        state.countTimers.push(setTimeout(function(){ beginQuiz(); }, 3000));
+      }
+      $("countAbortBtn").addEventListener("click", function(){
+        clearCountTimers();
+        showScreen("setup");
+      });
+
+      /* ---------------- quiz ---------------- */
+      function beginQuiz(){
+        state.idx = 0;
+        state.finished = false;
+        state.accepting = false;
+        state.entered = "";
+        state.netErrCount = 0;
+        showScreen("quiz");
+        $("timerRow").classList.toggle("hidden", state.mode !== "test");
+        $("voicePanel").classList.toggle("hidden", state.input !== "voice");
+        $("numberPanel").classList.toggle("hidden", state.input !== "number");
+        $("voiceErr").classList.add("hidden");
+        state.startedAt = performance.now();
+        if (state.mode === "test") startTimer();
+        showQuestion();
+        if (state.input === "voice" && !state.recShouldRun) startQuizRecognition();
+      }
+
+      function startTimer(){
+        stopTimer();
+        tickTimer();
+        state.timerId = setInterval(tickTimer, 100);
+      }
+      function stopTimer(){
+        if (state.timerId !== null) { clearInterval(state.timerId); state.timerId = null; }
+      }
+      function tickTimer(){
+        if (state.finished) return;
+        var elapsed = (performance.now() - state.startedAt) / 1000;
+        var remain = Math.max(0, TEST_SECONDS - elapsed);
+        $("timerLabel").textContent = "あと " + Math.ceil(remain) + " びょう";
+        $("timerFill").style.width = (remain / TEST_SECONDS * 100) + "%";
+        if (elapsed >= TEST_SECONDS) finishQuiz("timeup");
+      }
+
+      function showQuestion(){
+        var q = state.questions[state.idx];
+        state.entered = "";
+        renderEntry();
+        $("progressText").textContent = (state.idx + 1) + " / 9 もんめ";
+        var dots = "";
+        for (var i = 0; i < 9; i++) {
+          var cls = i < state.idx ? "done" : (i === state.idx ? "now" : "");
+          dots += "<span class='" + cls + "'></span>";
+        }
+        $("dots").innerHTML = dots;
+        $("questionText").innerHTML = q.dan + " × " + q.m + " <span class='eq'>＝ ？</span>";
+        $("feedback").classList.add("hidden");
+        $("heardBox").textContent = "";
+        setMsg(state.input === "voice" ? "声で こたえを 言ってね" : "こたえを いれてね");
+        state.questionShownAt = performance.now();
+        state.accepting = true;
+        state.pendingVal = null;
+        clearTimeout(state.holdTimer);
+        syncKeypadDisabled();
+      }
+
+      function setMsg(t){ $("qMsg").textContent = t; }
+
+      /* ----- answer submission (processed exactly once per question) ----- */
+      function submitAnswer(val){
+        if (!state.accepting || state.finished) return;
+        state.accepting = false;
+        var q = state.questions[state.idx];
+        state.answers[state.idx] = val;
+        var correct = (val === q.ans);
+        if (state.mode === "practice") {
+          var fb = $("feedback");
+          fb.classList.remove("hidden", "ok", "ng");
+          if (correct) {
+            fb.classList.add("ok");
+            fb.textContent = "○ せいかい！ すごい！";
+          } else {
+            fb.classList.add("ng");
+            fb.textContent = "あと一歩！ こたえは " + q.ans + " だよ。もう一度やってみよう";
+          }
+          syncKeypadDisabled();
+          setTimeout(function(){
+            if (state.finished) return;
+            advance();
+          }, correct ? 850 : 1500);
+        } else {
+          setMsg("うけつけました");
+          setTimeout(function(){
+            if (state.finished) return;
+            advance();
+          }, 220);
+        }
+      }
+
+      function advance(){
+        state.idx++;
+        if (state.idx >= state.questions.length) {
+          finishQuiz("done");
+        } else {
+          showQuestion();
+        }
+      }
+
+      function finishQuiz(reason){
+        if (state.finished) return;
+        state.finished = true;
+        state.accepting = false;
+        var elapsed = (performance.now() - state.startedAt) / 1000;
+        state.elapsedSec = reason === "timeup" ? TEST_SECONDS : Math.min(elapsed, 999);
+        stopTimer();
+        stopQuizRecognition();
+        renderResult(reason);
+        showScreen("result");
+      }
+
+      /* ----- number input ----- */
+      function renderEntry(){
+        var el = $("entryDisplay");
+        if (state.entered === "") {
+          el.innerHTML = "<span class='placeholder'>ここに すうじが でるよ</span>";
+        } else {
+          el.textContent = state.entered;
+        }
+        syncKeypadDisabled();
+      }
+      function syncKeypadDisabled(){
+        var okBtn = $("keypad").querySelector("[data-key='ok']");
+        if (okBtn) okBtn.disabled = (state.entered === "" || !state.accepting || state.finished);
+      }
+      function pressKey(k){
+        if (state.screen !== "quiz" || state.input !== "number") return;
+        if (!state.accepting || state.finished) return;
+        if (k === "del") {
+          state.entered = state.entered.slice(0, -1);
+          renderEntry();
+        } else if (k === "ok") {
+          if (state.entered === "") return;
+          var v = parseInt(state.entered, 10);
+          state.entered = "";
+          renderEntry();
+          submitAnswer(v);
+        } else {
+          if (state.entered.length >= 2) return;
+          if (state.entered === "" && k === "0") return;
+          state.entered += k;
+          renderEntry();
+        }
+      }
+      $("keypad").addEventListener("click", function(e){
+        var b = e.target.closest("button");
+        if (!b) return;
+        pressKey(b.getAttribute("data-key"));
+      });
+      document.addEventListener("keydown", function(e){
+        if (state.screen !== "quiz" || state.input !== "number") return;
+        if (/^[0-9]$/.test(e.key)) { pressKey(e.key); }
+        else if (e.key === "Backspace") { e.preventDefault(); pressKey("del"); }
+        else if (e.key === "Enter") { e.preventDefault(); pressKey("ok"); }
+      });
+
+      /* ----- voice input during quiz ----- */
+      function setMicUI(on, text){
+        $("micDot").classList.toggle("on", on);
+        $("micStateText").textContent = text;
+      }
+      function startQuizRecognition(){
+        if (!SR) { showVoiceError("このブラウザでは声で答える機能が使えません。数字で入力に切り替えてね。"); return; }
+        stopQuizRecognition();
+        state.recShouldRun = true;
+        var gen = ++state.recGen;
+        var rec = new SR();
+        state.rec = rec;
+        state.consumed = new Set();
+        state.pendingVal = null;
+        clearTimeout(state.holdTimer);
+        rec.lang = "ja-JP";
+        rec.continuous = true;
+        rec.interimResults = true;   // 途中経過も受け取る（聞こえている手ごたえを出すため）
+        rec.maxAlternatives = 5;     // 候補を複数もらって、数字に読めるものを採用する
+        rec.onresult = function(e){
+          if (gen !== state.recGen) return;   // results from an old session are ignored
+          handleVoiceResult(e);
+        };
+        rec.onerror = function(e){
+          if (gen !== state.recGen) return;
+          handleVoiceError(e);
+        };
+        rec.onend = function(){
+          if (gen !== state.recGen) return;
+          if (state.recShouldRun && !state.finished && (state.screen === "quiz" || state.screen === "count") && state.input === "voice") {
+            setTimeout(function(){
+              if (gen === state.recGen && state.recShouldRun && !state.finished) startQuizRecognition();
+            }, 180);
+          } else {
+            setMicUI(false, "マイク 停止中");
+          }
+        };
+        try {
+          rec.start();
+          setMicUI(true, "マイクで聞き取り中… 声で答えてね");
+        } catch (_) {
+          setMicUI(false, "マイクをはじめられませんでした");
+        }
+      }
+      function stopQuizRecognition(){
+        state.recShouldRun = false;
+        clearTimeout(state.holdTimer);
+        state.pendingVal = null;
+        state.recGen++;
+        if (state.rec) { try { state.rec.abort(); } catch (_) {} state.rec = null; }
+        if (state.screen === "quiz") setMicUI(false, "マイク 停止中");
+      }
+
+      var VOICE_HOLD_MS = 650;   // 途中できこえた数字が、これだけ変わらなければ受け取る
+
+      // 九九のこたえは81まで。2けたで1のくらいが0でなければ、それ以上のびない＝早く受け取ってよい
+      function voiceCanAcceptEarly(v){ return v >= 11 && v <= 99 && (v % 10) !== 0; }
+
+      function acceptVoice(idx, val){
+        state.consumed.add(idx);
+        state.pendingVal = null;
+        state.missCount = 0;
+        clearTimeout(state.holdTimer);
+        $("heardBox").innerHTML = "きこえた すうじ：<span class='num'>" + val + "</span>";
+        submitAnswer(val);
+      }
+
+      function scheduleVoiceHold(idx, val){
+        clearTimeout(state.holdTimer);
+        state.holdTimer = setTimeout(function(){
+          if (state.finished || state.screen !== "quiz" || state.input !== "voice") return;
+          if (!state.accepting || state.consumed.has(idx)) return;
+          if (state.pendingVal !== val) return;
+          acceptVoice(idx, val);
+        }, VOICE_HOLD_MS);
+      }
+
+      function handleVoiceResult(e){
+        if (state.finished || state.screen !== "quiz" || state.input !== "voice") return;
+        var idx = e.results.length - 1;
+        if (idx < 0) return;
+        var r = e.results[idx];
+        if (!r) return;
+        if (state.consumed.has(idx)) return;
+        // 問題が出ていないあいだ（カウントダウン中・こたえ合わせ中）の声は、次の問題に持ちこさない
+        if (!state.accepting) { state.consumed.add(idx); return; }
+        if (performance.now() - state.questionShownAt < 250) return;
+
+        // 候補をぜんぶ試して、数字に読めたものを採用する
+        var val = null, heard = "";
+        for (var k = 0; k < r.length; k++) {
+          var t = (r[k] && r[k].transcript) || "";
+          if (!heard) heard = t;
+          var v = parseSpokenNumber(t);
+          if (v !== null) { val = v; heard = t; break; }
+        }
+
+        if (val === null) {
+          if (r.isFinal) {
+            state.consumed.add(idx);
+            state.pendingVal = null;
+            state.missCount++;
+            $("heardBox").textContent = heard ? ("きこえた：「" + heard + "」") : "うまく ききとれなかったよ";
+            setMsg(state.missCount >= 3
+              ? "すうじだけ ゆっくり 言ってみてね。むずかしいときは「数字で入力」に かえてもいいよ"
+              : "もう一度 すうじだけ 言ってみてね");
+          } else if (heard) {
+            $("heardBox").textContent = "きいているよ…「" + heard + "」";
+          }
+          return;
+        }
+
+        if (r.isFinal) { acceptVoice(idx, val); return; }
+
+        // 途中の結果。数字がのびる心配のないものだけ、少し待って先に受け取る（15びょう対策）
+        if (state.pendingVal !== val) { state.pendingVal = val; state.pendingSince = performance.now(); }
+        $("heardBox").innerHTML = "きこえた すうじ：<span class='num'>" + val + "</span>";
+        if (!voiceCanAcceptEarly(val)) return;
+        if (performance.now() - state.pendingSince >= VOICE_HOLD_MS) acceptVoice(idx, val);
+        else scheduleVoiceHold(idx, val);
+      }
+
+      function handleVoiceError(e){
+        if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+          state.recShouldRun = false;
+          setMicUI(false, "マイクが使えません");
+          showVoiceError("マイクの許可がえられませんでした。数字で入力に切り替えて続けられます。");
+        } else if (e.error === "audio-capture") {
+          state.recShouldRun = false;
+          setMicUI(false, "マイクが使えません");
+          showVoiceError("マイクが見つかりませんでした。数字で入力に切り替えて続けられます。");
+        } else if (e.error === "network") {
+          state.netErrCount++;
+          if (state.netErrCount >= 3) {
+            state.recShouldRun = false;
+            setMicUI(false, "マイクが使えません");
+            showVoiceError("つうしんエラーが続いています。数字で入力に切り替えると確実です。");
+          } else {
+            setMsg("つうしんエラーのため もう一度 言ってみてね");
+          }
+        }
+        // "no-speech" / "aborted": onend auto-restarts quietly
+      }
+      function showVoiceError(msg){
+        var el = $("voiceErr");
+        el.textContent = msg;
+        el.classList.remove("hidden");
+      }
+
+      $("voiceSwitchBtn").addEventListener("click", function(){
+        stopQuizRecognition();
+        state.input = "number";
+        state.micReady = false;
+        syncInputSeg();
+        $("voicePanel").classList.add("hidden");
+        $("numberPanel").classList.remove("hidden");
+        if (!state.finished && state.screen === "quiz") {
+          state.questionShownAt = performance.now();
+          state.accepting = true;
+          state.entered = "";
+          renderEntry();
+          setMsg("数字ボタンで こたえを いれてね");
+        }
+      });
+
+      /* ----- quit ----- */
+      $("quitBtn").addEventListener("click", function(){
+        state.finished = true;
+        state.accepting = false;
+        stopTimer();
+        stopQuizRecognition();
+        showScreen("setup");
+      });
+
+      /* ---------------- spoken number parsing ----------------
+         Returns one clear integer, or null when ambiguous/unreadable.
+         Handles: "56", "５６", "五十六", "ごじゅうろく", special digit words. */
+      // きこえた言葉から すうじを1つ取り出す。読めないときは null。
+      // "56" "５６" "五十六" "ごじゅうろく" "ゴジュウロク" "56です" "こたえは56" にも対応する。
+      var SPOKEN_FILLER = [
+        "こたえは","こたえ","答えは","答え","せいかいは","えっと","えーと","あのー","あの","たぶん","だとおもいます","だとおもう",
+        "とおもいます","とおもう","おもいます","かもしれない","ですか","ますか","でーす","です","ます","だよ","だね","だと","かな",
+        "はい","うーん","えー","わかった","わかりました"
+      ];
+      // 聞きまちがえやすい同じ音の字を、かなに戻す
+      var SPOKEN_HOMOPHONE = {
+        "零":"れい","〇":"れい","一":"いち","二":"に","三":"さん","四":"し","五":"ご","六":"ろく","七":"しち","八":"はち","九":"きゅう","十":"じゅう",
+        "語":"ご","碁":"ご","後":"ご","誤":"ご","午":"ご",
+        "蜂":"はち","鉢":"はち",
+        "録":"ろく","禄":"ろく","肋":"ろく",
+        "急":"きゅう","球":"きゅう","救":"きゅう","旧":"きゅう","級":"きゅう",
+        "区":"く","句":"く","苦":"く",
+        "詩":"し","市":"し","死":"し","師":"し","氏":"し",
+        "荷":"に","似":"に","煮":"に",
+        "重":"じゅう","住":"じゅう","銃":"じゅう","柔":"じゅう",
+        "名":"なな","菜":"なな","奈":"なな",
+        "参":"さん","産":"さん","賛":"さん",
+        "位置":"いち"
+      };
+      function parseSpokenNumber(raw){
+        if (!raw) return null;
+        var s = String(raw);
+        // 全角すうじ → 半角
+        s = s.replace(/[０-９]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
+        // カタカナ → ひらがな
+        s = s.replace(/[\u30A1-\u30F6]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0x60); });
+        // 空白・記号・のばす音をとる
+        s = s.replace(/[\s\u30FC\u2212\u3002\u3001\u30FB,.!\uFF01?\uFF1F:\uFF1A;\uFF1B"\u2018\u2019\u201C\u201D\u300C\u300D\u300E\u300F\uFF08\uFF09()\[\]']/g, "");
+        if (s === "") return null;
+        // よくある言いまわしをとる（「36です」「こたえは36」でも通るように）
+        for (var f = 0; f < SPOKEN_FILLER.length; f++) { s = s.split(SPOKEN_FILLER[f]).join(""); }
+        if (s === "") return null;
+        // すうじだけなら、そのまま
+        if (/^[0-9]+$/.test(s)) {
+          var n0 = parseInt(s, 10);
+          return (n0 >= 0 && n0 <= 999) ? n0 : null;
+        }
+        // 漢字・同じ音の字 → かな
+        var conv = "";
+        for (var ci = 0; ci < s.length; ci++) {
+          var ch = s.charAt(ci);
+          conv += (SPOKEN_HOMOPHONE[ch] !== undefined) ? SPOKEN_HOMOPHONE[ch] : ch;
+        }
+        s = conv;
+        var digitWords = [
+          ["きゅう",9],["きゅー",9],["しち",7],["なな",7],["さん",3],["ろく",6],["はち",8],
+          ["よん",4],["いち",1],["れい",0],["ぜろ",0],["まる",0],
+          ["に",2],["し",4],["ご",5],["く",9],["よ",4]
+        ];
+        var tokens = [], pos = 0;
+        while (pos < s.length) {
+          var c0 = s.charAt(pos);
+          if (c0 >= "0" && c0 <= "9") { tokens.push(parseInt(c0, 10)); pos++; continue; }
+          if (s.substr(pos, 3) === "じゅう") { tokens.push("T"); pos += 3; continue; }
+          if (s.substr(pos, 2) === "じゅ" || s.substr(pos, 2) === "じっ") { tokens.push("T"); pos += 2; continue; }
+          var matched = false;
+          for (var wi = 0; wi < digitWords.length; wi++) {
+            var w = digitWords[wi][0];
+            if (s.substr(pos, w.length) === w) { tokens.push(digitWords[wi][1]); pos += w.length; matched = true; break; }
+          }
+          // 知らない言葉がまじっていたら、推測せずに聞き直す（まちがった数字で採点しないため）
+          if (!matched) return null;
+        }
+        if (tokens.length === 0) return null;
+        function isD(t){ return typeof t === "number"; }
+        var allDigits = true;
+        for (var di = 0; di < tokens.length; di++) { if (!isD(tokens[di])) { allDigits = false; break; } }
+        if (allDigits) {
+          if (tokens.length > 3) return null;
+          var nd = parseInt(tokens.join(""), 10);
+          return (nd >= 0 && nd <= 999) ? nd : null;
+        }
+        var ti = tokens.indexOf("T");
+        if (tokens.lastIndexOf("T") !== ti) return null;   // 「じゅう」が2回＝あいまい
+        var head = tokens.slice(0, ti), tail = tokens.slice(ti + 1);
+        if (head.length > 1 || tail.length > 1) return null;
+        var tens = head.length ? head[0] : 1;
+        var ones = tail.length ? tail[0] : 0;
+        if (!isD(tens) || !isD(ones)) return null;
+        var v2 = tens * 10 + ones;
+        return (v2 >= 0 && v2 <= 999) ? v2 : null;
+      }
+
+      /* ---------------- result ---------------- */
+      function renderResult(reason){
+        var correct = 0, answered = 0, i, q, a;
+        for (i = 0; i < state.questions.length; i++) {
+          a = state.answers[i];
+          if (a !== null && a !== undefined) { answered++; if (a === state.questions[i].ans) correct++; }
+        }
+        $("statCorrect").textContent = correct;
+        $("statAnswered").textContent = answered;
+        $("statTime").textContent = state.elapsedSec.toFixed(1);
+
+        var starCount = correct === 9 ? 3 : (correct >= 7 ? 2 : (correct >= 4 ? 1 : 0));
+        var starsHtml = "";
+        for (i = 0; i < 3; i++) starsHtml += "<span class='" + (i < starCount ? "on" : "off") + "'>★</span>";
+        $("resultStars").innerHTML = starsHtml;
+
+        var title, sub;
+        if (state.mode === "test" && correct === 9) {
+          title = "かんぺき！ ぜんぶ せいかい！";
+          sub = "15びょう以内に 9もん全部できたよ。すごい！";
+          burstStars();
+        } else if (correct === 9) {
+          title = "ぜんぶ せいかい！ すごい！";
+          sub = "9もん全部できたね！";
+          burstStars();
+        } else if (reason === "timeup") {
+          title = "じかんぎれ！ あと一歩！";
+          sub = answered + "もん こたえて、" + correct + "もん せいかい。もう一度やってみよう！";
+        } else if (correct >= 6) {
+          title = "よくできました！";
+          sub = "あと少しで かんぺき。もう一度やってみよう！";
+        } else {
+          title = "がんばったね！";
+          sub = "まちがえても だいじょうぶ。もう一度やってみよう！";
+        }
+        $("resultTitle").textContent = title;
+        $("resultSub").textContent = sub + "（" + state.dan + "の段・" +
+          (state.order === "up" ? "上り" : state.order === "down" ? "下り" : "ランダム") +
+          "・" + (state.mode === "test" ? "テスト" : "れんしゅう") + "）";
+
+        var html = "";
+        for (i = 0; i < state.questions.length; i++) {
+          q = state.questions[i];
+          a = state.answers[i];
+          if (a === null || a === undefined) {
+            html += "<li class='none'><span class='mark'>―</span><span class='rq'>" + q.dan + " × " + q.m +
+              " ＝ " + q.ans + "</span><span class='tag'>未回答</span><span class='ra'>こたえは " + q.ans + "</span></li>";
+          } else if (a === q.ans) {
+            html += "<li class='ok'><span class='mark'>○</span><span class='rq'>" + q.dan + " × " + q.m +
+              " ＝ " + q.ans + "</span><span class='tag'>せいかい</span><span class='ra'>あなたの こたえ：" + a + "</span></li>";
+          } else {
+            html += "<li class='ng'><span class='mark'>✕</span><span class='rq'>" + q.dan + " × " + q.m +
+              " ＝ " + q.ans + "</span><span class='tag'>まちがい</span><span class='ra'>あなたの こたえ：" + a + "</span></li>";
+          }
+        }
+        $("reviewList").innerHTML = html;
+      }
+      function burstStars(){
+        var box = $("starBurst");
+        var html = "";
+        var offs = [[-70,-46],[70,-52],[-110,4],[110,-2],[-40,-70],[44,-74],[0,-88]];
+        for (var i = 0; i < offs.length; i++) {
+          html += "<span style='--dx:" + offs[i][0] + "px;--dy:" + offs[i][1] + "px;animation-delay:" + (i * 0.05) + "s'>★</span>";
+        }
+        box.innerHTML = html;
+        setTimeout(function(){ box.innerHTML = ""; }, 1400);
+      }
+
+      $("retryBtn").addEventListener("click", function(){
+        buildQuestions();
+        if (state.input === "voice" && !state.micReady) {
+          openVoicePrep();
+        } else {
+          runCountdown();
+        }
+      });
+      $("changeBtn").addEventListener("click", function(){
+        showScreen("setup");
+      });
+
+      showScreen("setup");
+    })();
+    </script>
+  </body>
+</html>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="1185849d-db8f-4d6f-a57b-6548763eca98" data-app-host="app.netlify.com" data-account-tier="free"></script>
