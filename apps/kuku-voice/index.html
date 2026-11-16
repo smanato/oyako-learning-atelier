@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>九九れんしゅう 音声判定版</title>
+    <style>
+      :root {
+        --bg: #fff7e6; --panel: #ffffff; --ink: #33302e; --muted: #7a7268; --line: #f0e2c8;
+        --ok: #22a355; --ok-bg: #d9f7e3; --ng: #ef4444; --ng-bg: #ffe0e0;
+        --warn-bg: #fff1d6; --warn-line: #f5c86b; --info-bg: #e3f0ff; --info-line: #9cc2f5;
+        --shadow: 0 4px 14px rgba(120, 84, 20, 0.12); color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1d1a26; --panel: #2b2739; --ink: #f5f1e8; --muted: #b8b0c4; --line: #453f5c;
+          --ok-bg: #14402a; --ng-bg: #4d1a1a; --warn-bg: #453512; --warn-line: #a97f2c;
+          --info-bg: #1d3355; --info-line: #3f639e; --shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body { font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; background: var(--bg); color: var(--ink); -webkit-text-size-adjust: 100%; }
+      main { max-width: 560px; margin: 0 auto; padding: 16px 14px 40px; }
+      body.in-play h1, body.in-play .subtitle { display: none; }
+      body.in-play main { padding-top: 8px; padding-bottom: 16px; }
+      h1 { text-align: center; font-size: 2rem; margin: 6px 0 2px; letter-spacing: 0.04em; }
+      h1 .r1 { color: #ef4444; } h1 .r2 { color: #f97316; } h1 .r3 { color: #f5a400; }
+      h1 .r4 { color: #22a355; } h1 .r5 { color: #0ea5b7; } h1 .r6 { color: #3b82f6; } h1 .r7 { color: #8b5cf6; }
+      .subtitle { text-align: center; color: var(--muted); font-size: 0.95rem; margin: 0 0 14px; font-weight: 700; }
+      .badge-voice { display: inline-block; background: linear-gradient(90deg, #3b82f6, #8b5cf6); color: #fff; border-radius: 999px; padding: 1px 10px; font-size: 0.8rem; vertical-align: middle; margin-left: 6px; }
+      .notice { border-radius: 14px; padding: 12px 14px; font-size: 0.95rem; font-weight: 700; line-height: 1.6; margin: 0 0 12px; display: none; }
+      .notice.show { display: block; }
+      .notice.warn { background: var(--warn-bg); border: 2px solid var(--warn-line); }
+      .notice.info { background: var(--info-bg); border: 2px solid var(--info-line); }
+      .notice p { margin: 0 0 6px; } .notice p:last-child { margin-bottom: 0; }
+      .notice .small { font-size: 0.85rem; font-weight: 600; }
+      .mini-btn { border: 2px solid #3b82f6; background: var(--panel); color: #3b82f6; border-radius: 999px; font-weight: 900; font-size: 0.92rem; padding: 7px 14px; cursor: pointer; font-family: inherit; }
+      .mini-btn:active { transform: scale(0.96); }
+      .panel { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 16px 14px; margin-bottom: 14px; }
+      .label { font-size: 1.05rem; font-weight: 800; margin: 0 0 10px; }
+      .dan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+      .dan-btn { border: 3px solid var(--dc); background: var(--panel); color: var(--dc); border-radius: 14px; font-size: 1.7rem; font-weight: 900; padding: 10px 0 8px; cursor: pointer; font-family: inherit; transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease; }
+      .dan-btn .no { font-size: 0.75rem; display: block; font-weight: 800; }
+      .dan-btn.selected { background: var(--dc); color: #fff; transform: scale(1.07); }
+      .dan-btn:active { transform: scale(0.96); }
+      .mode-row { display: flex; gap: 10px; }
+      .mode-btn { flex: 1; border: 3px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 14px; font-size: 1.02rem; font-weight: 900; padding: 12px 2px; cursor: pointer; font-family: inherit; white-space: nowrap; }
+      .mode-btn.selected { border-color: #f5a400; background: #f5a400; color: #fff; }
+      .mode-btn:active { transform: scale(0.97); }
+      .big-btn { display: block; width: 100%; border: none; border-radius: 16px; font-size: 1.35rem; font-weight: 900; padding: 16px 10px; cursor: pointer; font-family: inherit; color: #fff; }
+      .big-btn:active { transform: scale(0.98); }
+      .big-btn:disabled { opacity: 0.55; }
+      .btn-rainbow { background: linear-gradient(90deg, #ef4444, #f97316, #f5c400, #22a355, #0ea5b7, #3b82f6, #8b5cf6); box-shadow: 0 6px 16px rgba(245, 164, 0, 0.35); }
+      .btn-green { background: var(--ok); } .btn-blue { background: #3b82f6; }
+      .btn-gray { background: var(--panel); color: var(--ink); border: 3px solid var(--line); }
+      .btn-row { display: flex; gap: 10px; margin-top: 10px; }
+      .btn-row .big-btn { flex: 1; font-size: 1.05rem; padding: 13px 4px; }
+      details.parent-note { background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; font-size: 0.88rem; line-height: 1.7; }
+      details.parent-note summary { font-weight: 800; cursor: pointer; font-size: 0.95rem; }
+      details.parent-note p { margin: 8px 0 0; }
+      #screen-count { text-align: center; padding: 34px 0 10px; display: none; }
+      #count-num { font-size: 8rem; font-weight: 900; line-height: 1.1; display: inline-block; }
+      #count-num.pop { animation: pop 0.45s ease; }
+      @keyframes pop { 0% { transform: scale(0.3); opacity: 0; } 60% { transform: scale(1.25); opacity: 1; } 100% { transform: scale(1); } }
+      #count-label { font-size: 1.3rem; font-weight: 900; margin-top: 6px; }
+      #count-cond { color: var(--muted); font-weight: 800; margin-top: 8px; font-size: 1.05rem; }
+      /* bulk screen */
+      #screen-bulk, #screen-play, #screen-judging, #screen-result { display: none; }
+      .timer-top { display: flex; justify-content: space-between; align-items: baseline; font-weight: 900; margin-bottom: 6px; }
+      .timer-sec { font-size: 1.5rem; }
+      .timer-bar-bg { height: 14px; border-radius: 999px; background: var(--line); overflow: hidden; margin-bottom: 8px; }
+      .timer-bar { height: 100%; width: 100%; border-radius: 999px; background: linear-gradient(90deg, #ef4444, #f97316, #f5c400, #22a355, #0ea5b7, #3b82f6, #8b5cf6); transition: width 0.1s linear; }
+      .bulk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 8px; }
+      .bulk-card { background: var(--panel); border: 2px solid var(--line); border-top: 8px solid var(--qc, #f5a400); border-radius: 12px; padding: 6px 2px 5px; text-align: center; box-shadow: var(--shadow); }
+      .bulk-card .bno { font-size: 0.7rem; font-weight: 900; color: var(--muted); display: block; }
+      .bulk-card .bexpr { font-size: 1.35rem; font-weight: 900; line-height: 1.25; white-space: nowrap; }
+      #mic-status, #mic-status-num { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--info-bg); border: 2px solid var(--info-line); border-radius: 14px; font-weight: 900; font-size: 0.95rem; padding: 7px 10px; margin: 0 0 7px; line-height: 1.45; text-align: center; }
+      .mic-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--ng); flex: none; animation: pulse 1s infinite; }
+      .off .mic-dot { background: var(--muted); animation: none; }
+      @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.45); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+      #live-text { font-size: 0.88rem; font-weight: 700; color: var(--muted); background: var(--panel); border: 2px dashed var(--line); border-radius: 12px; padding: 6px 10px; min-height: 2.2em; line-height: 1.5; margin: 0 0 8px; word-break: break-all; }
+      #live-text .live-label { color: #3b82f6; font-weight: 900; }
+      #btn-finish-bulk { padding: 13px 10px; font-size: 1.25rem; margin-bottom: 8px; }
+      .small-link-btn { display: block; width: 100%; border: 2px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 12px; font-weight: 900; font-size: 0.98rem; padding: 9px 10px; cursor: pointer; font-family: inherit; }
+      .small-link-btn:active { transform: scale(0.98); }
+      #btn-mic-restart { background: #3b82f6; margin-bottom: 8px; padding: 11px 10px; font-size: 1.1rem; }
+      /* judging */
+      #screen-judging { text-align: center; padding: 40px 10px; }
+      #judging-title { font-size: 1.8rem; font-weight: 900; margin: 0 0 10px; }
+      #judging-msg { font-size: 1.05rem; font-weight: 800; color: var(--muted); line-height: 1.7; margin: 0; }
+      .judging-dots { font-size: 2.4rem; letter-spacing: 0.3em; color: #f5a400; animation: pulse 1s infinite; }
+      /* numeric play (existing compact) */
+      .progress-top { display: flex; justify-content: space-between; align-items: baseline; font-weight: 900; margin-bottom: 6px; font-size: 1.05rem; }
+      #q-progress b { font-size: 1.35rem; color: #3b82f6; }
+      #ok-count b { font-size: 1.35rem; color: var(--ok); }
+      .dots { display: flex; gap: 5px; margin: 2px 0 6px; }
+      .dot { flex: 1; height: 10px; border-radius: 999px; background: var(--line); }
+      .dot.done { background: var(--ok); } .dot.now { background: #f5a400; }
+      .q-card { background: var(--panel); border: 3px solid var(--line); border-top: 12px solid var(--qc, #f5a400); border-radius: 18px; box-shadow: var(--shadow); padding: 12px 10px 10px; text-align: center; position: relative; margin-bottom: 8px; overflow: hidden; }
+      .q-card.correct { background: var(--ok-bg); border-color: var(--ok); border-top-color: var(--ok); }
+      .q-card.wrong { background: var(--ng-bg); border-color: var(--ng); border-top-color: var(--ng); animation: shake 0.35s ease; }
+      @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-7px); } 75% { transform: translateX(7px); } }
+      #q-expr { font-size: 3rem; font-weight: 900; letter-spacing: 0.03em; line-height: 1.15; }
+      #q-mark { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; font-size: 6rem; pointer-events: none; }
+      .q-card.correct #q-mark { display: flex; }
+      #feedback { min-height: 1.5em; font-size: 1.08rem; font-weight: 900; text-align: center; margin: 0 0 6px; line-height: 1.45; }
+      #feedback.ok { color: var(--ok); } #feedback.ng { color: var(--ng); }
+      #screen-play .big-btn { padding: 12px 10px; font-size: 1.2rem; }
+      .pad-display { background: var(--panel); border: 3px solid var(--line); border-radius: 14px; font-size: 1.9rem; font-weight: 900; text-align: center; min-height: 1.4em; line-height: 1.4; margin-bottom: 8px; letter-spacing: 0.1em; }
+      .pad-display .placeholder { color: var(--muted); font-size: 1rem; letter-spacing: 0; }
+      .pad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+      .pad-btn { border: 3px solid var(--pc); background: var(--panel); color: var(--pc); border-radius: 14px; font-size: 1.6rem; font-weight: 900; padding: 6px 0; cursor: pointer; font-family: inherit; }
+      .pad-btn:active { background: var(--pc); color: #fff; transform: scale(0.96); }
+      .pad-btn.util { font-size: 1.25rem; --pc: #7a7268; }
+      /* result */
+      #result-panel { text-align: center; }
+      #result-stars { font-size: 2.6rem; letter-spacing: 0.15em; color: #f5a400; line-height: 1.2; }
+      #result-mark { font-size: 4.2rem; line-height: 1.1; }
+      #result-score { font-size: 2.6rem; font-weight: 900; line-height: 1.2; color: #3b82f6; }
+      #result-title { font-size: 1.7rem; font-weight: 900; margin: 4px 0; }
+      #result-msg { font-size: 1.05rem; font-weight: 700; line-height: 1.6; margin: 0 0 6px; }
+      #result-heard { display: none; text-align: left; background: var(--info-bg); border: 2px solid var(--info-line); border-radius: 12px; padding: 10px 12px; font-size: 0.92rem; font-weight: 700; line-height: 1.7; margin: 10px 0 0; word-break: break-all; }
+      #result-heard.show { display: block; }
+      #result-heard .h-label { font-weight: 900; }
+      #per-q-list { text-align: left; margin-top: 12px; }
+      #per-q-list .a-row, #answer-list .a-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--line); padding: 7px 4px; font-size: 1.15rem; font-weight: 900; gap: 8px; }
+      #per-q-list .a-row .st { font-size: 0.98rem; white-space: nowrap; }
+      #per-q-list .a-row .st.ok { color: var(--ok); }
+      #per-q-list .a-row .st.ng { color: var(--ng); }
+      #per-q-list .a-row .st.unk { color: var(--muted); }
+      #answer-list { display: none; text-align: left; margin-top: 12px; }
+      #answer-list.show { display: block; }
+      #answer-list .a-row .st { font-size: 1rem; } #answer-list .a-row .st.ok { color: var(--ok); } #answer-list .a-row .st.ng { color: var(--muted); }
+      .hidden { display: none !important; }
+      .confetti { position: fixed; top: -4vh; z-index: 50; width: 10px; height: 16px; border-radius: 2px; pointer-events: none; animation: fall linear forwards; }
+      @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+      @media (prefers-reduced-motion: reduce) { .confetti { display: none; } .mic-dot, .q-card.wrong, #count-num.pop, .judging-dots { animation: none; } }
+      @media (max-width: 380px) {
+        #q-expr { font-size: 2.6rem; } h1 { font-size: 1.7rem; } #count-num { font-size: 6.5rem; }
+        .bulk-card .bexpr { font-size: 1.15rem; }
+      }
+      @media (max-height: 720px) {
+        #q-expr { font-size: 2.4rem; } .q-card { padding: 8px 10px 6px; border-top-width: 9px; }
+        .pad-btn { padding: 4px 0; font-size: 1.45rem; } .pad-display { font-size: 1.6rem; }
+        #screen-play .big-btn { padding: 10px 10px; font-size: 1.1rem; }
+        .bulk-card { padding: 4px 2px 3px; border-top-width: 6px; } .bulk-card .bexpr { font-size: 1.2rem; }
+        #btn-finish-bulk { padding: 10px; font-size: 1.15rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1 aria-label="九九れんしゅう"><span class="r1">九</span><span class="r2">九</span><span class="r3">れ</span><span class="r4">ん</span><span class="r5">し</span><span class="r6">ゅ</span><span class="r7">う</span></h1>
+      <p class="subtitle">9問ぜんぶ言ってから判定するよ！<span class="badge-voice">音声一括判定版</span></p>
+
+      <div id="notice-line" class="notice info" role="alert">
+        <p>📱 LINEの中で開いているみたいです。声の判定はLINEの中では使えないことがあります。</p>
+        <p class="small">右上（または右下）の「…」メニューから「ブラウザで開く」を選んで、SafariやChromeで開いてね。数字ボタンではこのまま遊べます。</p>
+        <p><button type="button" class="mini-btn" id="btn-to-num-line">🔢 数字で答える</button></p>
+      </div>
+      <div id="notice-unsupported" class="notice warn" role="alert">
+        <p>🎤 このブラウザでは声は使えないよ。数字ボタンで答えてね。</p>
+        <p><button type="button" class="mini-btn" id="btn-to-num-unsupported">🔢 数字で答える（1問ずつ）</button></p>
+        <p class="small">数字ボタンだけでも、最後まで遊べます。</p>
+      </div>
+      <div id="notice-micfail" class="notice warn" role="alert">
+        <p>🎤 マイクが使えませんでした。ブラウザの許可を確認してね。</p>
+        <p><button type="button" class="mini-btn" id="btn-mic-retry-top">🎤 マイクをためす</button> <button type="button" class="mini-btn" id="btn-to-num-micfail">🔢 数字で答える</button></p>
+        <p class="small">数字ボタンでも答えられます。</p>
+      </div>
+
+      <!-- select -->
+      <section id="screen-select">
+        <div class="panel"><p class="label">なんの段（だん）にする？</p><div class="dan-grid" id="dan-grid"></div></div>
+        <div class="panel">
+          <p class="label">どういう順番（じゅんばん）？</p>
+          <div class="mode-row" id="mode-row">
+            <button type="button" class="mode-btn selected" data-mode="up">⬆️ 上り</button>
+            <button type="button" class="mode-btn" data-mode="down">⬇️ 下り</button>
+            <button type="button" class="mode-btn" data-mode="random">🔀 ランダム</button>
+          </div>
+        </div>
+        <div class="panel">
+          <p style="margin:0; font-weight:800; line-height:1.7;">あそびかた：スタートを押すとマイクがオンになるよ。9問が一度に出るから、順番にぜんぶ声で言ってね。言っている途中では判定しないよ。言い終わったら「言いおわった！」を押してね。ぜんぶ言い終わってから、まとめて判定します。9問ぜんぶで15秒だよ！</p>
+          <p id="mic-note-select" style="margin:8px 0 0; font-weight:700; color:var(--muted); font-size:0.92rem; line-height:1.6;"></p>
+          <p style="margin:8px 0 0; font-weight:700; font-size:0.92rem; line-height:1.6;">⏳ 声の結果は少し遅れて届くことがあります。「言いおわった！」のあと、結果が届くまで少し待ってから判定するので安心してね。答えだけを続けて言っても、式から言ってもOKです。</p>
+        </div>
+        <button type="button" class="big-btn btn-rainbow" id="btn-start">▶️ スタート！</button>
+        <p style="height:6px"></p>
+        <button type="button" class="small-link-btn" id="btn-start-num">🔢 数字で答える（1問ずつ）</button>
+        <p style="height:10px"></p>
+        <details class="parent-note">
+          <summary>保護者の方へ（音声一括判定について）</summary>
+          <p>この版は、スタートを押したときにマイクをオンにし、9問を一括表示して15秒のあいだ続けて聞き取る方式です。発話中は判定せず、問題も進みません。「言いおわった！」ボタンか15秒満了で終了し、遅れて届く最終の認識結果を最大約3秒待ってから、マイクを止めて一括で1回だけ判定します（この待ち時間は15秒に含めません）。</p>
+          <p>言い方は「答えだけを続けて言う」「式から言う（例：さんいちがさん）」の両方に対応し、九九の正式な唱え方（ににんがし、にしがはち、さざん、さぶろく、さんぱ、はっぱ、ろっく等。答えも じゅうし・しじゅう のような九九式の読み）も、問題ごとのフレーズ照合で判定します。読み方のゆれ（し／よん、しち／なな、く／きゅう）や数字・漢字での認識にも対応しています。聞き取れなかった分は❌ではなく「？（聞き取れなかった）」として区別し、勝手に不正解にはしません。結果画面では、聞き取った数字列と書き起こしを確認できます。iPhoneのSafariでも音声判定は使えます（iOS 14.5以降、httpsページ、Siri・音声入力オンが条件）。連続認識が途中で切れたら自動で再開を試み、ダメなときは再開ボタンを表示します。音声認識にはインターネット接続が必要です。</p>
+        </details>
+      </section>
+
+      <!-- countdown -->
+      <section id="screen-count"><div id="count-num">3</div><div id="count-label">よーい…</div><div id="count-cond"></div></section>
+
+      <!-- bulk speaking -->
+      <section id="screen-bulk">
+        <div class="timer-top"><span class="timer-sec" id="bulk-timer-sec">⏱ 15.0</span><span style="color:var(--muted); font-size:0.95rem;">9問ぜんぶで15秒・順番に言ってね</span></div>
+        <div class="timer-bar-bg"><div class="timer-bar" id="bulk-timer-bar"></div></div>
+        <div class="bulk-grid" id="bulk-grid"></div>
+        <p id="mic-status"><span class="mic-dot"></span><span id="mic-status-text">🎤 聞き取り中… ぜんぶ言ってね</span></p>
+        <button type="button" class="big-btn hidden" id="btn-mic-restart">🎤 マイクを再開する</button>
+        <p id="live-text"><span class="live-label">👂 聞き取り中：</span><span id="live-text-body">（まだ聞き取れていません）</span></p>
+        <button type="button" class="big-btn btn-green" id="btn-finish-bulk">✅ 言いおわった！</button>
+        <button type="button" class="small-link-btn" id="btn-to-num-bulk">🔢 数字で答える（タイマーを止めて1問ずつに切替）</button>
+      </section>
+
+      <!-- judging -->
+      <section id="screen-judging">
+        <div class="judging-dots">● ● ●</div>
+        <p id="judging-title">判定中…</p>
+        <p id="judging-msg">声の結果を待っています。<br />結果は少し遅れて届くことがあるので、<br />最大3秒ほど待ってから判定します。</p>
+      </section>
+
+      <!-- numeric 1-by-1 -->
+      <section id="screen-play">
+        <div id="play-area">
+          <div class="progress-top"><span id="q-progress"><b>1</b> / 9 問目</span><span id="ok-count">せいかい <b>0</b> 問</span></div>
+          <div class="dots" id="dots"></div>
+          <div class="timer-top"><span class="timer-sec" id="num-timer-sec">⏱ 15.0</span><span style="color:var(--muted); font-size:0.95rem;">9問で15秒・数字モード</span></div>
+          <div class="timer-bar-bg"><div class="timer-bar" id="num-timer-bar"></div></div>
+          <div class="q-card" id="q-card"><div id="q-expr">2 × 1</div><div id="q-mark">⭕</div></div>
+          <p id="feedback" aria-live="polite"></p>
+          <div class="pad-display" id="pad-display"><span class="placeholder">数字ボタンで答えを入れてね</span></div>
+          <div class="pad-grid" id="pad-grid"></div>
+          <button type="button" class="big-btn btn-green" id="btn-answer">✔️ 答える！</button>
+        </div>
+      </section>
+
+      <!-- result -->
+      <section id="screen-result">
+        <div class="panel" id="result-panel">
+          <div id="result-mark"></div>
+          <div id="result-stars"></div>
+          <div id="result-score"></div>
+          <div id="result-title"></div>
+          <p id="result-msg"></p>
+          <div id="result-heard"><span class="h-label">👂 聞き取った数字：</span><span id="result-heard-nums"></span><br /><span class="h-label">書き起こし：</span><span id="result-heard-text"></span></div>
+          <div id="per-q-list"></div>
+          <p style="height:8px"></p>
+          <button type="button" class="big-btn btn-blue" id="btn-answers">👀 答えを見る</button>
+          <div id="answer-list"></div>
+          <div class="btn-row">
+            <button type="button" class="big-btn btn-rainbow" id="btn-again">🔁 もう一度</button>
+            <button type="button" class="big-btn btn-gray" id="btn-change">🔄 段・モードを変更</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+        var DAN_COLORS = { 2: "#ef4444", 3: "#f97316", 4: "#f5a400", 5: "#22a355", 6: "#0ea5b7", 7: "#3b82f6", 8: "#8b5cf6", 9: "#ec4899" };
+        var CARD_COLORS = ["#ef4444", "#f97316", "#f5a400", "#22a355", "#0ea5b7", "#3b82f6", "#8b5cf6", "#ec4899", "#84cc16"];
+        var PAD_COLORS = ["#ef4444", "#f97316", "#f5a400", "#22a355", "#0ea5b7", "#3b82f6", "#8b5cf6", "#ec4899", "#84cc16", "#14b8a6"];
+        var LIMIT = 15;
+        var selDan = 2, selMode = "up", questions = [];
+        var phase = "select"; // select | count | bulk | judging | num | done
+        var pendingMode = "bulk"; // bulk | num (after countdown)
+        var lastMode = "bulk";
+        var cur = 0, correctCount = 0, answering = false, padValue = "";
+        var countTimers = [], timerId = null, timerStart = 0, nextTimer = null;
+        var bulkFinals = [], bulkInterim = "", bulkEndReason = "", bulkJudged = false, judgingTimer = null;
+        var bulkResults = null, numTimeout = false;
+
+        var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+        var speechSupported = !!SR, recognition = null;
+        function $(id) { return document.getElementById(id); }
+        var danGrid = $("dan-grid"), padGrid = $("pad-grid"), dotsEl = $("dots");
+
+        var ua = navigator.userAgent || "";
+        if (/Line\//i.test(ua) || /\bLINE\b/.test(ua)) $("notice-line").classList.add("show");
+        if (!speechSupported) {
+          $("notice-unsupported").classList.add("show");
+          $("mic-note-select").textContent = "このブラウザでは声は使えません。「数字で答える」から遊んでね。";
+        } else {
+          $("mic-note-select").textContent = "スタートを押すとマイクがオンになって、9問のあいだ続けて聞き取ります。マイクの許可を聞かれたら「許可」を押してね。";
+        }
+
+        /* select */
+        for (var d = 2; d <= 9; d++) {
+          (function (dan) {
+            var b = document.createElement("button"); b.type = "button";
+            b.className = "dan-btn" + (dan === selDan ? " selected" : "");
+            b.style.setProperty("--dc", DAN_COLORS[dan]);
+            b.innerHTML = dan + '<span class="no">の段</span>';
+            b.setAttribute("aria-label", dan + "の段");
+            b.addEventListener("click", function () {
+              selDan = dan;
+              var btns = danGrid.querySelectorAll(".dan-btn");
+              for (var i = 0; i < btns.length; i++) btns[i].classList.remove("selected");
+              b.classList.add("selected");
+            });
+            danGrid.appendChild(b);
+          })(d);
+        }
+        $("mode-row").addEventListener("click", function (e) {
+          var t = e.target; while (t && !t.classList.contains("mode-btn")) t = t.parentNode; if (!t) return;
+          selMode = t.getAttribute("data-mode");
+          var btns = $("mode-row").querySelectorAll(".mode-btn");
+          for (var i = 0; i < btns.length; i++) btns[i].classList.remove("selected");
+          t.classList.add("selected");
+        });
+        function modeLabel() { return selMode === "up" ? "上り" : selMode === "down" ? "下り" : "ランダム"; }
+
+        /* pad */
+        var padKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "⌫"];
+        padKeys.forEach(function (k, i) {
+          var b = document.createElement("button"); b.type = "button";
+          b.className = "pad-btn" + (k === "C" || k === "⌫" ? " util" : "");
+          b.style.setProperty("--pc", (k === "C" || k === "⌫") ? "#7a7268" : PAD_COLORS[i % PAD_COLORS.length]);
+          b.textContent = k === "C" ? "全部消す" : k;
+          b.setAttribute("aria-label", k === "C" ? "全部消す" : k === "⌫" ? "1文字消す" : k);
+          b.addEventListener("click", function () { padPress(k); });
+          padGrid.appendChild(b);
+        });
+        function renderPad() {
+          var disp = $("pad-display");
+          if (padValue === "") disp.innerHTML = '<span class="placeholder">数字ボタンで答えを入れてね</span>';
+          else disp.textContent = padValue;
+        }
+        function padPress(k) {
+          if (phase !== "num" || answering) return;
+          if (k === "C") padValue = ""; else if (k === "⌫") padValue = padValue.slice(0, -1);
+          else if (padValue.length < 2) padValue += k;
+          renderPad();
+        }
+
+        /* questions */
+        function buildQuestions() {
+          var mults = [], i;
+          if (selMode === "up") { for (i = 1; i <= 9; i++) mults.push(i); }
+          else if (selMode === "down") { for (i = 9; i >= 1; i--) mults.push(i); }
+          else { mults = [1,2,3,4,5,6,7,8,9]; for (i = mults.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var tmp = mults[i]; mults[i] = mults[j]; mults[j] = tmp; } }
+          questions = mults.map(function (m) { return { mult: m, ans: selDan * m, correct: false }; });
+        }
+        function renderDots() {
+          dotsEl.innerHTML = "";
+          questions.forEach(function (q, i) {
+            var dot = document.createElement("div");
+            dot.className = "dot" + (q.correct ? " done" : i === cur && phase === "num" ? " now" : "");
+            dotsEl.appendChild(dot);
+          });
+        }
+        function showQuestion() {
+          var q = questions[cur], card = $("q-card");
+          card.className = "q-card"; card.style.setProperty("--qc", CARD_COLORS[cur % CARD_COLORS.length]);
+          $("q-expr").textContent = selDan + " × " + q.mult + " = ?";
+          $("q-progress").innerHTML = "<b>" + (cur + 1) + "</b> / 9 問目";
+          $("ok-count").innerHTML = "せいかい <b>" + correctCount + "</b> 問";
+          padValue = ""; renderPad(); setFeedback("", ""); renderDots();
+        }
+        function setFeedback(text, kind) { var f = $("feedback"); f.textContent = text; f.className = kind || ""; f.id = "feedback"; }
+
+        /* number parsing (reused) */
+        var KANJI_DIGIT = { "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9 };
+        var KANA_DIGITS = [["きゅう",9],["しち",7],["さん",3],["はち",8],["ろく",6],["よん",4],["なな",7],["いち",1],["ご",5],["く",9],["し",4],["よ",4],["に",2]];
+        function kanaDigitAt(s, i) { for (var k = 0; k < KANA_DIGITS.length; k++) { var w = KANA_DIGITS[k][0]; if (s.substr(i, w.length) === w) return { val: KANA_DIGITS[k][1], len: w.length }; } return null; }
+        function extractNumbers(text) {
+          if (!text) return [];
+          var s = String(text).replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); });
+          var out = [], i = 0;
+          while (i < s.length) {
+            var ch = s[i];
+            if (ch >= "0" && ch <= "9") { var num = 0; while (i < s.length && s[i] >= "0" && s[i] <= "9") { num = num * 10 + (s.charCodeAt(i) - 48); i++; } out.push(num); continue; }
+            if (KANJI_DIGIT[ch] || ch === "十") { var kv; if (ch === "十") { kv = 10; i++; if (KANJI_DIGIT[s[i]]) { kv += KANJI_DIGIT[s[i]]; i++; } } else { kv = KANJI_DIGIT[ch]; if (s[i+1] === "十") { kv = kv * 10; i += 2; if (KANJI_DIGIT[s[i]]) { kv += KANJI_DIGIT[s[i]]; i++; } } else { i++; } } out.push(kv); continue; }
+            if (s.substr(i, 3) === "じゅう") { var tv = 10; i += 3; var od = kanaDigitAt(s, i); if (od) { tv += od.val; i += od.len; } out.push(tv); continue; }
+            var kd = kanaDigitAt(s, i);
+            if (kd) { if (s.substr(i + kd.len, 3) === "じゅう") { var v2 = kd.val * 10; i += kd.len + 3; var od2 = kanaDigitAt(s, i); if (od2) { v2 += od2.val; i += od2.len; } out.push(v2); } else { out.push(kd.val); i += kd.len; } continue; }
+            i++;
+          }
+          return out;
+        }
+
+        /* bulk judging: greedy match in question order */
+        function bulkJudge(nums) {
+          var res = [], idx = 0;
+          for (var qi = 0; qi < questions.length; qi++) {
+            var q = questions[qi];
+            if (idx >= nums.length) { res.push({ status: "unknown", heard: null }); continue; }
+            if (idx + 1 < nums.length && nums[idx] === selDan && nums[idx+1] === q.mult) {
+              if (idx + 2 < nums.length) { var ha = nums[idx+2]; res.push({ status: ha === q.ans ? "correct" : "wrong", heard: ha }); idx += 3; }
+              else { res.push({ status: "unknown", heard: null }); idx += 2; }
+            } else { var h2 = nums[idx]; res.push({ status: h2 === q.ans ? "correct" : "wrong", heard: h2 }); idx += 1; }
+          }
+          return res;
+        }
+
+        /* traditional kuku chant judging: match each question's expected chant phrase
+           (e.g. ににんがし, にしがはち) by forward search, so one missed/wrong question
+           never shifts the rest. Falls back to the answer-sequence matcher above. */
+        var ONES_KANA = { 1: "いち", 2: "に", 3: "さん", 4: "し", 5: "ご", 6: "ろく", 7: "しち", 8: "はち", 9: "く" };
+        function numToKana(n) {
+          if (n < 10) return ONES_KANA[n] || "";
+          var t = Math.floor(n / 10), o = n % 10;
+          var s = (t === 1 ? "" : ONES_KANA[t]) + "じゅう";
+          if (o) s += ONES_KANA[o];
+          return s;
+        }
+        var KANJI_KANA = { "一": "いち", "二": "に", "三": "さん", "四": "し", "五": "ご", "六": "ろく", "七": "しち", "八": "はち", "九": "く", "十": "じゅう" };
+        function canonicalKana(s) {
+          // modern readings count as the traditional ones: よん→し, なな→しち, きゅう→く
+          return s.replace(/きゅう/g, "く").replace(/なな/g, "しち").replace(/よん/g, "し");
+        }
+        function normalizeKuku(text, digitRunsAsNumbers) {
+          if (!text) return "";
+          var s = String(text).replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
+          s = s.replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); });
+          s = s.replace(/[0-9]+/g, function (run) {
+            if (digitRunsAsNumbers && run.length <= 2) { var v = parseInt(run, 10); if (v >= 1 && v <= 99) return numToKana(v); }
+            var out = ""; for (var i = 0; i < run.length; i++) out += ONES_KANA[run.charCodeAt(i) - 48] || ""; return out;
+          });
+          var out2 = "";
+          for (var i = 0; i < s.length; i++) {
+            var ch = s[i];
+            if (KANJI_KANA[ch]) out2 += KANJI_KANA[ch];
+            else if (ch === "人") out2 += "にん"; // 二人/2人 → ににん (2×2 is chanted ににん)
+            else out2 += ch;
+          }
+          s = out2.replace(/[\s、。,.\・!！?？]+/g, "#"); // phrase separators stay as boundaries
+          s = s.replace(/[:：;；×=＝+~〜「」『』()（）]/g, "");
+          return canonicalKana(s);
+        }
+        function kanaNumberAt(s, i) {
+          if (s.substr(i, 3) === "じゅう") { var v = 10, len = 3; var d = kanaDigitAt(s, i + 3); if (d) { v += d.val; len += d.len; } return { val: v, len: len }; }
+          var d1 = kanaDigitAt(s, i); if (!d1) return null;
+          if (s.substr(i + d1.len, 3) === "じゅう") { var v2 = d1.val * 10, len2 = d1.len + 3; var d2 = kanaDigitAt(s, i + len2); if (d2) { v2 += d2.val; len2 += d2.len; } return { val: v2, len: len2 }; }
+          return { val: d1.val, len: d1.len };
+        }
+        var KUKU_SPECIAL = {
+          "2-2": { full: ["ににんがし"], prefix: ["ににん"] },
+          "3-3": { full: ["さざんがく"], prefix: ["さざん"] },
+          "3-6": { full: ["さぶろくじゅうはち"], prefix: ["さぶろく"] },
+          "3-8": { full: ["さんぱにじゅうし"], prefix: ["さんぱ"] },
+          "8-8": { full: ["はっぱろくじゅうし"], prefix: ["はっぱ"] },
+          "6-9": { full: ["ろっくごじゅうし"], prefix: ["ろっく"] }
+        };
+        function kukuPhrases(q) {
+          var dan = ONES_KANA[selDan], mult = ONES_KANA[q.mult], ans = numToKana(q.ans);
+          var full = [dan + mult + "が" + ans, dan + mult + ans];
+          var prefix = [dan + mult];
+          var sp = KUKU_SPECIAL[selDan + "-" + q.mult];
+          if (sp) { full = sp.full.concat(full); prefix = sp.prefix.concat(prefix); }
+          return { full: full, prefix: prefix };
+        }
+        function judgeOnNorm(N) {
+          var res = [], ranges = [], i, q, ph;
+          for (i = 0; i < questions.length; i++) { res.push({ status: "unknown", heard: null }); ranges.push(null); }
+          var pos = 0;
+          for (i = 0; i < questions.length; i++) {
+            q = questions[i]; ph = kukuPhrases(q);
+            var ansKana = numToKana(q.ans), best = null;
+            for (var v = 0; v < ph.full.length; v++) {
+              var from = pos;
+              while (true) {
+                var f = N.indexOf(ph.full[v], from);
+                if (f < 0) break;
+                // reject a match whose answer number actually continues into a
+                // different number (e.g. にごじゅうに = 12, not 10) unless a
+                // phrase separator (#) ends the number there
+                var aStart = f + ph.full[v].length - ansKana.length;
+                var ext = kanaNumberAt(N, aStart);
+                if (ext && ext.len > ansKana.length && N.substr(aStart, ext.len).indexOf("#") < 0) { from = f + 1; continue; }
+                if (best === null || f < best.idx) best = { idx: f, len: ph.full[v].length };
+                break;
+              }
+            }
+            if (best) { res[i] = { status: "correct", heard: q.ans }; ranges[i] = { start: best.idx, end: best.idx + best.len }; pos = best.idx + best.len; }
+            // not found: pos stays, so the next question re-searches from the same place
+          }
+          for (i = 0; i < questions.length; i++) {
+            if (res[i].status === "correct") continue;
+            var wStart = 0, wEnd = N.length, j;
+            for (j = i - 1; j >= 0; j--) if (ranges[j]) { wStart = ranges[j].end; break; }
+            for (j = i + 1; j < questions.length; j++) if (ranges[j]) { wEnd = ranges[j].start; break; }
+            q = questions[i]; ph = kukuPhrases(q);
+            var pIdx = -1, pLen = 0;
+            for (var v2 = 0; v2 < ph.prefix.length; v2++) {
+              var f2 = N.indexOf(ph.prefix[v2], wStart);
+              if (f2 >= 0 && f2 + ph.prefix[v2].length <= wEnd && (pIdx < 0 || f2 < pIdx)) { pIdx = f2; pLen = ph.prefix[v2].length; }
+            }
+            if (pIdx >= 0) {
+              var p = pIdx + pLen; if (N[p] === "が") p++;
+              var num = kanaNumberAt(N, p);
+              if (num) {
+                res[i] = { status: num.val === q.ans ? "correct" : "wrong", heard: num.val };
+                ranges[i] = { start: pIdx, end: p + num.len };
+              }
+            }
+          }
+          return res;
+        }
+        function judgeKuku(transcript) {
+          var nums = extractNumbers(transcript);
+          var best = null, phraseCorrect = 0;
+          [true, false].forEach(function (mode) {
+            var N = normalizeKuku(transcript, mode);
+            if (!N) return;
+            var r = judgeOnNorm(N), c = 0;
+            r.forEach(function (x) { if (x.status === "correct") c++; });
+            if (!best || c > phraseCorrect) { best = r; phraseCorrect = c; }
+          });
+          if (!best) best = questions.map(function () { return { status: "unknown", heard: null }; });
+          var numRes = bulkJudge(nums), numCorrect = 0;
+          numRes.forEach(function (x) { if (x.status === "correct") numCorrect++; });
+          if (phraseCorrect < 5 && numCorrect >= 6 && numCorrect > phraseCorrect) {
+            // answer-only style speech: use the sequence matcher, keeping phrase-confirmed corrects
+            var merged = numRes.map(function (nr, i) { return best[i] && best[i].status === "correct" ? best[i] : nr; });
+            return { results: merged, nums: nums };
+          }
+          return { results: best, nums: nums };
+        }
+
+        /* speech: continuous, collect only — never judge while speaking */
+        var micWanted = false, micRunning = false, micRestartTimer = null, micRestartFails = 0;
+        function setMicUI(state) {
+          var bar = $("mic-status"), txt = $("mic-status-text"), restart = $("btn-mic-restart");
+          if (!speechSupported) { bar.classList.add("hidden"); restart.classList.add("hidden"); return; }
+          if (state === "on") { bar.classList.remove("off"); txt.textContent = "🎤 聞き取り中… ぜんぶ言ってね（判定は言い終わってからだよ）"; restart.classList.add("hidden"); }
+          else { bar.classList.add("off"); txt.textContent = "🎤 マイクが止まっています"; restart.classList.remove("hidden"); }
+        }
+        function renderLive() {
+          var parts = bulkFinals.slice(); if (bulkInterim) parts.push(bulkInterim);
+          var t = parts.join(" ");
+          $("live-text-body").textContent = t ? t : "（まだ聞き取れていません）";
+        }
+        function scheduleMicRestart() { if (!micWanted || micRunning || micRestartTimer) return; micRestartTimer = setTimeout(function () { micRestartTimer = null; if (micWanted && !micRunning) launchRecognition(); }, 300); }
+        function launchRecognition() {
+          if (!speechSupported || micRunning) return;
+          var rec; try { rec = new SR(); } catch (e) { setMicUI("off"); return; }
+          recognition = rec; rec.lang = "ja-JP"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+          rec.onresult = function (ev) {
+            micRestartFails = 0;
+            if (phase !== "bulk" && phase !== "judging") return;
+            for (var r = ev.resultIndex; r < ev.results.length; r++) {
+              var res = ev.results[r], txt = res[0] ? res[0].transcript : "";
+              if (res.isFinal) { if (txt) bulkFinals.push(txt); if (bulkInterim === txt) bulkInterim = ""; }
+              else bulkInterim = txt;
+            }
+            renderLive();
+          };
+          rec.onerror = function (ev) {
+            if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
+              micWanted = false; $("notice-micfail").classList.add("show"); setMicUI("off");
+            }
+          };
+          rec.onend = function () {
+            micRunning = false; if (recognition === rec) recognition = null;
+            if (!micWanted) { if (phase === "bulk") setMicUI("off"); return; }
+            micRestartFails++;
+            if (micRestartFails > 30) { micWanted = false; if (phase === "bulk") setMicUI("off"); return; }
+            if (phase === "bulk") setMicUI("on");
+            scheduleMicRestart();
+          };
+          micRunning = true; if (phase === "bulk") setMicUI("on");
+          try { rec.start(); } catch (e) { micRunning = false; scheduleMicRestart(); }
+        }
+        function startMic() { if (!speechSupported) return; $("notice-micfail").classList.remove("show"); micWanted = true; micRestartFails = 0; if (micRestartTimer) { clearTimeout(micRestartTimer); micRestartTimer = null; } launchRecognition(); }
+        function stopMic() { micWanted = false; if (micRestartTimer) { clearTimeout(micRestartTimer); micRestartTimer = null; } if (recognition) { try { recognition.abort(); } catch (e) {} recognition = null; } micRunning = false; }
+        $("btn-mic-restart").addEventListener("click", function () { if (phase === "bulk" || phase === "count") startMic(); });
+        $("btn-mic-retry-top").addEventListener("click", function () { $("notice-micfail").classList.remove("show"); if (phase === "bulk" || phase === "count") startMic(); });
+
+        /* timer */
+        function stopTimer() { if (timerId !== null) { clearInterval(timerId); timerId = null; } }
+        function startTimer(secEl, barEl, onExpire) {
+          stopTimer(); timerStart = Date.now();
+          secEl.textContent = "⏱ " + LIMIT.toFixed(1); barEl.style.width = "100%";
+          timerId = setInterval(function () {
+            var remain = LIMIT - (Date.now() - timerStart) / 1000;
+            if (remain <= 0) { secEl.textContent = "⏱ 0.0"; barEl.style.width = "0%"; stopTimer(); onExpire(); return; }
+            secEl.textContent = "⏱ " + remain.toFixed(1); barEl.style.width = (remain / LIMIT * 100) + "%";
+          }, 100);
+        }
+
+        /* screens */
+        function showScreen(name) {
+          $("screen-select").style.display = name === "select" ? "block" : "none";
+          $("screen-count").style.display = name === "count" ? "block" : "none";
+          $("screen-bulk").style.display = name === "bulk" ? "block" : "none";
+          $("screen-judging").style.display = name === "judging" ? "block" : "none";
+          $("screen-play").style.display = name === "num" ? "block" : "none";
+          $("screen-result").style.display = name === "result" ? "block" : "none";
+          document.body.classList.toggle("in-play", name === "bulk" || name === "num" || name === "judging");
+        }
+        function clearCountTimers() { countTimers.forEach(function (t) { clearTimeout(t); }); countTimers = []; }
+
+        function startCountdown(mode) {
+          clearCountTimers(); stopTimer();
+          if (nextTimer) { clearTimeout(nextTimer); nextTimer = null; }
+          if (judgingTimer) { clearTimeout(judgingTimer); judgingTimer = null; }
+          pendingMode = mode; lastMode = mode;
+          buildQuestions(); cur = 0; correctCount = 0; answering = false; bulkJudged = false; bulkResults = null; numTimeout = false;
+          if (mode === "bulk") startMic(); else stopMic();
+          phase = "count"; showScreen("count");
+          $("count-cond").textContent = selDan + "の段 ・ " + modeLabel() + (mode === "bulk" ? " ・ 9問を15秒でぜんぶ言おう！" : " ・ 9問を15秒で答えよう！");
+          var nums = [3, 2, 1], colors = ["#ef4444", "#f97316", "#22a355"];
+          nums.forEach(function (n, i) {
+            countTimers.push(setTimeout(function () {
+              var el = $("count-num"); el.textContent = n; el.style.color = colors[i];
+              el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+              $("count-label").textContent = n === 1 ? "スタート！" : "よーい…";
+            }, i * 800));
+          });
+          countTimers.push(setTimeout(function () { if (pendingMode === "bulk") beginBulk(); else beginNum(); }, nums.length * 800));
+        }
+
+        /* bulk flow */
+        function beginBulk() {
+          phase = "bulk"; bulkFinals = []; bulkInterim = ""; bulkJudged = false; bulkEndReason = "";
+          showScreen("bulk");
+          var grid = $("bulk-grid"); grid.innerHTML = "";
+          questions.forEach(function (q, i) {
+            var c = document.createElement("div"); c.className = "bulk-card"; c.style.setProperty("--qc", CARD_COLORS[i % CARD_COLORS.length]);
+            c.innerHTML = '<span class="bno">' + (i + 1) + '問目</span><span class="bexpr">' + selDan + " × " + q.mult + "</span>";
+            grid.appendChild(c);
+          });
+          renderLive();
+          if (speechSupported) setMicUI(micRunning || micWanted ? "on" : "off"); else $("mic-status").classList.add("hidden");
+          startTimer($("bulk-timer-sec"), $("bulk-timer-bar"), function () { finishBulk("timeout"); });
+        }
+        function finishBulk(reason) {
+          if (phase !== "bulk" || bulkJudged) return; // judging runs exactly once
+          bulkEndReason = reason; stopTimer(); phase = "judging"; showScreen("judging");
+          // wait up to ~3s for late final results; this wait is NOT part of the 15s
+          judgingTimer = setTimeout(doBulkJudge, 3000);
+        }
+        function doBulkJudge() {
+          if (bulkJudged) return; bulkJudged = true;
+          if (judgingTimer) { clearTimeout(judgingTimer); judgingTimer = null; }
+          var transcript = bulkFinals.join("、"); // keep ASR segment boundaries for judging
+          if (!transcript && bulkInterim) transcript = bulkInterim;
+          stopMic();
+          var judged = judgeKuku(transcript);
+          var nums = judged.nums;
+          bulkResults = judged.results;
+          correctCount = 0;
+          bulkResults.forEach(function (r, i) { questions[i].correct = r.status === "correct"; if (r.status === "correct") correctCount++; });
+          phase = "done";
+          showResult("bulk", transcript, nums);
+        }
+        $("btn-finish-bulk").addEventListener("click", function () { finishBulk("done"); });
+
+        /* numeric flow */
+        function beginNum() {
+          phase = "num"; showScreen("num"); showQuestion();
+          startTimer($("num-timer-sec"), $("num-timer-bar"), function () { numTimeout = true; finishNum("timeout"); });
+        }
+        function answerCorrect() {
+          if (phase !== "num" || answering) return; answering = true;
+          var q = questions[cur]; q.correct = true; correctCount++;
+          var card = $("q-card"); card.classList.remove("wrong"); card.classList.add("correct");
+          setFeedback("せいかい！🎉", "ok");
+          $("ok-count").innerHTML = "せいかい <b>" + correctCount + "</b> 問"; renderDots();
+          nextTimer = setTimeout(function () {
+            answering = false; if (phase !== "num") return;
+            if (cur + 1 >= questions.length) { finishNum("all"); return; }
+            cur++; showQuestion();
+          }, 750);
+        }
+        function answerWrong(msg) {
+          if (phase !== "num" || answering) return;
+          var card = $("q-card"); card.classList.remove("wrong"); void card.offsetWidth; card.classList.add("wrong");
+          setFeedback(msg, "ng"); padValue = ""; renderPad();
+          setTimeout(function () { card.classList.remove("wrong"); }, 400);
+        }
+        $("btn-answer").addEventListener("click", function () {
+          if (phase !== "num" || answering) return;
+          if (padValue === "") { setFeedback("数字ボタンで答えを入れてから押してね", "ng"); return; }
+          var q = questions[cur];
+          if (parseInt(padValue, 10) === q.ans) answerCorrect(); else answerWrong("ちがうよ。もう一度考えてみてね！");
+        });
+        function finishNum(reason) {
+          if (phase !== "num") return; phase = "done"; stopTimer();
+          if (nextTimer) { clearTimeout(nextTimer); nextTimer = null; }
+          stopMic(); answering = false;
+          bulkResults = questions.map(function (q) { return { status: q.correct ? "correct" : "unknown", heard: null }; });
+          showResult(reason === "all" ? "numAll" : "numTimeout", "", null);
+        }
+
+        /* result */
+        function showResult(kind, transcript, nums) {
+          showScreen("result");
+          var mark = $("result-mark"), stars = $("result-stars"), score = $("result-score"), title = $("result-title"), msg = $("result-msg");
+          var allOk = correctCount === 9;
+          score.textContent = correctCount + " / 9 問 せいかい";
+          if (allOk) {
+            mark.textContent = "💮"; stars.textContent = "★★★";
+            title.textContent = kind === "bulk" && bulkEndReason === "timeout" ? "時間です！でも ぜんぶ せいかい！🎉" : "ぜんぶ せいかい！🎉";
+            msg.textContent = "9問ぜんぶ正解！すごい！";
+            launchConfetti();
+          } else if (kind === "bulk") {
+            mark.textContent = ""; stars.textContent = correctCount >= 7 ? "★★" : correctCount >= 4 ? "★" : "";
+            title.textContent = bulkEndReason === "timeout" ? "時間です！⏰" : "判定おわり！";
+            msg.textContent = "⭕＝正解、❌＝ちがう数字だった、？＝聞き取れなかった（不正解じゃないよ）。下で1問ずつ確認してね。";
+          } else {
+            mark.textContent = ""; stars.textContent = correctCount >= 7 ? "★★" : correctCount >= 4 ? "★" : "";
+            title.textContent = kind === "numTimeout" ? "時間です！⏰" : "おわり！";
+            msg.textContent = correctCount + " 問せいかいできたよ。「答えを見る」で確認して、もう一度ちょうせんしよう！";
+          }
+          var heard = $("result-heard");
+          if (kind === "bulk") {
+            heard.classList.add("show");
+            $("result-heard-nums").textContent = nums && nums.length ? nums.join("、") : "（数字は聞き取れませんでした）";
+            $("result-heard-text").textContent = transcript ? transcript : "（書き起こしなし）";
+          } else heard.classList.remove("show");
+          var list = $("per-q-list"); list.innerHTML = "";
+          questions.forEach(function (q, i) {
+            var r = bulkResults ? bulkResults[i] : { status: "unknown", heard: null };
+            var st, cls;
+            if (r.status === "correct") { st = "⭕ せいかい"; cls = "ok"; }
+            else if (r.status === "wrong") { st = "❌ 「" + r.heard + "」と聞こえた"; cls = "ng"; }
+            else { st = kind === "bulk" ? "？ 聞き取れなかった" : "こたえを見てね"; cls = "unk"; }
+            var row = document.createElement("div"); row.className = "a-row";
+            row.innerHTML = "<span>" + (i + 1) + ". " + selDan + " × " + q.mult + " = " + q.ans + '</span><span class="st ' + cls + '">' + st + "</span>";
+            list.appendChild(row);
+          });
+          var alist = $("answer-list"); alist.innerHTML = ""; alist.classList.remove("show");
+          questions.forEach(function (q) {
+            var row = document.createElement("div"); row.className = "a-row";
+            row.innerHTML = "<span>" + selDan + " × " + q.mult + " = " + q.ans + '</span><span class="st ' + (q.correct ? "ok" : "ng") + '">' + (q.correct ? "⭕ せいかい" : "こたえ") + "</span>";
+            alist.appendChild(row);
+          });
+          $("btn-answers").textContent = "👀 答えを見る";
+        }
+        function launchConfetti() {
+          if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          var colors = ["#ef4444","#f97316","#f5c400","#22a355","#0ea5b7","#3b82f6","#8b5cf6","#ec4899"];
+          for (var i = 0; i < 60; i++) {
+            var c = document.createElement("div"); c.className = "confetti";
+            c.style.left = Math.random() * 100 + "vw"; c.style.background = colors[i % colors.length];
+            c.style.animationDuration = (1.6 + Math.random() * 1.6) + "s"; c.style.animationDelay = (Math.random() * 0.5) + "s";
+            if (Math.random() > 0.5) c.style.borderRadius = "50%";
+            document.body.appendChild(c);
+            (function (el) { setTimeout(function () { el.remove(); }, 4200); })(c);
+          }
+        }
+
+        /* wiring */
+        $("btn-start").addEventListener("click", function () { startCountdown("bulk"); });
+        $("btn-start-num").addEventListener("click", function () { startCountdown("num"); });
+        function toNumFromBulk() {
+          // stop the speaking timer & mic, restart the same dan/mode from scratch in 1-by-1 numeric mode
+          stopTimer(); stopMic(); phase = "select"; startCountdown("num");
+        }
+        $("btn-to-num-bulk").addEventListener("click", toNumFromBulk);
+        $("btn-to-num-line").addEventListener("click", function () { startCountdown("num"); });
+        $("btn-to-num-unsupported").addEventListener("click", function () { startCountdown("num"); });
+        $("btn-to-num-micfail").addEventListener("click", function () { startCountdown("num"); });
+        $("btn-again").addEventListener("click", function () { startCountdown(lastMode); });
+        $("btn-change").addEventListener("click", function () {
+          clearCountTimers(); stopTimer();
+          if (nextTimer) { clearTimeout(nextTimer); nextTimer = null; }
+          if (judgingTimer) { clearTimeout(judgingTimer); judgingTimer = null; }
+          stopMic(); phase = "select"; showScreen("select");
+        });
+        $("btn-answers").addEventListener("click", function () {
+          var list = $("answer-list"); var show = !list.classList.contains("show");
+          list.classList.toggle("show", show);
+          $("btn-answers").textContent = show ? "🙈 答えをかくす" : "👀 答えを見る";
+        });
+        showScreen("select");
+      })();
+    </script>
+  </body>
+</html>
