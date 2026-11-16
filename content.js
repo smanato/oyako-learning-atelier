@@ -1587,6 +1587,11 @@ AIに頼む文面
       date: "2026-11-07",
       description: "わが子の「できた！」をAIとつくる、をテーマに、2つのアプリをその場で作った回です。九九アプリを作って公開するところまでと、間違えた問題を次の練習に変える「模試の解き直しアプリ」。プログラミングの知識がなくても、AIに頼むだけでここまで作れます。倍速・字幕付きで、当日参加できなかった方もじっくり振り返れます。",
       youtubeId: "45fGJPsWaW4",
+      material: {
+        url: "https://drive.google.com/file/d/1Ehn1jjUydK2FMQdQ4XvUElnJeCP5mmzv/view",
+        label: "11/7セミナーの資料を見る",
+        note: "PDF / 21枚＋プロンプト全文"
+      },
       tags: "zoom アーカイブ ライブ 録画 九九 かけ算 アプリ 模試 解き直し やり直し 復習 中学数学 まなび直しノート AI アプリ開発 公開"
     },
     {
@@ -1708,6 +1713,17 @@ AIに頼む文面
       url: "https://kanji-drill-ten.vercel.app/",
       buttonLabel: "アプリを開く",
       tags: "漢字 アプリ 手書き ドリル テスト 復習 小学生 中学生 国語 Kanji"
+    },
+    {
+      category: "セミナー資料",
+      badge: "11/7セミナー",
+      title: "わが子の「できた！」を、AIとつくる。",
+      date: "2026-11-07",
+      description: "九九アプリを作って公開するところまでと、模試の間違いを次の練習に変える「解き直しノート」。スライド21枚に加えて、巻末にその場で使ったプロンプトの全文（九九アプリ用・解き直しノート用）を載せています。コピーしてそのまま使えます。",
+      fileType: "PDF",
+      fileSize: "1.3MB",
+      url: "https://drive.google.com/file/d/1Ehn1jjUydK2FMQdQ4XvUElnJeCP5mmzv/view",
+      tags: "セミナー 資料 11月7日 九九 かけ算 アプリ 模試 解き直し 解き直しノート 復習 中学数学 プロンプト 全文 Muse Codex 公開 Netlify"
     },
     {
       category: "セミナー資料",
