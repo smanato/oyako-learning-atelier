@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanji Handwriting Lab</title>
+  <meta name="description" content="塾テキストの漢字を手書き学習、テスト、間違い復習に変えるブラウザ完結アプリ">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDPMincho:wght@700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2026-07-02-rich">
+  <script src="kanjiData.js?v=2026-07-02-rich" defer></script>
+  <script src="questionBank.js?v=2026-07-02-rich" defer></script>
+  <script src="db.js?v=2026-07-02-rich" defer></script>
+  <script src="app.js?v=2026-07-02-rich" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="./" aria-label="Kanji Handwriting Lab">
+        <span class="brand-mark">書</span>
+        <span>
+          <strong>Kanji Lab</strong>
+          <small>Juku handwriting suite</small>
+        </span>
+      </a>
+
+      <nav class="nav-list" aria-label="画面切り替え">
+        <button class="nav-item is-active" data-view="dashboard" type="button">
+          <span class="nav-icon" aria-hidden="true">⌂</span>
+          ホーム
+        </button>
+        <button class="nav-item" data-view="study" type="button">
+          <span class="nav-icon" aria-hidden="true">✎</span>
+          学習編
+        </button>
+        <button class="nav-item" data-view="test" type="button">
+          <span class="nav-icon" aria-hidden="true">✓</span>
+          テスト編
+        </button>
+        <button class="nav-item" data-view="flashcards" type="button">
+          <span class="nav-icon" aria-hidden="true">□</span>
+          復習カード
+        </button>
+        <button class="nav-item" data-view="admin" type="button">
+          <span class="nav-icon" aria-hidden="true">＋</span>
+          教材管理
+        </button>
+        <button class="nav-item" data-view="report" type="button">
+          <span class="nav-icon" aria-hidden="true">▦</span>
+          成績
+        </button>
+      </nav>
+
+      <div class="side-note">
+        <strong>本日の運用</strong>
+        <p>教材追加 → テスト → 間違い復習。確認したい漢字だけ短く回せます。</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Community Kanji System</p>
+          <h1 id="viewTitle">ホーム</h1>
+        </div>
+        <div class="topbar-actions">
+          <label class="field compact">
+            <span>生徒</span>
+            <select id="learnerSelect"></select>
+          </label>
+          <button class="button icon-button ghost" id="refreshButton" type="button" title="更新" aria-label="更新">
+            <span aria-hidden="true">↻</span>
+          </button>
+        </div>
+      </header>
+
+      <section id="toast" class="toast" role="status" aria-live="polite" hidden></section>
+
+      <section class="level-strip" aria-label="対象学年">
+        <div>
+          <p class="eyebrow">Grade</p>
+          <strong>対象学年</strong>
+        </div>
+        <div class="level-tabs" id="levelTabs"></div>
+      </section>
+
+      <section class="scope-strip" aria-label="対象範囲">
+        <div class="scope-head">
+          <div>
+            <p class="eyebrow">Scope</p>
+            <strong>対象範囲</strong>
+          </div>
+          <div class="scope-summary" id="scopeSummary"></div>
+        </div>
+        <div class="unit-tabs" id="unitTabs"></div>
+        <div class="kanji-picker">
+          <label class="field kanji-search-field">
+            <span>漢字を検索して選ぶ</span>
+            <input id="kanjiSearchInput" type="search" placeholder="例: 引 / ひく / 図書館 / 同音異義語">
+          </label>
+          <div class="selected-kanji-list" id="selectedKanjiList"></div>
+          <div class="kanji-search-results" id="kanjiSearchResults"></div>
+        </div>
+      </section>
+
+      <section class="view is-active" id="view-dashboard" aria-labelledby="viewTitle">
+        <div class="dashboard-grid">
+          <div class="panel intro-panel">
+            <div class="intro-copy">
+              <p class="eyebrow">今日やること</p>
+              <h2>書く。採点。間違いだけ戻す。</h2>
+              <p>移動時間でも回せる、短い手書きチェック。</p>
+              <div class="quick-actions">
+                <button class="button primary hero-action" id="startDueTest" type="button"><span aria-hidden="true">✓</span>今日のテスト</button>
+                <button class="button danger" id="startWrongTest" type="button"><span aria-hidden="true">!</span>間違いだけ</button>
+                <button class="button gold" id="startFlashcards" type="button"><span aria-hidden="true">□</span>復習カード</button>
+                <button class="button secondary" id="startStudy" type="button"><span aria-hidden="true">✎</span>学習編</button>
+              </div>
+              <div class="test-limit-panel" aria-label="出題数">
+                <span>出題数</span>
+                <div class="limit-tabs" id="testLimitTabs"></div>
+              </div>
+            </div>
+            <div class="sheet-visual" aria-hidden="true">
+              <div class="sheet-line"></div>
+              <div class="sheet-kanji">漢</div>
+              <div class="sheet-score">○ 82</div>
+            </div>
+          </div>
+
+          <div class="stat-grid" id="statGrid"></div>
+          <div class="panel queue-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Review Queue</p>
+                <h2>次に出す問題</h2>
+              </div>
+              <button class="button small icon-button" id="reloadQueue" type="button" title="再読込" aria-label="再読込">
+                <span aria-hidden="true">↻</span>
+              </button>
+            </div>
+            <div id="queueList" class="queue-list"></div>
+          </div>
+          <div class="panel settings-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Scoring</p>
+                <h2>採点設定</h2>
+              </div>
+            </div>
+            <div id="settingsBox"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-study" aria-labelledby="viewTitle">
+        <div class="workbench" id="studyWorkbench"></div>
+      </section>
+
+      <section class="view" id="view-test" aria-labelledby="viewTitle">
+        <div class="workbench" id="testWorkbench"></div>
+      </section>
+
+      <section class="view" id="view-flashcards" aria-labelledby="viewTitle">
+        <div class="workbench" id="flashcardWorkbench"></div>
+      </section>
+
+      <section class="view" id="view-admin" aria-labelledby="viewTitle">
+        <div class="admin-grid">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Import</p>
+                <h2>塾テキストを登録</h2>
+              </div>
+            </div>
+            <form id="importForm" class="stack">
+              <label class="field">
+                <span>単元名</span>
+                <input id="importUnit" type="text" value="塾テキスト 第1回" autocomplete="off">
+              </label>
+              <label class="field">
+                <span>貼り付けデータ</span>
+                <textarea id="importText" rows="9" spellcheck="false">どくしょ,読書,休日に本を読むこと,読書の時間を決める
+としょかん,図書館,本を借りたり読んだりする場所,図書館で調べる</textarea>
+              </label>
+              <label class="field">
+                <span>CSV / TXTファイル</span>
+                <input id="importFile" type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain">
+              </label>
+              <div class="hint">
+                形式: 読み,正解,問題文,例文 または 単元,読み,正解,問題文,例文,画数,音読み,訓読み
+              </div>
+              <button class="button primary" type="submit">一括追加</button>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">AI Assistant</p>
+                <h2>プリントからテストを作る方法</h2>
+              </div>
+            </div>
+            <div class="stack" style="font-size: 0.95rem;">
+              <p>Gemini等のAIを使うと、手書きの画像や指定したテスト範囲から簡単に単語テストを作れます。</p>
+              <ol style="margin-left: 1.5rem; line-height: 1.6;">
+                <li>Gemini等のAIチャットを開き、画像を添付するか、作成したい範囲を指定します。</li>
+                <li>以下のプロンプト（指示文）を送信します。</li>
+              </ol>
+              <div style="background: #f0f4f8; padding: 12px; border-radius: 6px; border: 1px solid #d1d9e0; font-family: monospace; white-space: pre-wrap; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText).then(() => alert('プロンプトをコピーしました！'));">中学1年生の1学期期末テスト範囲で出そうな漢字の一覧（※または「この画像の漢字」など）を抽出してください。
+以下のCSV形式のみを出力してください。ヘッダや余計な解説は不要です。
+
+読み,正解の漢字,問題文,例文
+例：
+どくしょ,読書,休日に本を読むこと,読書の時間を決める</div>
+              <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #666;">※枠内をタップでコピーできます</p>
+              <ol start="3" style="margin-left: 1.5rem; line-height: 1.6;">
+                <li>AIが生成したテキストをコピーし、上の「貼り付けデータ」欄にペーストして「一括追加」を押せば完了です！</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Learners</p>
+                <h2>生徒を追加</h2>
+              </div>
+            </div>
+            <form id="learnerForm" class="stack">
+              <label class="field">
+                <span>名前</span>
+                <input id="learnerName" type="text" placeholder="例: 山田 太郎" autocomplete="off">
+              </label>
+              <label class="field">
+                <span>メモ</span>
+                <input id="learnerNote" type="text" placeholder="例: 小5 / 水曜クラス" autocomplete="off">
+              </label>
+              <button class="button secondary" type="submit">生徒を追加</button>
+            </form>
+            <div id="learnerList" class="learner-list"></div>
+          </div>
+        </div>
+
+        <div class="panel table-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Items</p>
+              <h2>登録済み問題</h2>
+            </div>
+            <div class="table-tools">
+              <input id="itemSearch" class="search-input" type="search" placeholder="読み・漢字・単元で検索">
+              <button class="button small" id="exportItemsButton" type="button">CSV出力</button>
+            </div>
+          </div>
+          <div id="itemsTable" class="items-table"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-report" aria-labelledby="viewTitle">
+        <div class="report-grid" id="reportGrid"></div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
