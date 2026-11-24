@@ -58,6 +58,12 @@
   .btn[disabled]{opacity:.5; cursor:default;}
   .msg{font-size:.9rem; margin:10px 0 0; min-height:1.2em;}
   .msg.err{color:var(--ng); font-weight:700;}
+  .deadline{
+    display:block; background:var(--accent-soft); border:2px solid var(--accent); color:var(--accent-ink);
+    border-radius:12px; padding:10px 14px; font-weight:800; text-align:center; margin:0 0 16px; font-size:1rem;
+  }
+  .deadline small{display:block; font-weight:600; font-size:.8rem; opacity:.85;}
+  .deadline.near-send{margin:14px 0 10px;}
   .hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
   .hidden{display:none !important;}
   .done{text-align:center; padding:26px 14px;}
@@ -68,7 +74,8 @@
 <body>
 <main>
   <h1>セミナーアンケート</h1>
-  <p class="lead">スマホで1分ほどで終わります。答えたいところだけで大丈夫です。<br>いただいた内容で、次の回の中身を決めます。<br><b>〆切は12月1日（火）まで</b>です。</p>
+  <p class="lead">スマホで1分ほどで終わります。答えたいところだけで大丈夫です。<br>いただいた内容で、次の回の中身を決めます。</p>
+  <p class="deadline">📅 〆切：2026年12月1日（火）まで<small>12月1日のうちにお答えください</small></p>
 
   <form id="form">
     <div class="panel">
@@ -139,6 +146,7 @@
 
     <div class="hp"><label>ここは空のままにしてください<input type="text" id="hp" tabindex="-1" autocomplete="off"></label></div>
 
+    <p class="deadline near-send">📅 〆切：2026年12月1日（火）まで</p>
     <button type="submit" class="btn" id="send">送信する</button>
     <p class="msg" id="msg"></p>
   </form>
