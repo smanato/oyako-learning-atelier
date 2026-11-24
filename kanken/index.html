@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>漢検チャレンジ 11週間の計画表</title>
+<meta name="description" content="2027年2月14日の漢検まで、11週間でどう進めるかの計画表です。">
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --bg:#faf7f0; --panel:#ffffff; --ink:#2f2c28; --muted:#75706a; --line:#e7dfd0;
+    --accent:#2f6b4f; --accent-soft:#e8f1ea; --accent-ink:#1f4a37;
+    --warn:#b4722a; --warn-bg:#fdf1e0; --shadow:0 2px 10px rgba(80,66,40,.08);
+    color-scheme:light dark;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#1c1b19; --panel:#262522; --ink:#f2efe8; --muted:#aaa49a; --line:#3b3934;
+      --accent:#7fc3a1; --accent-soft:#223229; --accent-ink:#cdeadb;
+      --warn:#e0a861; --warn-bg:#3a2e1d; --shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.75; -webkit-text-size-adjust:100%;}
+  main{max-width:760px; margin:0 auto; padding:18px 16px 60px;}
+  h1{font-size:1.35rem; margin:6px 0 2px;}
+  h1 small{display:block; font-size:.82rem; color:var(--muted); font-weight:600;}
+  h2{font-size:1.08rem; margin:0 0 10px; display:flex; align-items:center; gap:8px;}
+  h2 .n{background:var(--accent); color:#fff; border-radius:999px; width:24px; height:24px;
+    display:inline-flex; align-items:center; justify-content:center; font-size:.82rem; flex:0 0 auto;}
+  h3{font-size:.95rem; margin:14px 0 4px;}
+  p{margin:0 0 10px;}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); padding:16px 14px; margin-bottom:14px;}
+  .goal{background:var(--accent-soft); border:2px solid var(--accent); color:var(--accent-ink);
+    border-radius:14px; padding:14px; margin-bottom:14px; font-weight:700;}
+  .goal span{display:block; font-weight:500; font-size:.88rem; margin-top:4px;}
+  .warn{background:var(--warn-bg); border:2px solid var(--warn); border-radius:12px; padding:12px 14px; margin:12px 0; font-size:.92rem;}
+  table{width:100%; border-collapse:collapse; font-size:.88rem;}
+  th,td{border-bottom:1px solid var(--line); padding:8px 6px; text-align:left; vertical-align:top;}
+  th{color:var(--muted); font-size:.78rem; white-space:nowrap;}
+  td.w{white-space:nowrap; font-weight:800;}
+  td.num{white-space:nowrap; text-align:center; font-weight:800; color:var(--accent-ink);}
+  tr.mark td{background:var(--accent-soft);}
+  tr.rest td{color:var(--muted);}
+  .scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .day{display:grid; grid-template-columns:72px 1fr; gap:6px 10px; font-size:.92rem;}
+  .day b{color:var(--accent-ink);}
+  ul{margin:0 0 10px; padding-left:1.2em;}
+  li{margin-bottom:4px;}
+  .hint{font-size:.84rem; color:var(--muted);}
+  .foot{font-size:.78rem; color:var(--muted); text-align:center; margin-top:18px;}
+  a{color:var(--accent-ink);}
+  @media print{ body{background:#fff;} .panel{box-shadow:none; break-inside:avoid;} }
+</style>
+</head>
+<body>
+<main>
+  <h1>漢検チャレンジ 11週間の計画表<small>2026年11月24日 → 2027年2月14日（日）の検定まで</small></h1>
+
+  <div class="goal">
+    小2のモデルケース：2027年2月14日に <b>7級</b>（小学4年修了程度・642字）
+    <span>その先は、6級 → 5級 → 4級。4級（1,339字）を小3の秋までに。</span>
+  </div>
+
+  <div class="panel">
+    <h2><span class="n">1</span>まず、申し込みの段取り</h2>
+    <p>2027年2月14日の検定（2026年度第3回）の申し込みは、<b>2026年12月4日(金)9:00 から 2027年1月10日(日)23:59 まで</b>です。この期間を逃すと2月は受けられません。</p>
+    <p>当日の時間帯は級ごとに決まっています。</p>
+    <div class="scroll">
+      <table>
+        <tr><th>級</th><th>時間</th></tr>
+        <tr><td>8級・9級・10級</td><td>10:00〜10:40</td></tr>
+        <tr class="mark"><td><b>7級</b>・1級・2級</td><td>11:50〜12:50</td></tr>
+        <tr><td>6級・4級・準2級</td><td>13:40〜14:40</td></tr>
+        <tr><td>5級・3級・準1級</td><td>15:30〜16:30</td></tr>
+      </table>
+    </div>
+    <div class="warn">
+      <b>おすすめ：8級と7級を両方申し込む。</b>
+      8級は10:00、7級は11:50で時間が重ならないので、同じ日に続けて受けられます。
+      8級（小3修了・440字）は7級の土台なので、練習の内容は変わりません。
+      <b>7級に届かなくても8級が残る</b>ので、初めての受検でも「何も取れなかった」になりません。
+      受検料は級ごとにかかります。
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="n">2</span>毎日の流れ（1日15〜20分）</h2>
+    <div class="day">
+      <b>月〜金</b><div>新しい漢字をその週の分だけ。<b>読み</b>を先に全部。<b>書き</b>はアプリで1回ずつ。</div>
+      <b>土</b><div>その週に<b>間違えた字だけ</b>。アプリの「間違いだけ」を回す。新しい字はやらない。</div>
+      <b>日</b><div>おやすみ。やりたい日は10分だけ総ざらい。</div>
+    </div>
+    <h3>アプリの使い方</h3>
+    <ul>
+      <li><a href="../apps/kanji/">漢字アプリ</a>を開く → 対象学年でその週の範囲を選ぶ</li>
+      <li>書いたら、点数は目安として<b>自分で「○書けていた／×まちがい」を押す</b></li>
+      <li>終わったらホームの<b>「今日の記録を1行でコピー」</b>を押して、オープンチャットに貼る</li>
+    </ul>
+    <p class="hint">続いた日数が出ます。数えるのは点数ではなく<b>やった日数</b>です。</p>
+  </div>
+
+  <div class="panel">
+    <h2><span class="n">3</span>11週間の割りふり</h2>
+    <p class="hint">新しい字は月〜金の5日で割ります。「週45字」なら1日9字です。</p>
+    <div class="scroll">
+      <table>
+        <tr><th>週</th><th>日付</th><th>やること</th><th>新出</th></tr>
+        <tr><td class="w">W1</td><td>11/24〜11/29</td><td>小3配当（前半）。アプリの対象学年＝小3</td><td class="num">30字</td></tr>
+        <tr><td class="w">W2</td><td>11/30〜12/6</td><td>小3配当</td><td class="num">45字</td></tr>
+        <tr class="mark"><td class="w">W3</td><td>12/7〜12/13</td><td>小3配当　<b>／ 12/4から申し込み受付開始</b></td><td class="num">45字</td></tr>
+        <tr><td class="w">W4</td><td>12/14〜12/20</td><td>小3配当　<b>／ 20日に1回目の見直し</b></td><td class="num">45字</td></tr>
+        <tr><td class="w">W5</td><td>12/21〜12/27</td><td>小3配当の残り ＋ 小3の総ざらい</td><td class="num">35字</td></tr>
+        <tr class="rest"><td class="w">W6</td><td>12/28〜1/3</td><td>年末年始。読みだけ軽く。休んでよい</td><td class="num">20字</td></tr>
+        <tr class="mark"><td class="w">W7</td><td>1/4〜1/10</td><td>小4配当へ　<b>／ 1/10が申し込み締切</b></td><td class="num">46字</td></tr>
+        <tr><td class="w">W8</td><td>1/11〜1/17</td><td>小4配当　<b>／ 17日に2回目の見直し</b></td><td class="num">46字</td></tr>
+        <tr><td class="w">W9</td><td>1/18〜1/24</td><td>小4配当</td><td class="num">45字</td></tr>
+        <tr><td class="w">W10</td><td>1/25〜1/31</td><td>小4配当の残り ＋ 小4の総ざらい</td><td class="num">45字</td></tr>
+        <tr><td class="w">W11</td><td>2/1〜2/7</td><td>出題の形に慣れる（下に詳しく）。間違いだけ総ざらい</td><td class="num">—</td></tr>
+        <tr class="mark"><td class="w">W12</td><td>2/8〜2/14</td><td>通しで2回。弱いところだけ。前日は軽く　<b>／ 2/14 本番</b></td><td class="num">—</td></tr>
+      </table>
+    </div>
+    <p class="hint">新出は合計402字（小3の200字＋小4の202字）。すでに習った小1・小2の240字は、毎週の「間違いだけ」に混ぜて戻します。</p>
+
+    <h3>W11でやる「出題の形」</h3>
+    <ul>
+      <li>部首／送り仮名／筆順と画数</li>
+      <li>対義語・類義語／同音異字・同訓異字</li>
+      <li>四字熟語／熟語の組み立て</li>
+    </ul>
+    <p class="hint">漢字が書けても、この形に慣れていないと点が落ちます。ここは1週間かけます。</p>
+  </div>
+
+  <div class="panel">
+    <h2><span class="n">4</span>見直しの日を2つ決めてあります</h2>
+    <h3>12月20日（W4の終わり）</h3>
+    <p>アプリの成績で、<b>小3配当が120字以上「定着」</b>していれば7級のまま進みます。届いていなければ、<b>8級1本に変える</b>判断をします。申し込み締切（1/10）より前なので、ここで決めれば間に合います。</p>
+    <h3>1月17日（W8の終わり）</h3>
+    <p>小4配当の<b>読みが半分以上</b>できていればそのまま。苦しければ、残りの新出をやめて<b>復習だけに切り替えます</b>。7級は<b>200点満点の70%（140点）で合格</b>なので、全部を完璧にする必要はありません。</p>
+  </div>
+
+  <div class="panel">
+    <h2><span class="n">5</span>受け方は3つあります</h2>
+    <div class="scroll">
+      <table>
+        <tr><th>受け方</th><th>いつ</th><th>級</th><th>場所</th></tr>
+        <tr class="mark"><td class="w">紙（公開会場）</td><td>年3回<br>次は2/14</td><td>10級〜1級</td><td>会場</td></tr>
+        <tr><td class="w">漢検CBT</td><td>随時<br>（年末年始以外）</td><td><b>7級〜2級</b></td><td>テストセンター</td></tr>
+        <tr><td class="w">漢検オンライン</td><td><b>毎週日曜</b><br>（除外日あり）</td><td>10級〜2級</td><td>自宅のタブレット</td></tr>
+      </table>
+    </div>
+    <p><b>2月の本番は紙で</b>。会場の空気に慣れるのと、小2にはキーボード入力（CBTの読み問題）がまだ難しいためです。</p>
+    <p><b>腕試しは漢検オンライン</b>が使えます。毎週日曜に自宅で受けられるので、<b>2月7日の日曜に予行</b>をするのがおすすめです。タブレット・Webカメラ・マイクと、申込前の「デバイスチェック」が必要です。</p>
+    <p><b>3月以降はCBTが主役</b>になります。随時受けられて結果は約10日後。6級→5級→4級と、受かったらすぐ次に進めます。</p>
+  </div>
+
+  <div class="panel">
+    <h2><span class="n">6</span>自分の級でやる人へ</h2>
+    <p>上の表の「小3配当」「小4配当」を、自分の級の範囲に置き換えれば同じように使えます。</p>
+    <div class="scroll">
+      <table>
+        <tr><th>級</th><th>程度</th><th>対象漢字</th></tr>
+        <tr><td class="w">10級</td><td>小1修了</td><td class="num">80字</td></tr>
+        <tr><td class="w">9級</td><td>小2修了</td><td class="num">240字</td></tr>
+        <tr><td class="w">8級</td><td>小3修了</td><td class="num">440字</td></tr>
+        <tr class="mark"><td class="w">7級</td><td>小4修了</td><td class="num">642字</td></tr>
+        <tr><td class="w">6級</td><td>小5修了</td><td class="num">835字</td></tr>
+        <tr><td class="w">5級</td><td>小6修了</td><td class="num">1026字</td></tr>
+        <tr><td class="w">4級</td><td>中学在学</td><td class="num">1339字</td></tr>
+      </table>
+    </div>
+    <p class="hint">合格の目安は、2級以外は <b>200点満点の70%程度</b>。満点はいりません。</p>
+    <p class="hint">級の決め方に迷ったら、漢検の<a href="https://www.kanken.or.jp/kanken/grades/meyasucheck/" target="_blank" rel="noopener">受検級の目安チェック</a>が使えます。</p>
+  </div>
+
+  <p class="foot">※日程・検定料は変わることがあります。申し込み前に<a href="https://www.kanken.or.jp/" target="_blank" rel="noopener">漢検の公式サイト</a>でご確認ください。<br>AI教育ラボ</p>
+</main>
+</body>
+</html>
