@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>次のセミナーのアンケート｜AI教育ラボ</title>
+<meta name="description" content="次のセミナーで扱ってほしい内容を教えてください。1分で終わります。">
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --bg:#faf7f0; --panel:#ffffff; --ink:#2f2c28; --muted:#75706a; --line:#e7dfd0;
+    --accent:#2f6b4f; --accent-soft:#e8f1ea; --accent-ink:#1f4a37; --ng:#c0392b;
+    --shadow:0 2px 10px rgba(80,66,40,.08);
+    color-scheme:light dark;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#1c1b19; --panel:#262522; --ink:#f2efe8; --muted:#aaa49a; --line:#3b3934;
+      --accent:#7fc3a1; --accent-soft:#223229; --accent-ink:#cdeadb; --ng:#ef8c80;
+      --shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.75; -webkit-text-size-adjust:100%;
+  }
+  main{max-width:640px; margin:0 auto; padding:18px 16px 60px;}
+  h1{font-size:1.3rem; margin:8px 0 4px;}
+  .lead{color:var(--muted); font-size:.92rem; margin:0 0 16px;}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:16px 14px; margin-bottom:14px;}
+  .q{font-weight:800; font-size:1rem; margin:0 0 4px;}
+  .q .num{color:var(--accent); margin-right:6px;}
+  .note{font-size:.84rem; color:var(--muted); margin:0 0 10px;}
+  textarea,input[type="text"]{
+    width:100%; font-family:inherit; font-size:1rem; color:var(--ink); background:var(--panel);
+    border:2px solid var(--line); border-radius:10px; padding:10px; line-height:1.6;
+  }
+  textarea{min-height:84px; resize:vertical;}
+  textarea:focus,input[type="text"]:focus{outline:none; border-color:var(--accent);}
+  .choices{display:flex; flex-direction:column; gap:8px;}
+  .choices.wrap{flex-direction:row; flex-wrap:wrap;}
+  .choice{
+    display:flex; align-items:flex-start; gap:10px; border:2px solid var(--line); border-radius:12px;
+    padding:10px 12px; cursor:pointer; background:var(--panel);
+  }
+  .choices.wrap .choice{flex:1 1 calc(50% - 4px); min-width:140px; align-items:center;}
+  .choice input{width:20px; height:20px; margin:2px 0 0; accent-color:var(--accent); flex:0 0 auto;}
+  .choices.wrap .choice input{margin:0;}
+  .choice span{font-size:.95rem;}
+  .choice span small{display:block; color:var(--muted); font-size:.8rem; font-weight:400;}
+  .choice.on{border-color:var(--accent); background:var(--accent-soft);}
+  .btn{
+    display:block; width:100%; border:2px solid var(--accent); background:var(--accent); color:#fff;
+    border-radius:12px; padding:14px; font-weight:800; font-size:1.02rem; font-family:inherit; cursor:pointer;
+  }
+  .btn[disabled]{opacity:.5; cursor:default;}
+  .msg{font-size:.9rem; margin:10px 0 0; min-height:1.2em;}
+  .msg.err{color:var(--ng); font-weight:700;}
+  .hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  .hidden{display:none !important;}
+  .done{text-align:center; padding:26px 14px;}
+  .done .mark{font-size:2.4rem;}
+  .foot{font-size:.78rem; color:var(--muted); text-align:center; margin-top:16px;}
+</style>
+</head>
+<body>
+<main>
+  <h1>次のセミナー、何を見たいですか？</h1>
+  <p class="lead">スマホで1分ほどで終わります。答えたいところだけで大丈夫です。<br>いただいた内容で、次の回の中身を決めます。</p>
+
+  <form id="form">
+    <div class="panel">
+      <p class="q"><span class="num">Q1</span>いま、AIでいちばん困っていること・知りたいことは？</p>
+      <p class="note">1〜2行でどうぞ。「うまく聞けない」「何に使えばいいか分からない」でも大歓迎です。</p>
+      <textarea id="q1" placeholder="例：ChatGPTに聞いてはいるけれど、返ってきた答えが合っているか分からない"></textarea>
+    </div>
+
+    <div class="panel">
+      <p class="q"><span class="num">Q2</span>次のセミナーで見たいテーマは？</p>
+      <p class="note">3つまで選べます。</p>
+      <div class="choices" id="topics">
+        <label class="choice"><input type="checkbox" value="ChatGPT・Gemini・Claudeの使い分け"><span>ChatGPT・Gemini・Claudeの使い分け<small>どれに何を頼むといいのか</small></span></label>
+        <label class="choice"><input type="checkbox" value="写真を撮るだけでプリントや模試を教材に変える"><span>写真を撮るだけで、プリントや模試を教材に変える<small>読み取り・類題・解説</small></span></label>
+        <label class="choice"><input type="checkbox" value="わが子用のアプリを自分で作る"><span>わが子用のアプリを自分で作る<small>九九アプリのようなものを、もう一度はじめから</small></span></label>
+        <label class="choice"><input type="checkbox" value="家や仕事のこまごました作業を仕組みにする"><span>家や仕事のこまごました作業を仕組みにする<small>在庫管理・集計・くり返しの作業</small></span></label>
+        <label class="choice"><input type="checkbox" value="AIと個人情報・お金の安全な付き合い方"><span>AIと個人情報・お金の安全な付き合い方<small>連携して大丈夫？子どもに使わせるときの設定</small></span></label>
+        <label class="choice"><input type="checkbox" value="画像・動画・音声をAIで作る"><span>画像・動画・音声をAIで作る<small>自由研究・発表の資料づくり</small></span></label>
+        <label class="choice"><input type="checkbox" value="受験・進路の調べものにAIを使う"><span>受験・進路の調べものにAIを使う<small>学校選び・過去問・予定づくり</small></span></label>
+        <label class="choice"><input type="checkbox" value="NotebookLMで復習ノートを作る"><span>NotebookLMで復習ノートを作る<small>第2回の実践編</small></span></label>
+      </div>
+      <p class="q" style="margin-top:14px; font-size:.92rem;">その他（あれば）</p>
+      <input type="text" id="other" placeholder="こんなテーマが見たい">
+    </div>
+
+    <div class="panel">
+      <p class="q"><span class="num">Q3</span>お子さんの学年（任意・いくつでも）</p>
+      <div class="choices wrap" id="grades">
+        <label class="choice"><input type="checkbox" value="未就学"><span>未就学</span></label>
+        <label class="choice"><input type="checkbox" value="小1〜3"><span>小1〜3</span></label>
+        <label class="choice"><input type="checkbox" value="小4〜6"><span>小4〜6</span></label>
+        <label class="choice"><input type="checkbox" value="中学"><span>中学</span></label>
+        <label class="choice"><input type="checkbox" value="高校"><span>高校</span></label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="q"><span class="num">Q4</span>ふだん使っているAIは？（いくつでも）</p>
+      <div class="choices wrap" id="tools">
+        <label class="choice"><input type="checkbox" value="ChatGPT（無料）"><span>ChatGPT（無料）</span></label>
+        <label class="choice"><input type="checkbox" value="ChatGPT（有料）"><span>ChatGPT（有料）</span></label>
+        <label class="choice"><input type="checkbox" value="Gemini"><span>Gemini</span></label>
+        <label class="choice"><input type="checkbox" value="Claude"><span>Claude</span></label>
+        <label class="choice"><input type="checkbox" value="Muse"><span>Muse</span></label>
+        <label class="choice"><input type="checkbox" value="まだ使っていない"><span>まだ使っていない</span></label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="q"><span class="num">Q5</span>参加しやすいのは？（いくつでも）</p>
+      <div class="choices" id="times">
+        <label class="choice"><input type="checkbox" value="平日の午前"><span>平日の午前</span></label>
+        <label class="choice"><input type="checkbox" value="平日の夜"><span>平日の夜</span></label>
+        <label class="choice"><input type="checkbox" value="土日の午前"><span>土日の午前</span></label>
+        <label class="choice"><input type="checkbox" value="土日の夜"><span>土日の夜</span></label>
+        <label class="choice"><input type="checkbox" value="アーカイブで見るので時間は気にしない"><span>アーカイブで見るので、時間は気にしない</span></label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="q"><span class="num">Q6</span>「これを一緒に作ってほしい」はありますか？（任意）</p>
+      <p class="note">当日その場で作るものの候補にします。</p>
+      <textarea id="q6" placeholder="例：家の在庫管理の表／漢字の練習アプリ／週の予定を組んでくれるもの"></textarea>
+      <p class="q" style="margin-top:14px; font-size:.92rem;">お名前（任意）</p>
+      <p class="note">書かなくて大丈夫です。書いていただくと、当日その話から始められます。</p>
+      <input type="text" id="name" placeholder="お名前・ニックネーム">
+    </div>
+
+    <div class="hp"><label>ここは空のままにしてください<input type="text" id="hp" tabindex="-1" autocomplete="off"></label></div>
+
+    <button type="submit" class="btn" id="send">送信する</button>
+    <p class="msg" id="msg"></p>
+  </form>
+
+  <div class="panel done hidden" id="done">
+    <p class="mark">🌿</p>
+    <p><b>ありがとうございました！</b></p>
+    <p class="note">いただいた内容で、次の回の中身を決めます。<br>結果はオープンチャットでお知らせします。</p>
+  </div>
+
+  <p class="foot">AI教育ラボ</p>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var API = "https://review.m-go.asia/api/seminar-survey";
+  var MAX_TOPICS = 3;
+  var $ = function(id){ return document.getElementById(id); };
+
+  // 選んだものに色を付ける／テーマは3つまで
+  function wire(groupId, max){
+    var boxes = $(groupId).querySelectorAll('input[type="checkbox"]');
+    Array.prototype.forEach.call(boxes, function(b){
+      b.addEventListener("change", function(){
+        if (max && b.checked) {
+          var n = 0;
+          Array.prototype.forEach.call(boxes, function(x){ if (x.checked) n++; });
+          if (n > max) {
+            b.checked = false;
+            $("msg").textContent = "テーマは " + max + " つまで選べます。";
+            $("msg").className = "msg err";
+            return;
+          }
+        }
+        $("msg").textContent = "";
+        $("msg").className = "msg";
+        b.closest(".choice").classList.toggle("on", b.checked);
+      });
+    });
+  }
+  wire("topics", MAX_TOPICS); wire("grades"); wire("tools"); wire("times");
+
+  function picked(groupId){
+    var out = [];
+    Array.prototype.forEach.call($(groupId).querySelectorAll('input[type="checkbox"]'), function(b){
+      if (b.checked) out.push(b.value);
+    });
+    return out;
+  }
+
+  $("form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var msg = $("msg");
+    var data = {
+      q1: $("q1").value,
+      topics: picked("topics"),
+      other: $("other").value,
+      grades: picked("grades"),
+      tools: picked("tools"),
+      times: picked("times"),
+      q6: $("q6").value,
+      name: $("name").value,
+      hp: $("hp").value
+    };
+    if (!data.q1.trim() && !data.topics.length && !data.q6.trim() && !data.other.trim()) {
+      msg.textContent = "Q1・Q2・Q6のどれか1つは入れてください。";
+      msg.className = "msg err";
+      return;
+    }
+    $("send").disabled = true;
+    msg.className = "msg";
+    msg.textContent = "送っています…";
+    fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){ return { ok: r.ok, j: j }; });
+    }).then(function(res){
+      if (!res.ok) throw new Error((res.j && res.j.error) || "送れませんでした");
+      $("form").classList.add("hidden");
+      $("done").classList.remove("hidden");
+      window.scrollTo(0,0);
+    }).catch(function(err){
+      $("send").disabled = false;
+      msg.textContent = err.message + "　電波のよいところで、もう一度お試しください。";
+      msg.className = "msg err";
+    });
+  });
+})();
+</script>
+</body>
+</html>
