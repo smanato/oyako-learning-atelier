@@ -136,8 +136,13 @@
     </div>
 
     <div class="panel">
-      <p class="q"><span class="num">Q6</span>「これを一緒に作ってほしい」はありますか？（任意）</p>
-      <p class="note">当日その場で作るものの候補にします。</p>
+      <p class="q"><span class="num">Q6</span>「これを作ってほしい」はありますか？（任意）</p>
+      <p class="note">近いほうを選んでください（両方でもOK）。</p>
+      <div class="choices" id="want">
+        <label class="choice"><input type="checkbox" value="セミナーで一緒に作りたい（作り方を知りたい）"><span>セミナーで一緒に作りたい<small>作り方を知りたい。当日その場で作ります</small></span></label>
+        <label class="choice"><input type="checkbox" value="自分で作るのは難しいので、できたものを使いたい"><span>自分で作るのは難しいので、できたものを使いたい<small>作ってお渡しします。九九アプリのように会員サイトに置きます</small></span></label>
+      </div>
+      <p class="q" style="margin-top:14px; font-size:.92rem;">どんなものですか？</p>
       <textarea id="q6" placeholder="例：家の在庫管理の表／漢字の練習アプリ／週の予定を組んでくれるもの"></textarea>
       <p class="q" style="margin-top:14px; font-size:.92rem;">お名前（任意）</p>
       <p class="note">書かなくて大丈夫です。書いていただくと、当日その話から始められます。</p>
@@ -203,7 +208,7 @@
       });
     });
   }
-  wire("topics", MAX_TOPICS); wire("grades"); wire("tools"); wire("times");
+  wire("topics", MAX_TOPICS); wire("grades"); wire("tools"); wire("times"); wire("want");
 
   function picked(groupId){
     var out = [];
@@ -228,11 +233,12 @@
       grades: picked("grades"),
       tools: picked("tools"),
       times: picked("times"),
+      want: picked("want"),
       q6: $("q6").value,
       name: $("name").value,
       hp: $("hp").value
     };
-    if (!data.q1.trim() && !data.topics.length && !data.q6.trim() && !data.other.trim()) {
+    if (!data.q1.trim() && !data.topics.length && !data.q6.trim() && !data.other.trim() && !data.want.length) {
       msg.textContent = "Q1・Q2・Q6のどれか1つは入れてください。";
       msg.className = "msg err";
       return;
