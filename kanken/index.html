@@ -282,8 +282,19 @@
 
     // 見直しの日（新出の週のうち 1/3 と 2/3 のところ）
     var newWeeks = weeks.filter(function(w){ return w.role === 'new' && w.count > 0; });
-    var check1 = newWeeks[Math.max(0, Math.floor(newWeeks.length / 3) - 1)];
-    var check2 = newWeeks[Math.max(0, Math.floor(newWeeks.length * 2 / 3) - 1)];
+    // 年末年始の週は見直しに向かないので、ひとつ前の週にずらす
+    function pickCheck(i){
+      for (var k = i; k >= 0; k--) {
+        if (newWeeks[k] && !isHoliday(newWeeks[k].start, newWeeks[k].end)) return newWeeks[k];
+      }
+      for (var j = i + 1; j < newWeeks.length; j++) {
+        if (!isHoliday(newWeeks[j].start, newWeeks[j].end)) return newWeeks[j];
+      }
+      return newWeeks[i];
+    }
+    var check1 = pickCheck(Math.max(0, Math.floor(newWeeks.length / 3) - 1));
+    var check2 = pickCheck(Math.max(0, Math.floor(newWeeks.length * 2 / 3) - 1));
+    if (check2 === check1) check2 = pickCheck(Math.min(newWeeks.length - 1, newWeeks.indexOf(check1) + 2));
 
     // 併願できる級（1つ下の級。紙は時間帯が違うので続けて受けられる）
     var idx = LEVELS.indexOf(target);
