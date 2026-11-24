@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>次のセミナーのアンケート｜AI教育ラボ</title>
+<title>セミナーアンケート｜AI教育ラボ</title>
 <meta name="description" content="次のセミナーで扱ってほしい内容を教えてください。1分で終わります。">
 <meta name="robots" content="noindex">
 <style>
@@ -67,8 +67,8 @@
 </head>
 <body>
 <main>
-  <h1>次のセミナー、何を見たいですか？</h1>
-  <p class="lead">スマホで1分ほどで終わります。答えたいところだけで大丈夫です。<br>いただいた内容で、次の回の中身を決めます。</p>
+  <h1>セミナーアンケート</h1>
+  <p class="lead">スマホで1分ほどで終わります。答えたいところだけで大丈夫です。<br>いただいた内容で、次の回の中身を決めます。<br><b>〆切は12月1日（火）まで</b>です。</p>
 
   <form id="form">
     <div class="panel">
@@ -78,7 +78,7 @@
     </div>
 
     <div class="panel">
-      <p class="q"><span class="num">Q2</span>次のセミナーで見たいテーマは？</p>
+      <p class="q"><span class="num">Q2</span>次回セミナーで聞きたいテーマは？</p>
       <p class="note">3つまで選べます。</p>
       <div class="choices" id="topics">
         <label class="choice"><input type="checkbox" value="ChatGPT・Gemini・Claudeの使い分け"><span>ChatGPT・Gemini・Claudeの使い分け<small>どれに何を頼むといいのか</small></span></label>
@@ -143,6 +143,12 @@
     <p class="msg" id="msg"></p>
   </form>
 
+  <div class="panel done hidden" id="closed">
+    <p class="mark">🌿</p>
+    <p><b>アンケートの受付は終了しました。</b></p>
+    <p class="note">たくさんのお答えをありがとうございました。<br>結果と次の回のご案内は、オープンチャットでお知らせします。</p>
+  </div>
+
   <div class="panel done hidden" id="done">
     <p class="mark">🌿</p>
     <p><b>ありがとうございました！</b></p>
@@ -158,6 +164,15 @@
   var API = "https://review.m-go.asia/api/seminar-survey";
   var MAX_TOPICS = 3;
   var $ = function(id){ return document.getElementById(id); };
+
+  // 〆切。12月1日のうちは受け付けて、2日になったら受付終了の画面にする
+  var CLOSE_AT = new Date("2026-12-02T00:00:00+09:00").getTime();
+  function closed(){ return Date.now() >= CLOSE_AT; }
+  if (closed()) {
+    $("form").classList.add("hidden");
+    $("closed").classList.remove("hidden");
+    return;
+  }
 
   // 選んだものに色を付ける／テーマは3つまで
   function wire(groupId, max){
@@ -193,6 +208,11 @@
   $("form").addEventListener("submit", function(e){
     e.preventDefault();
     var msg = $("msg");
+    if (closed()) {
+      $("form").classList.add("hidden");
+      $("closed").classList.remove("hidden");
+      return;
+    }
     var data = {
       q1: $("q1").value,
       topics: picked("topics"),
