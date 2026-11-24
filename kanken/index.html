@@ -113,7 +113,7 @@
     <div class="scroll">
       <table>
         <tr><th>受け方</th><th>いつ</th><th>級</th><th>場所</th></tr>
-        <tr><td class="w">紙（公開会場）</td><td>年3回</td><td>10級〜1級</td><td>会場</td></tr>
+        <tr><td class="w">紙（公開会場）</td><td>年3回</td><td><b>10級〜1級</b></td><td>会場</td></tr>
         <tr><td class="w">漢検CBT</td><td>随時<br>（年末年始以外）</td><td><b>7級〜2級</b></td><td>テストセンター</td></tr>
         <tr><td class="w">漢検オンライン</td><td><b>毎週日曜</b><br>（除外日あり）</td><td>10級〜2級</td><td>自宅のタブレット</td></tr>
       </table>
@@ -121,6 +121,7 @@
     <p><b>はじめての受検は紙がおすすめ</b>です。CBTは読み問題がキーボード入力なので、低学年には漢字より先にそこが壁になります。</p>
     <p><b>腕試しには漢検オンライン</b>。毎週日曜に自宅で受けられるので、本番の1週間前に予行ができます。タブレット・Webカメラ・マイクと、申込前の「デバイスチェック」が必要です。</p>
     <p><b>受かったあとはCBTが主役</b>。随時受けられて結果は約10日後。次の級にすぐ進めます。</p>
+    <p class="hint">準1級・1級は紙だけです。CBT・オンラインでは受けられません。</p>
   </div>
 
   <div class="panel">
@@ -148,7 +149,12 @@
     { key:'7',  name:'7級',  about:'小学4年修了程度', cum:642,  slot:'11:50〜12:50' },
     { key:'6',  name:'6級',  about:'小学5年修了程度', cum:835,  slot:'13:40〜14:40' },
     { key:'5',  name:'5級',  about:'小学6年修了程度', cum:1026, slot:'15:30〜16:30' },
-    { key:'4',  name:'4級',  about:'中学校在学程度',   cum:1339, slot:'13:40〜14:40' }
+    { key:'4',  name:'4級',  about:'中学校在学程度',   cum:1339, slot:'13:40〜14:40' },
+    { key:'3',  name:'3級',  about:'中学校卒業程度',   cum:1623, slot:'15:30〜16:30' },
+    { key:'j2', name:'準2級', about:'高校在学程度',     cum:1951, slot:'13:40〜14:40' },
+    { key:'2',  name:'2級',  about:'高校卒業・大学・一般程度', cum:2136, slot:'11:50〜12:50' },
+    { key:'j1', name:'準1級', about:'大学・一般程度',   cum:3000, approx:true, slot:'15:30〜16:30', paperOnly:true },
+    { key:'1',  name:'1級',  about:'大学・一般程度',   cum:6000, approx:true, slot:'11:50〜12:50', paperOnly:true }
   ];
   // 習い終わった範囲
   var LEARNED = [
@@ -158,7 +164,12 @@
     { key:'g3', name:'小3まで（440字）',   cum:440 },
     { key:'g4', name:'小4まで（642字）',   cum:642 },
     { key:'g5', name:'小5まで（835字）',   cum:835 },
-    { key:'g6', name:'小6まで（1026字）',  cum:1026 }
+    { key:'g6', name:'小6まで（1026字）',  cum:1026 },
+    { key:'k4', name:'4級の範囲まで（1339字）',   cum:1339 },
+    { key:'k3', name:'3級の範囲まで（1623字）',   cum:1623 },
+    { key:'kj2', name:'準2級の範囲まで（1951字）', cum:1951 },
+    { key:'k2', name:'2級の範囲まで（2136字）',   cum:2136 },
+    { key:'kj1', name:'準1級の範囲まで（約3000字）', cum:3000 }
   ];
   // 漢字の帯（どの学年の配当か）
   var BANDS = [
@@ -168,7 +179,12 @@
     { to:642,  label:'小4配当' },
     { to:835,  label:'小5配当' },
     { to:1026, label:'小6配当' },
-    { to:1339, label:'中学の漢字' }
+    { to:1339, label:'中学で習う漢字（4級の範囲）' },
+    { to:1623, label:'3級で増える漢字' },
+    { to:1951, label:'準2級で増える漢字' },
+    { to:2136, label:'2級で増える漢字（常用漢字の残り）' },
+    { to:3000, label:'準1級の漢字' },
+    { to:6000, label:'1級の漢字' }
   ];
   // 紙の検定日と申し込み期間
   var EXAMS = [
@@ -183,13 +199,14 @@
       return '<option value="' + valueOf(r) + '"' + (valueOf(r) === selected ? ' selected' : '') + '>' + labelOf(r) + '</option>';
     }).join('');
   }
-  fill($('target'), LEVELS, function(r){ return r.key; }, function(r){ return r.name + '（' + r.about + '・' + r.cum + '字）'; }, '7');
+  function cumText(l){ return (l.approx ? '約' : '') + l.cum + '字'; }
+  fill($('target'), LEVELS, function(r){ return r.key; }, function(r){ return r.name + '（' + r.about + '・' + cumText(r) + '）'; }, '7');
   fill($('learned'), LEARNED, function(r){ return r.key; }, function(r){ return r.name; }, 'g2');
   fill($('exam'), EXAMS, function(r){ return r.key; }, function(r){ return r.name; }, '2027-02-14');
 
   $('levelTable').innerHTML = '<tr><th>級</th><th>程度</th><th>対象漢字</th><th>紙のときの時間</th></tr>' +
     LEVELS.map(function(l){
-      return '<tr><td class="w">' + l.name + '</td><td>' + l.about + '</td><td class="num">' + l.cum + '字</td><td>' + l.slot + '</td></tr>';
+      return '<tr><td class="w">' + l.name + '</td><td>' + l.about + '</td><td class="num">' + cumText(l) + '</td><td>' + l.slot + '</td></tr>';
     }).join('');
 
   function ymd(d){
@@ -304,7 +321,7 @@
     var totalWeeks = weeks.length;
 
     var html = '';
-    html += '<div class="goal"><b>' + target.name + '（' + target.about + '・' + target.cum + '字）</b>'
+    html += '<div class="goal"><b>' + target.name + '（' + target.about + '・' + cumText(target) + '）</b>'
       + '<span>' + md(today) + ' から ' + exam.getFullYear() + '年' + (exam.getMonth()+1) + '月' + exam.getDate() + '日まで、あと ' + totalWeeks + ' 週間。</span></div>';
 
     html += '<div class="panel"><h2><span class="n">2</span>この計画の数字</h2><div class="nums">'
@@ -319,6 +336,12 @@
     }
     if (examSel.apply) {
       html += '<p><b>申し込み期間：' + examSel.apply + '</b><br><span class="hint">この期間を逃すと、この日は受けられません。</span></p>';
+    }
+    if (target.approx) {
+      html += '<p class="hint">※' + target.name + 'は常用漢字の外まで出ます。字数は目安なので、過去問で範囲をつかみながら進めてください。</p>';
+    }
+    if (target.paperOnly) {
+      html += '<div class="warn"><b>' + target.name + 'は紙（公開会場）だけ</b>です。漢検CBT（7級〜2級）と漢検オンライン（10級〜2級）では受けられません。</div>';
     }
     if (under) {
       html += '<div class="warn"><b>' + under.name + 'との併願がおすすめです。</b>紙で受けるとき、'
