@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>漢検チャレンジ</title>
+<meta name="description" content="きょうやることが決まっている、漢検の練習アプリ。">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main id="app">
+
+  <!-- はじめの設定 -->
+  <section id="s-setup" class="hidden">
+    <h1>漢検チャレンジ<small>まずは3つだけ えらんでね</small></h1>
+    <div class="card">
+      <label for="f-name">なまえ</label>
+      <input type="text" id="f-name" placeholder="れい：たろう" maxlength="12">
+
+      <label for="f-level">うける級</label>
+      <select id="f-level"></select>
+
+      <label for="f-learned">いま、どこまで書ける？</label>
+      <select id="f-learned"></select>
+      <p class="hint">学校で ならいおわった学年を えらびます。まよったら ひとつ下に。</p>
+
+      <label for="f-exam">けんていの日</label>
+      <select id="f-exam"></select>
+      <div id="f-custom-wrap" class="hidden">
+        <input type="date" id="f-custom">
+      </div>
+
+      <button class="btn big" id="b-start-plan">この計画ではじめる</button>
+      <p class="msg" id="setup-msg"></p>
+    </div>
+  </section>
+
+  <!-- ホーム -->
+  <section id="s-home" class="hidden">
+    <div class="home-head">
+      <div>
+        <p class="eyebrow" id="home-date"></p>
+        <h1 id="home-title">きょうのミッション</h1>
+      </div>
+      <button class="icon-btn" id="b-settings" title="設定" aria-label="設定">⚙</button>
+    </div>
+
+    <div class="card mission">
+      <div class="mission-nums">
+        <div><span>新しい字</span><strong id="m-new">0</strong></div>
+        <div><span>ふくしゅう</span><strong id="m-review">0</strong></div>
+        <div><span>ぜんぶで</span><strong id="m-total">0</strong><small>問</small></div>
+      </div>
+      <button class="btn big" id="b-start">はじめる</button>
+      <p class="done-note hidden" id="m-done">きょうの分は おわりました！ もう一度やってもOK</p>
+    </div>
+
+    <div class="card">
+      <div class="streak-row">
+        <div class="streak"><strong id="h-streak">0</strong><span>日 つづいてる</span></div>
+        <div class="until"><strong id="h-until">-</strong><span id="h-until-label">日後が けんてい</span></div>
+      </div>
+      <div class="cal" id="cal"></div>
+      <p class="hint" id="h-plan"></p>
+    </div>
+
+    <div class="card">
+      <div class="gauge-head"><span>合格予想点</span><strong id="g-score">-</strong></div>
+      <div class="gauge"><div class="gauge-fill" id="g-fill"></div><div class="gauge-line"></div></div>
+      <p class="hint">200点まんてん中、<b>140点</b>で合格のめやす。線がそこです。</p>
+      <button class="btn ghost small" id="b-copy">きょうの記録を1行コピー</button>
+      <p class="msg" id="copy-msg"></p>
+    </div>
+  </section>
+
+  <!-- 問題 -->
+  <section id="s-quiz" class="hidden">
+    <div class="quiz-top">
+      <button class="icon-btn" id="b-quit" aria-label="やめる">×</button>
+      <div class="bar"><div class="bar-fill" id="q-bar"></div></div>
+      <span class="count" id="q-count">1/1</span>
+    </div>
+    <p class="combo hidden" id="q-combo"></p>
+
+    <div class="card quiz">
+      <p class="q-kind" id="q-kind"></p>
+      <div class="q-body" id="q-body"></div>
+      <div id="q-choices" class="choices"></div>
+
+      <div id="q-write" class="hidden">
+        <canvas id="q-canvas" width="440" height="440" aria-label="かくところ"></canvas>
+        <div class="write-tools">
+          <button class="btn ghost small" id="b-undo">↶ 一画もどす</button>
+          <button class="btn ghost small" id="b-clear">ぜんぶ消す</button>
+        </div>
+        <button class="btn" id="b-reveal">こたえを見る</button>
+        <div id="q-answer" class="hidden">
+          <p class="answer-big" id="q-answer-text"></p>
+          <p class="hint">書いた字と見くらべて、どちらかを おしてね。</p>
+          <div class="row">
+            <button class="btn ok" data-self="ok">○ 書けた</button>
+            <button class="btn ng" data-self="ng">× まちがい</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="q-feedback" class="feedback hidden"></div>
+    </div>
+  </section>
+
+  <!-- おわり -->
+  <section id="s-done" class="hidden">
+    <div class="card done-card">
+      <p class="stamp" id="d-stamp">💮</p>
+      <h1 id="d-title">きょうの分、おわり！</h1>
+      <div class="mission-nums">
+        <div><span>といた</span><strong id="d-count">0</strong></div>
+        <div><span>せいかい</span><strong id="d-correct">0</strong></div>
+        <div><span>つづいた</span><strong id="d-streak">0</strong><small>日</small></div>
+      </div>
+      <button class="btn" id="b-copy2">きょうの記録を1行コピー</button>
+      <p class="msg" id="copy-msg2"></p>
+      <button class="btn ghost" id="b-home">ホームにもどる</button>
+    </div>
+  </section>
+
+  <!-- 設定 -->
+  <section id="s-settings" class="hidden">
+    <h1>設定<small>あとから変えられます</small></h1>
+    <div class="card">
+      <label for="s-level">うける級</label>
+      <select id="s-level"></select>
+      <label for="s-learned">いま、どこまで書ける？</label>
+      <select id="s-learned"></select>
+      <label for="s-exam">けんていの日</label>
+      <select id="s-exam"></select>
+      <div id="s-custom-wrap" class="hidden"><input type="date" id="s-custom"></div>
+      <button class="btn" id="b-save-plan">保存する</button>
+      <p class="msg" id="save-msg"></p>
+    </div>
+    <div class="card">
+      <p class="hint">手書きだけでじっくり練習したいときは、<a href="../kanji/">漢字アプリ</a>もそのまま使えます。記録はこのアプリと同じところに貯まります。</p>
+      <button class="btn ghost" id="b-back">もどる</button>
+    </div>
+  </section>
+
+  <p class="foot">漢検チャレンジ｜AI教育ラボ</p>
+</main>
+
+<script src="../kanji/kanjiData.js"></script>
+<script src="../kanji/questionBank.js"></script>
+<script src="../kanji/db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
